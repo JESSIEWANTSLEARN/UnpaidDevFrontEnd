@@ -1,4 +1,5 @@
-export const Logo = "/storage/site/Logo.png";
+import { backendUrl } from "../../config/api.js";
+export const Logo = backendUrl("/storage/site/Logo.png");
 
 export const money = (value) =>
   new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" }).format(Number(value || 0));

@@ -1,3 +1,4 @@
+import { backendUrl } from "../../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 
 const ROLE_OPTIONS = [
@@ -74,8 +75,8 @@ export default function UsersView({
 
     const refreshPresence = async () => {
       try {
-        const response = await fetch("/api/super-admin/user-presence", {
-          credentials: "same-origin",
+        const response = await fetch(backendUrl("/api/super-admin/user-presence"), {
+          credentials: "include",
           headers: { Accept: "application/json" },
         });
 

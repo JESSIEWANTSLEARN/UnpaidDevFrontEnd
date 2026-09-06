@@ -1,3 +1,4 @@
+import { backendUrl } from "../../../config/api.js";
 import React, { useEffect, useState } from "react";
 import "../../../../css/super-admin/system-health.css";
 export default function SystemHealthView() {
@@ -8,8 +9,8 @@ export default function SystemHealthView() {
         setLoading(true);
         setError("");
         try {
-            const r = await fetch("/api/super-admin/system-health", {
-                credentials: "same-origin",
+            const r = await fetch(backendUrl("/api/super-admin/system-health"), {
+                credentials: "include",
                 headers: { Accept: "application/json" },
             });
             const d = await r.json().catch(() => ({}));

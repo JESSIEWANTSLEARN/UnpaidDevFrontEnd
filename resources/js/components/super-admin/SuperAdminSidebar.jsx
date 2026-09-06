@@ -1,3 +1,4 @@
+import { backendUrl } from "../../config/api.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import { navSections } from "../../config/super-admin/superAdminConfig.js";
@@ -14,7 +15,7 @@ export default function SuperAdminSidebar({
             <aside className="ops-sidebar">
                 <div className="ops-sidebar-brand">
                     <img
-                        src={brandLogo}
+                        src={backendUrl(brandLogo)}
                         alt={`${brandName} Logo`}
                         width="45"
                         height="45"

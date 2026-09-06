@@ -1,14 +1,15 @@
-const getCsrf = () =>
-  document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ?? "";
-
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 export async function apiRequest(url, { method = "GET", body = null, formData = false } = {}) {
   const headers = { Accept: "application/json" };
-  if (method !== "GET") headers["X-CSRF-TOKEN"] = getCsrf();
+  if (method !== "GET" && method !== "HEAD") {
+    const token = await loadCsrfToken();
+    if (token) headers["X-CSRF-TOKEN"] = token;
+  }
   if (body && !formData) headers["Content-Type"] = "application/json";
 
-  const response = await fetch(url, {
+  const response = await fetch(backendUrl(url), {
     method,
-    credentials: "same-origin",
+    credentials: "include",
     headers,
     body: body ? (formData ? body : JSON.stringify(body)) : undefined,
   });
@@ -24,16 +25,17 @@ export async function apiRequest(url, { method = "GET", body = null, formData = 
 }
 
 export async function logoutRequest() {
-  await fetch("/api/presence/offline", {
+  const token = await loadCsrfToken();
+  await fetch(backendUrl("/api/presence/offline"), {
     method: "POST",
-    credentials: "same-origin",
-    headers: { Accept: "application/json", "X-CSRF-TOKEN": getCsrf() },
+    credentials: "include",
+    headers: { Accept: "application/json", "X-CSRF-TOKEN": token },
   }).catch(() => null);
 
-  const response = await fetch("/logout", {
+  const response = await fetch(backendUrl("/logout"), {
     method: "POST",
-    credentials: "same-origin",
-    headers: { Accept: "application/json", "X-CSRF-TOKEN": getCsrf() },
+    credentials: "include",
+    headers: { Accept: "application/json", "X-CSRF-TOKEN": token },
   });
   if (!response.ok && response.status !== 302) {
     const result = await response.json().catch(() => ({}));
@@ -43,7 +45,7 @@ export async function logoutRequest() {
 
 export function download(url) {
   const link = document.createElement("a");
-  link.href = url;
+  link.href = backendUrl(url);
   link.style.display = "none";
   document.body.appendChild(link);
   link.click();

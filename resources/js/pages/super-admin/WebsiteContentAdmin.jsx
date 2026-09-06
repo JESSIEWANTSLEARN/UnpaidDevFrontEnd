@@ -1,3 +1,4 @@
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FaqEditor from "../../components/super-admin/website-content/FaqEditor.jsx";
@@ -20,14 +21,6 @@ const EMPTY_MEMBER = {
     is_visible: true,
 };
 
-function csrfToken() {
-    return (
-        document
-            .querySelector('meta[name="csrf-token"]')
-            ?.getAttribute("content") || ""
-    );
-}
-
 async function requestJson(url, options = {}) {
     const headers = new Headers(options.headers || {});
     headers.set("Accept", "application/json");
@@ -36,14 +29,19 @@ async function requestJson(url, options = {}) {
         headers.set("Content-Type", "application/json");
     }
 
-    const token = csrfToken();
+    const method = String(options.method || "GET").toUpperCase();
+
+    const token =
+        method !== "GET" && method !== "HEAD"
+            ? await loadCsrfToken()
+            : "";
 
     if (token) {
         headers.set("X-CSRF-TOKEN", token);
     }
 
-    const response = await fetch(url, {
-        credentials: "same-origin",
+    const response = await fetch(backendUrl(url), {
+        credentials: "include",
         ...options,
         headers,
     });
@@ -712,7 +710,7 @@ function WebsiteContentAdmin() {
                                     <div className="wc-photo-editor">
                                         {member.photo_url ? (
                                             <img
-                                                src={member.photo_url}
+                                                src={backendUrl(member.photo_url)}
                                                 alt={member.name}
                                             />
                                         ) : (
