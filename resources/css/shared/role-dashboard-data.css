@@ -1,0 +1,498 @@
+/* WBO_ROLE_DASHBOARD_DATA_V1 */
+
+.role-live-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.role-live-metric,
+.role-live-panel {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.role-live-metric {
+  min-height: 104px;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.role-live-metric span {
+  display: block;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.role-live-metric strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.55rem;
+}
+
+.role-live-panel {
+  margin-bottom: 18px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.role-live-section-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.role-live-section-head h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.role-live-section-head p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.role-live-alerts {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.role-live-alert {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-left-width: 4px;
+  border-radius: 10px;
+}
+
+.role-live-alert p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.role-live-alert.tone-danger {
+  border-left-color: #dc2626;
+}
+
+.role-live-alert.tone-warning {
+  border-left-color: #d97706;
+}
+
+.role-live-alert.tone-info {
+  border-left-color: #2563eb;
+}
+
+.role-live-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.role-live-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.role-live-table th,
+.role-live-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #eef2f7;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.role-live-table th {
+  color: #64748b;
+  background: #f8fafc;
+  font-weight: 800;
+}
+
+.role-live-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.role-live-empty,
+.role-live-readonly {
+  margin: 14px;
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  color: #64748b;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.role-live-form {
+  padding: 16px 18px 18px;
+}
+
+.role-live-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.role-live-form label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.role-live-form input,
+.role-live-form select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.role-live-form-wide {
+  grid-column: 1 / -1;
+}
+
+.role-live-form-help {
+  margin: 10px 0;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.role-live-form-error {
+  margin: 10px 0;
+  color: #b91c1c;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.role-live-primary {
+  min-height: 42px;
+  margin-top: 10px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.role-live-primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.role-live-notice,
+.role-live-error {
+  margin-bottom: 14px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.role-live-notice {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.role-live-error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.role-live-retry {
+  margin-left: 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 850px) {
+  .role-live-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .role-live-metrics,
+  .role-live-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-live-metric {
+    min-height: 88px;
+  }
+
+  .role-live-form-wide {
+    grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-live-table-wrap {
+    scroll-behavior: auto;
+  }
+}
+/* WBO_PURCHASING_ROLE_UI_V1 */
+
+.role-live-form-actions,
+.role-live-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.role-live-secondary,
+.role-live-table-action,
+.role-live-danger-action {
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.role-live-secondary,
+.role-live-table-action {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.role-live-danger-action {
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.role-live-secondary:disabled,
+.role-live-table-action:disabled,
+.role-live-danger-action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.role-live-checkbox {
+  display: flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  align-self: end;
+  min-height: 42px;
+  gap: 8px !important;
+}
+
+.role-live-checkbox input {
+  width: 18px;
+  min-height: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.role-live-muted {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .role-live-form-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .role-live-form-actions > button {
+    width: 100%;
+  }
+}
+
+/* WBO_ROLE_DATA_DARK_MODE_V1 */
+
+.role-dashboard-layout[data-theme="dark"] .role-live-metric,
+.role-dashboard-layout[data-theme="dark"] .role-live-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-metric span,
+.role-dashboard-layout[data-theme="dark"] .role-live-section-head p,
+.role-dashboard-layout[data-theme="dark"] .role-live-alert p,
+.role-dashboard-layout[data-theme="dark"] .role-live-form-help,
+.role-dashboard-layout[data-theme="dark"] .role-live-muted {
+  color: var(--role-muted);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-section-head {
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-table th {
+  color: #a9b8ca;
+  background: #0c1726;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-table td,
+.role-dashboard-layout[data-theme="dark"] .role-live-table th {
+  border-color: #213147;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-table tbody tr:hover {
+  background: #122239;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-empty,
+.role-dashboard-layout[data-theme="dark"] .role-live-readonly {
+  color: var(--role-muted);
+  background: #0c1726;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-form label {
+  color: #cbd5e1;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-form input,
+.role-dashboard-layout[data-theme="dark"] .role-live-form select {
+  color: #f8fafc;
+  background: #0c1726;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-secondary,
+.role-dashboard-layout[data-theme="dark"] .role-live-table-action {
+  color: #dbeafe;
+  background: #17263a;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-danger-action {
+  color: #fecaca;
+  background: #3a1720;
+  border-color: #7f1d1d;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-notice {
+  color: #bbf7d0;
+  background: #10281d;
+  border-color: #225c3c;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-error {
+  color: #fecaca;
+  background: #35151a;
+  border-color: #7f1d1d;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-alert {
+  background: #0c1726;
+  border-top-color: #26364b;
+  border-right-color: #26364b;
+  border-bottom-color: #26364b;
+}
+
+/* WBO_ROLE_DATA_DARK_SYNC_V1 */
+
+.role-dashboard-layout[data-theme="dark"] .role-live-metric,
+.role-dashboard-layout[data-theme="dark"] .role-live-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-metric span,
+.role-dashboard-layout[data-theme="dark"] .role-live-section-head p,
+.role-dashboard-layout[data-theme="dark"] .role-live-alert p,
+.role-dashboard-layout[data-theme="dark"] .role-live-form-help,
+.role-dashboard-layout[data-theme="dark"] .role-live-muted {
+  color: var(--role-muted);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-section-head {
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-table th {
+  color: #a9b8ca;
+  background: #0c1726;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-table td,
+.role-dashboard-layout[data-theme="dark"] .role-live-table th {
+  border-color: #213147;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-table tbody tr:hover {
+  background: #122239;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-empty,
+.role-dashboard-layout[data-theme="dark"] .role-live-readonly {
+  color: var(--role-muted);
+  background: #0c1726;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-form label {
+  color: #cbd5e1;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-form input,
+.role-dashboard-layout[data-theme="dark"] .role-live-form select,
+.role-dashboard-layout[data-theme="dark"] .role-live-form textarea {
+  color: #f8fafc;
+  background: #0c1726;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-secondary,
+.role-dashboard-layout[data-theme="dark"] .role-live-table-action {
+  color: #dbeafe;
+  background: #17263a;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-danger-action {
+  color: #fecaca;
+  background: #3a1720;
+  border-color: #7f1d1d;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-notice {
+  color: #bbf7d0;
+  background: #10281d;
+  border-color: #225c3c;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-error {
+  color: #fecaca;
+  background: #35151a;
+  border-color: #7f1d1d;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-alert {
+  background: #0c1726;
+  border-top-color: #26364b;
+  border-right-color: #26364b;
+  border-bottom-color: #26364b;
+}

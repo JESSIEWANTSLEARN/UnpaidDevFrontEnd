@@ -1,0 +1,80 @@
+/* Super Admin customer preview banner and preview-only layout. */
+/* === WBO FULL CUSTOMER PREVIEW BEGIN === */
+.customer-admin-preview-bar {
+  position: sticky;
+  top: 0;
+  z-index: 220;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 11px clamp(18px, 4vw, 48px);
+  color: #f8fafc;
+  background: #07111f;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.customer-admin-preview-bar > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.customer-admin-preview-bar strong {
+  color: #60a5fa;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.customer-admin-preview-bar span {
+  color: #cbd5e1;
+  font-size: 11px;
+}
+
+.customer-admin-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.customer-admin-preview-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #111c2d;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.customer-admin-preview-actions a:hover {
+  border-color: #60a5fa;
+  background: #172554;
+}
+
+@media (max-width: 720px) {
+  .customer-admin-preview-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .customer-admin-preview-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .customer-admin-preview-actions a {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-admin-preview-actions a {
+    transition: none !important;
+  }
+}
+/* === WBO FULL CUSTOMER PREVIEW END === */

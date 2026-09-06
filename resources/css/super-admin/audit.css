@@ -1,0 +1,148 @@
+.ops-portal .audit-filter-panel {
+  margin-bottom: 14px;
+  padding: 16px;
+}
+
+.ops-portal .audit-filter-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 2fr) repeat(3, minmax(150px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.ops-portal .audit-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ops-portal .audit-filter-field label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ops-portal .audit-filter-field input,
+.ops-portal .audit-filter-field select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+.ops-portal .audit-filter-field input:focus,
+.ops-portal .audit-filter-field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.ops-portal .audit-reset-button {
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.ops-portal .audit-filter-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.ops-portal .audit-error-panel {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  color: var(--bad);
+  font-weight: 700;
+}
+
+.ops-portal .audit-user-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+}
+
+.ops-portal .audit-user-cell span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.ops-portal .audit-category-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.ops-portal .audit-table td {
+  vertical-align: top;
+}
+
+.ops-portal .audit-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.ops-portal .audit-pagination span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ops-portal .audit-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1100px) {
+  .ops-portal .audit-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ops-portal .audit-search-field {
+    grid-column: 1 / -1;
+  }
+
+  .ops-portal .audit-reset-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .ops-portal .audit-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-portal .audit-search-field {
+    grid-column: auto;
+  }
+
+  .ops-portal .audit-filter-summary {
+    flex-direction: column;
+  }
+
+  .ops-portal .audit-pagination {
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,70 @@
+/* Customer order status filters and order-list state styling. */
+/* === WBO ORDER STATUS FILTERS BEGIN === */
+.customer-order-filters {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.customer-order-filter {
+  min-height: 76px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+  border: 1px solid var(--customer-border);
+  border-radius: 16px;
+  background: var(--customer-surface);
+  color: var(--customer-muted);
+  cursor: pointer;
+  box-shadow: var(--customer-card-shadow);
+  transition:
+    border-color .16s ease,
+    background .16s ease,
+    color .16s ease,
+    transform .16s ease;
+}
+
+.customer-order-filter:hover,
+.customer-order-filter:focus-visible {
+  outline: none;
+  border-color: rgba(37, 99, 235, .6);
+  color: var(--customer-text);
+  transform: translateY(-1px);
+}
+
+.customer-order-filter.is-active {
+  border-color: var(--customer-blue);
+  background: var(--customer-blue-soft);
+  color: var(--customer-blue);
+}
+
+.customer-order-filter strong {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.customer-order-filter span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .customer-order-filters {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 5px;
+    scrollbar-width: thin;
+  }
+
+  .customer-order-filter {
+    flex: 0 0 116px;
+    min-height: 68px;
+  }
+}
+/* === WBO ORDER STATUS FILTERS END === */

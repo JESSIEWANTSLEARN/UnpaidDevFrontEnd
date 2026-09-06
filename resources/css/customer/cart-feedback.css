@@ -1,0 +1,136 @@
+/* Customer cart feedback states and commerce interaction polish. */
+/* === WBO COMMERCE FEEDBACK FOCUS BEGIN === */
+
+/*
+ * Keep cart feedback above cart/checkout overlays so it is impossible
+ * to miss when the customer clicks Add to cart.
+ */
+.customer-cart-feedback {
+  top: 92px !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  z-index: 420 !important;
+  width: min(460px, calc(100vw - 28px));
+  max-width: none !important;
+  transform: translateX(-50%);
+  padding: 14px 17px 14px 13px !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 22px 65px rgba(15, 23, 42, .24),
+    0 4px 18px rgba(15, 23, 42, .12) !important;
+  animation: customerCommerceToastIn .28s ease both !important;
+}
+
+.customer-cart-feedback.is-success {
+  border: 1px solid rgba(5, 150, 105, .48) !important;
+}
+
+.customer-cart-feedback.is-warning {
+  border: 1px solid rgba(245, 158, 11, .55) !important;
+}
+
+.customer-cart-feedback > p {
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.customer-add-cart-button.is-added {
+  animation: customerAddedButtonPop .38s ease both;
+  background: var(--customer-green) !important;
+  border-color: var(--customer-green) !important;
+  color: #fff !important;
+}
+
+.customer-add-cart-button.is-limit {
+  animation: customerCartLimitShake .42s ease both !important;
+}
+
+.customer-checkout-error {
+  margin: 16px 26px 0;
+  padding: 11px 12px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(220, 38, 38, .35);
+  border-radius: 12px;
+  color: #991b1b;
+  background: #fff1f2;
+}
+
+.customer-shell[data-theme="dark"] .customer-checkout-error {
+  color: #fecaca;
+  background: rgba(127, 29, 29, .28);
+  border-color: rgba(248, 113, 113, .35);
+}
+
+.customer-checkout-error > span {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #fff;
+  background: #dc2626;
+  font-weight: 950;
+}
+
+.customer-checkout-error p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.customer-checkout-error button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+@keyframes customerCommerceToastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px) scale(.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@keyframes customerAddedButtonPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 720px) {
+  .customer-cart-feedback {
+    top: 76px !important;
+    width: calc(100vw - 20px);
+  }
+
+  .customer-checkout-error {
+    margin-left: 17px;
+    margin-right: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-cart-feedback,
+  .customer-add-cart-button.is-added,
+  .customer-add-cart-button.is-limit {
+    animation: none !important;
+  }
+}
+
+/* === WBO COMMERCE FEEDBACK FOCUS END === */

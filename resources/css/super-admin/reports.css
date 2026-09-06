@@ -1,0 +1,87 @@
+.ops-portal .report-export-panel {
+  margin-top: 16px;
+  padding: 18px;
+}
+
+.ops-portal .report-export-copy h3 {
+  margin: 0 0 6px;
+  color: var(--ink-strong);
+  font-size: 16px;
+}
+
+.ops-portal .report-export-copy p,
+.ops-portal .report-type-description span,
+.ops-portal .report-security-note {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.ops-portal .report-export-controls {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 16px;
+}
+
+.ops-portal .report-type-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ops-portal .report-type-field label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ops-portal .report-type-field select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+.ops-portal .report-type-field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.ops-portal .report-type-description {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.ops-portal .report-type-description strong {
+  color: var(--ink-strong);
+  font-size: 12px;
+}
+
+.ops-portal .report-security-note {
+  margin: 12px 0 0;
+}
+
+@media (max-width: 640px) {
+  .ops-portal .report-export-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-portal .report-export-controls .btn-primary {
+    width: 100%;
+  }
+}

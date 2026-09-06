@@ -1,0 +1,208 @@
+/* =========================================================
+   WALANG BROWNOUT AUTH TRANSITIONS
+   Theme:
+   Blue       #0E5BA8
+   Dark Navy  #2C3E50
+   Light Gray #F2F2F2
+   ========================================================= */
+
+html,
+body,
+#root {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.auth-transition-root {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.auth-transition-page {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* =========================================================
+   FORWARD
+   Home -> Login
+   Login -> Signup
+   ========================================================= */
+
+.auth-transition-page.exit-forward {
+    animation: pageOutLeft 0.25s ease forwards;
+}
+
+.auth-transition-page.enter-forward {
+    animation: pageInRight 0.3s ease forwards;
+}
+
+/* =========================================================
+   BACKWARD
+   Signup -> Login
+   Login -> Home
+   ========================================================= */
+
+.auth-transition-page.exit-backward {
+    animation: pageOutRight 0.25s ease forwards;
+}
+
+.auth-transition-page.enter-backward {
+    animation: pageInLeft 0.3s ease forwards;
+}
+
+/* =========================================================
+   COLORED TRANSITION LAYER
+   ========================================================= */
+
+.auth-transition-page.exit-forward::after,
+.auth-transition-page.exit-backward::after {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+
+    pointer-events: none;
+}
+
+/* Forward = Walang BrownOut blue */
+
+.auth-transition-page.exit-forward::after {
+    background: linear-gradient(135deg, #0e5ba8, #2c3e50);
+
+    animation: colorWipeForward 0.25s ease forwards;
+}
+
+/* Backward = reverse theme */
+
+.auth-transition-page.exit-backward::after {
+    background: linear-gradient(135deg, #2c3e50, #0e5ba8);
+
+    animation: colorWipeBackward 0.25s ease forwards;
+}
+
+/* =========================================================
+   PAGE MOVEMENT
+   Small movement so it does not feel dizzy
+   ========================================================= */
+
+@keyframes pageOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(-25px);
+        opacity: 0.7;
+    }
+}
+
+@keyframes pageInRight {
+    from {
+        transform: translateX(25px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pageOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(25px);
+        opacity: 0.7;
+    }
+}
+
+@keyframes pageInLeft {
+    from {
+        transform: translateX(-25px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* =========================================================
+   COLOR WIPE
+   ========================================================= */
+
+@keyframes colorWipeForward {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 0.95;
+    }
+}
+
+@keyframes colorWipeBackward {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 0.95;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-transition-page,
+    .auth-transition-page::after {
+        animation: none !important;
+    }
+}
+
+/* WBO_MOBILE_AUTH_PERFORMANCE_V2 */
+@media (max-width: 768px) {
+  .auth-page-exit-left,
+  .auth-page-enter-right,
+  .auth-page-exit-right,
+  .auth-page-enter-left {
+    animation-duration: 180ms !important;
+  }
+
+  .auth-color-wipe,
+  .auth-color-wipe-forward,
+  .auth-color-wipe-backward {
+    animation-duration: 180ms !important;
+  }
+}

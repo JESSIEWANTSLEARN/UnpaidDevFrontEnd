@@ -1,0 +1,512 @@
+/* =========================================
+   ACCOUNT MODAL
+========================================= */
+
+.ops-portal .admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.ops-portal .admin-modal {
+  width: min(520px, 100%);
+  max-height: min(720px, calc(100vh - 40px));
+  overflow-y: auto;
+  background: var(--panel-strong);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+}
+
+.ops-portal .admin-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.ops-portal .admin-modal-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted-soft);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.ops-portal .admin-modal-header h2 {
+  margin: 0;
+  color: var(--ink-strong);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.ops-portal .admin-modal-close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ops-portal .admin-modal-close:hover {
+  background: var(--bg);
+}
+
+.ops-portal .admin-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+}
+
+.ops-portal .admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ops-portal .admin-profile-avatar {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 800;
+}
+
+.ops-portal .admin-profile h3 {
+  margin: 0;
+  color: var(--ink-strong);
+  font-size: 15px;
+}
+
+.ops-portal .admin-profile p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ops-portal .admin-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ops-portal .admin-info-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.ops-portal .admin-info-grid span {
+  color: var(--muted-soft);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ops-portal .admin-info-grid strong {
+  color: var(--ink-strong);
+  font-size: 12px;
+}
+
+.ops-portal .admin-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ops-portal .admin-form-row label {
+  color: var(--ink-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ops-portal .admin-form-row input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+.ops-portal .admin-form-row input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+@media (max-width: 640px) {
+  .ops-portal .admin-modal-backdrop {
+    padding: 12px;
+  }
+
+  .ops-portal .admin-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-portal .admin-modal-header,
+.ops-portal .admin-modal-body {
+    padding: 16px;
+  }
+}
+
+/* =========================================
+   DATABASE-CONNECTED SUPER ADMIN ADDITIONS
+========================================= */
+.ops-portal .ops-state-panel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 110px;
+}
+
+.ops-portal .ops-state-copy {
+  flex: 1;
+}
+
+.ops-portal .ops-state-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: ops-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ops-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ops-portal .ops-empty {
+  padding: 22px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ops-portal .product-name-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 180px;
+}
+
+.ops-portal .product-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.ops-portal .product-thumb-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.ops-portal .dynamic-donut {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ops-portal .dynamic-donut::after {
+  content: "";
+  position: absolute;
+  inset: 17px;
+  border-radius: 50%;
+  background: var(--panel-strong);
+}
+
+.ops-portal .dynamic-donut-center {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ops-portal .dynamic-donut-center strong {
+  font-size: 20px;
+  color: var(--ink-strong);
+}
+
+.ops-portal .dynamic-donut-center span {
+  font-size: 9px;
+  color: var(--muted-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ops-portal .qty-positive {
+  color: var(--ok) !important;
+  font-weight: 800;
+}
+
+.ops-portal .qty-negative {
+  color: var(--bad) !important;
+  font-weight: 800;
+}
+
+.ops-portal .admin-form-row input[readonly] {
+  opacity: 0.85;
+  cursor: default;
+}
+
+/* =========================================
+   SUPER ADMIN ACTION FORMS
+========================================= */
+.ops-portal .admin-form-row select,
+.ops-portal .admin-form-row textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+.ops-portal .admin-form-row textarea {
+  resize: vertical;
+  min-height: 86px;
+}
+
+.ops-portal .admin-form-row select:focus,
+.ops-portal .admin-form-row textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.ops-portal .admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ops-portal .admin-form-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding: 12px 0;
+}
+
+.ops-portal .admin-form-checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ops-portal .admin-form-checks input {
+  accent-color: var(--primary);
+}
+
+.ops-portal .admin-form-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--bad-tint);
+  color: var(--bad);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.ops-portal .btn-primary:disabled,
+.ops-portal .btn-ghost:disabled,
+.ops-portal .admin-modal-close:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.ops-portal .admin-notification-list {
+  padding: 0;
+  gap: 0;
+}
+
+@media (max-width: 640px) {
+  .ops-portal .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================
+   SUPER ADMIN OWNED SETTINGS / MANAGEMENT
+========================================= */
+.ops-portal .company-logo-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.ops-portal .company-logo-preview img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border-soft);
+}
+
+.ops-portal .company-logo-preview span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.ops-portal .row-action-wide {
+  width: auto;
+  min-width: 52px;
+  padding: 0 10px;
+  font-weight: 700;
+}
+
+.ops-portal .notification-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ops-portal .notification-error {
+  margin: 14px;
+}
+
+.ops-portal .btn-small {
+  padding: 7px 12px;
+  font-size: 10.5px;
+}
+
+.ops-portal .backup-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.ops-portal .backup-toolbar h3 {
+  margin: 0 0 4px;
+  color: var(--ink-strong);
+  font-size: 14px;
+}
+
+.ops-portal .backup-warning {
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: var(--warn-tint);
+  color: var(--warn);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.ops-portal .backup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ops-portal .backup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.ops-portal .backup-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ops-portal .backup-copy strong {
+  color: var(--ink-strong);
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+.ops-portal .backup-copy span {
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.ops-portal .backup-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .ops-portal .backup-toolbar,
+.ops-portal .backup-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ops-portal .backup-actions,
+.ops-portal .notification-actions {
+    width: 100%;
+  }
+
+  .ops-portal .backup-actions .btn-ghost,
+.ops-portal .backup-actions .btn-danger,
+.ops-portal .notification-actions .btn-ghost,
+.ops-portal .notification-actions .btn-primary {
+    flex: 1;
+  }
+}

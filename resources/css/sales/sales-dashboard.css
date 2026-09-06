@@ -1,0 +1,423 @@
+/* WBO_ROLE_SALES_CSS_V1 */
+
+.sales-role-metrics {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.sales-role-metric,
+.sales-role-panel {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.sales-role-metric {
+  min-height: 104px;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.sales-role-metric span {
+  display: block;
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.sales-role-metric strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.35rem;
+}
+
+.sales-role-panel {
+  margin-bottom: 18px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.sales-role-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.sales-role-head h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.sales-role-head p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.sales-role-alerts {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.sales-role-alert {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-left-width: 4px;
+  border-radius: 10px;
+}
+
+.sales-role-alert p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.sales-role-alert.tone-danger {
+  border-left-color: #dc2626;
+}
+
+.sales-role-alert.tone-warning {
+  border-left-color: #d97706;
+}
+
+.sales-role-alert.tone-info {
+  border-left-color: #2563eb;
+}
+
+.sales-role-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sales-role-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+}
+
+.sales-role-table th,
+.sales-role-table td {
+  padding: 11px 13px;
+  border-bottom: 1px solid #eef2f7;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.sales-role-table th {
+  color: #64748b;
+  background: #f8fafc;
+  font-weight: 800;
+}
+
+.sales-role-table td strong,
+.sales-role-table td small {
+  display: block;
+}
+
+.sales-role-table td small {
+  margin-top: 3px;
+  color: #64748b;
+}
+
+.sales-role-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sales-role-primary,
+.sales-role-secondary,
+.sales-role-danger {
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sales-role-primary {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.sales-role-secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.sales-role-danger {
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.sales-role-primary:disabled,
+.sales-role-secondary:disabled,
+.sales-role-danger:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.sales-role-items-row td {
+  padding: 0;
+  background: #f8fafc;
+}
+
+.sales-role-items {
+  padding: 12px 18px;
+}
+
+.sales-role-item {
+  display: grid;
+  grid-template-columns:
+    minmax(200px, 1fr)
+    auto
+    auto;
+  gap: 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+}
+
+.sales-role-item:last-child {
+  border-bottom: 0;
+}
+
+.sales-role-item div span {
+  display: block;
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 0.74rem;
+}
+
+.sales-status,
+.sales-stock {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.status-pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.status-processing {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.status-fulfilled {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.status-unfulfilled,
+.status-cancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.stock-ok {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.stock-low {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.stock-out {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.sales-role-empty {
+  margin: 14px;
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+}
+
+.sales-role-muted {
+  align-self: center;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1000px) {
+  .sales-role-metrics {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .sales-role-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .sales-role-metric {
+    min-height: 88px;
+  }
+
+  .sales-role-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* WBO_ROLE_SALES_DARK_V1 */
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-metric,
+.role-dashboard-layout[data-theme="dark"] .sales-role-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-metric span,
+.role-dashboard-layout[data-theme="dark"] .sales-role-head p,
+.role-dashboard-layout[data-theme="dark"] .sales-role-alert p,
+.role-dashboard-layout[data-theme="dark"] .sales-role-muted {
+  color: var(--role-muted);
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-head {
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-table th {
+  color: #a9b8ca;
+  background: #0c1726;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-table th,
+.role-dashboard-layout[data-theme="dark"] .sales-role-table td {
+  border-color: #213147;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-table tbody tr:hover {
+  background: #122239;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-items-row td,
+.role-dashboard-layout[data-theme="dark"] .sales-role-empty {
+  background: #0c1726;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-item {
+  border-color: #26364b;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-secondary {
+  color: #dbeafe;
+  background: #17263a;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-primary {
+  color: #bfdbfe;
+  background: #172554;
+  border-color: #1d4ed8;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-danger {
+  color: #fecaca;
+  background: #3a1720;
+  border-color: #7f1d1d;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-alert {
+  background: #0c1726;
+  border-top-color: #26364b;
+  border-right-color: #26364b;
+  border-bottom-color: #26364b;
+}
+
+/* WBO_ROLE_SALES_DARK_SYNC_V1 */
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-metric,
+.role-dashboard-layout[data-theme="dark"] .sales-role-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-metric span,
+.role-dashboard-layout[data-theme="dark"] .sales-role-head p,
+.role-dashboard-layout[data-theme="dark"] .sales-role-alert p,
+.role-dashboard-layout[data-theme="dark"] .sales-role-muted {
+  color: var(--role-muted);
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-head {
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-table th {
+  color: #a9b8ca;
+  background: #0c1726;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-table th,
+.role-dashboard-layout[data-theme="dark"] .sales-role-table td {
+  border-color: #213147;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-table tbody tr:hover {
+  background: #122239;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-items-row td,
+.role-dashboard-layout[data-theme="dark"] .sales-role-empty {
+  background: #0c1726;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-item {
+  border-color: #26364b;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-secondary {
+  color: #dbeafe;
+  background: #17263a;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-primary {
+  color: #bfdbfe;
+  background: #172554;
+  border-color: #1d4ed8;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-danger {
+  color: #fecaca;
+  background: #3a1720;
+  border-color: #7f1d1d;
+}
+
+.role-dashboard-layout[data-theme="dark"] .sales-role-alert {
+  background: #0c1726;
+  border-top-color: #26364b;
+  border-right-color: #26364b;
+  border-bottom-color: #26364b;
+}

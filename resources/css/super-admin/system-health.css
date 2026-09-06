@@ -1,0 +1,193 @@
+.system-health-heading,
+.system-health-summary,
+.system-health-card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+}
+.system-health-heading {
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+.system-health-heading > div > span {
+    color: #2563eb;
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.system-health-heading h1 {
+    margin: 5px 0;
+}
+.system-health-heading p,
+.system-health-card p,
+.system-health-explainer,
+.system-health-time,
+.system-health-card small {
+    color: #64748b;
+}
+.system-health-heading button {
+    min-height: 38px;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #fff;
+    font-weight: 800;
+}
+.system-health-summary,
+.system-health-card {
+    padding: 16px;
+    border: 1px solid #dbe3ee;
+    border-radius: 14px;
+    background: #fff;
+}
+.system-health-summary > div {
+    display: grid;
+    gap: 4px;
+}
+.system-health-summary span,
+.system-health-card-head span {
+    color: #64748b;
+    font-size: 0.74rem;
+    font-weight: 800;
+}
+.system-health-bar {
+    height: 12px;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+.system-health-bar span {
+    display: block;
+    height: 100%;
+    background: #16a34a;
+}
+.overall-degraded + .system-health-bar span {
+    background: #d97706;
+}
+.overall-critical + .system-health-bar span {
+    background: #dc2626;
+}
+.system-health-explainer {
+    font-size: 0.75rem;
+}
+.system-health-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+}
+.system-health-card-head i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #16a34a;
+}
+.system-health-card.status-degraded i {
+    background: #d97706;
+}
+.system-health-card.status-critical i {
+    background: #dc2626;
+}
+.system-health-card small {
+    display: block;
+    margin-top: 5px;
+}
+.system-health-time {
+    display: block;
+    margin-top: 12px;
+}
+.system-health-state,
+.system-health-error {
+    padding: 14px;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #64748b;
+}
+.ops-portal[data-theme="dark"] .system-health-summary,
+.ops-portal[data-theme="dark"] .system-health-card {
+    background: #101b2b;
+    border-color: #26364b;
+    color: #f1f5f9;
+}
+.ops-portal[data-theme="dark"] .system-health-heading button {
+    background: #17263a;
+    border-color: #33465f;
+    color: #e2e8f0;
+}
+.ops-portal[data-theme="dark"] .system-health-bar {
+    background: #26364b;
+}
+@media (max-width: 720px) {
+    .system-health-heading,
+    .system-health-summary {
+        display: grid;
+    }
+    .system-health-heading button {
+        width: 100%;
+    }
+    .system-health-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* WBO_SYSTEM_HEALTH_CARD_SPACING_V1
+ * Keep the check label and result visually separate.
+ */
+.system-health-card-head > div {
+    display: grid;
+    gap: 5px;
+}
+
+.system-health-card-head > div > span,
+.system-health-card-head > div > strong {
+    display: block;
+}
+
+.system-health-card-head > div > strong {
+    width: fit-content;
+    font-size: 0.76rem;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+}
+
+.system-health-card.status-healthy .system-health-card-head > div > strong {
+    color: #15803d;
+}
+
+.system-health-card.status-degraded .system-health-card-head > div > strong {
+    color: #b45309;
+}
+
+.system-health-card.status-critical .system-health-card-head > div > strong {
+    color: #b91c1c;
+}
+
+.ops-portal[data-theme="dark"]
+    .system-health-card.status-healthy
+    .system-health-card-head
+    > div
+    > strong {
+    color: #86efac;
+}
+
+.ops-portal[data-theme="dark"]
+    .system-health-card.status-degraded
+    .system-health-card-head
+    > div
+    > strong {
+    color: #fcd34d;
+}
+
+.ops-portal[data-theme="dark"]
+    .system-health-card.status-critical
+    .system-health-card-head
+    > div
+    > strong {
+    color: #fca5a5;
+}
+/* WBO PHASE 3: system health state dark mode */
+.ops-portal[data-theme="dark"] .system-health-state,
+.ops-portal[data-theme="dark"] .system-health-error {
+    background: #101b2b;
+    border: 1px solid #26364b;
+    color: #9aabc0;
+}

@@ -1,0 +1,228 @@
+/* Customer notification panel and unread-state presentation. */
+/* === WBO PHASE2 NOTIFICATIONS BEGIN === */
+
+.customer-notification-wrap {
+  position: relative;
+}
+
+.customer-notification-button {
+  position: relative;
+}
+
+.customer-notification-button.has-unread {
+  color: #ffffff;
+  border-color: rgba(96, 165, 250, .42);
+  background: rgba(37, 99, 235, .16);
+}
+
+.customer-notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--customer-navy);
+  border-radius: 999px;
+  color: #ffffff;
+  background: #ef4444;
+  font-size: 8px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.customer-notification-panel {
+  position: absolute;
+  top: calc(100% + 13px);
+  right: 0;
+  z-index: 180;
+  width: min(390px, calc(100vw - 28px));
+  overflow: hidden;
+  border: 1px solid var(--customer-border);
+  border-radius: 18px;
+  color: var(--customer-text);
+  background: var(--customer-surface);
+  box-shadow: 0 25px 70px rgba(2, 8, 23, .26);
+  animation: customerNotificationOpen .18s ease both;
+}
+
+.customer-notification-head {
+  min-height: 68px;
+  padding: 14px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--customer-border);
+}
+
+.customer-notification-head > div {
+  display: grid;
+  gap: 2px;
+}
+
+.customer-notification-head span {
+  color: var(--customer-blue);
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: .10em;
+}
+
+.customer-notification-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.customer-notification-head > button {
+  padding: 6px 8px;
+  border: 0;
+  color: var(--customer-blue);
+  background: transparent;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.customer-notification-head > button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.customer-notification-list {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.customer-notification-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 13px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--customer-border);
+  color: var(--customer-text);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background .15s ease,
+    transform .15s ease;
+}
+
+.customer-notification-item:last-child {
+  border-bottom: 0;
+}
+
+.customer-notification-item:hover {
+  background: var(--customer-surface-soft);
+}
+
+.customer-notification-item.is-unread {
+  background: var(--customer-blue-soft);
+}
+
+.customer-notification-dot {
+  width: 9px;
+  height: 9px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, .10);
+}
+
+.customer-notification-dot.tier-red {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, .10);
+}
+
+.customer-notification-dot.tier-orange,
+.customer-notification-dot.tier-expiry {
+  background: #f97316;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, .10);
+}
+
+.customer-notification-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.customer-notification-copy strong {
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.customer-notification-copy small {
+  color: var(--customer-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.customer-notification-copy time {
+  color: var(--customer-muted);
+  font-size: 8px;
+}
+
+.customer-notification-new {
+  margin-top: 1px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: .05em;
+}
+
+.customer-notification-empty {
+  min-height: 190px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+  color: var(--customer-muted);
+  text-align: center;
+}
+
+.customer-notification-empty strong {
+  color: var(--customer-text);
+  font-size: 12px;
+}
+
+.customer-notification-empty span {
+  font-size: 9px;
+}
+
+@keyframes customerNotificationOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .customer-notification-panel {
+    position: fixed;
+    top: 74px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-notification-panel {
+    animation: none !important;
+  }
+}
+
+/* === WBO PHASE2 NOTIFICATIONS END === */

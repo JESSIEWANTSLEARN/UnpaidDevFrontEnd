@@ -1,0 +1,95 @@
+/*
+ * Shared Walang Brownout loading + page-entry motion.
+ *
+ * Performance rule:
+ * - animate only transform and opacity
+ * - no backdrop-filter
+ * - no animated box-shadow
+ * - no layout-size animation
+ */
+
+.app-loading-screen {
+  --app-loader-bg: #f5f7fb;
+  --app-loader-text: #64748b;
+  --app-loader-track: #d9e1ec;
+  --app-loader-accent: #2563eb;
+
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: var(--app-loader-bg);
+  color: var(--app-loader-text);
+  font-weight: 800;
+}
+
+.app-loading-screen[data-theme="dark"] {
+  --app-loader-bg: #07101d;
+  --app-loader-text: #94a3b8;
+  --app-loader-track: #243247;
+  --app-loader-accent: #3b82f6;
+}
+
+.app-loading-screen p {
+  margin: 0;
+}
+
+.app-loading-spinner {
+  position: relative;
+  width: 42px;
+  height: 42px;
+}
+
+.app-loading-spinner-track,
+.app-loading-spinner-dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.app-loading-spinner-track {
+  border: 3px solid var(--app-loader-track);
+}
+
+.app-loading-spinner-dot {
+  border: 3px solid transparent;
+  border-top-color: var(--app-loader-accent);
+  animation: app-loader-spin 720ms linear infinite;
+  will-change: transform;
+}
+
+.app-page-enter {
+  animation: app-page-enter 180ms ease-out both;
+}
+
+@keyframes app-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes app-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .app-page-enter {
+    animation-duration: 140ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loading-spinner-dot,
+  .app-page-enter {
+    animation: none;
+  }
+}

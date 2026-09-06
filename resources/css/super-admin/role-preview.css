@@ -1,0 +1,231 @@
+/*
+ * Super Admin role-preview UI.
+ * Uses simple opacity/transform transitions only to stay lightweight on mobile.
+ */
+
+.role-preview-picker {
+  padding: 4px 0 24px;
+}
+
+.role-preview-picker-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.role-preview-picker-heading h2 {
+  margin: 5px 0 7px;
+}
+
+.role-preview-picker-heading p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted, #6b7280);
+  line-height: 1.6;
+}
+
+.role-preview-kicker {
+  color: #4f46e5;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.role-preview-readonly {
+  min-width: 220px;
+  padding: 12px 14px;
+  border: 1px solid #d9def0;
+  border-radius: 12px;
+  background: #f5f6ff;
+}
+
+.role-preview-readonly strong,
+.role-preview-readonly span {
+  display: block;
+}
+
+.role-preview-readonly span {
+  margin-top: 3px;
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.role-preview-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.role-preview-picker-card {
+  min-height: 190px;
+  padding: 18px;
+  border: 1px solid #dfe3ea;
+  border-radius: 16px;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease;
+}
+
+.role-preview-picker-card:hover {
+  transform: translateY(-2px);
+  border-color: #aeb8d4;
+}
+
+.role-preview-role-code {
+  display: block;
+  margin-bottom: 8px;
+  color: #697386;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.role-preview-picker-card strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.role-preview-picker-card p {
+  margin: 10px 0 18px;
+  color: #667085;
+  line-height: 1.5;
+}
+
+.role-preview-open {
+  color: #4f46e5;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+@media (max-width: 980px) {
+  .role-preview-picker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .role-preview-picker-heading {
+    display: block;
+  }
+
+  .role-preview-readonly {
+    margin-top: 14px;
+  }
+
+  .role-preview-picker-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-preview-picker-card {
+    min-height: 0;
+  }
+
+  .role-preview-picker-card:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-preview-picker-card {
+    transition: none;
+  }
+}
+
+/* WBO_ROLE_PREVIEW_PICKER_DARK_V1 */
+
+.ops-portal[data-theme="dark"] .role-preview-picker {
+  color: #f1f5f9;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-heading h2 {
+  color: #f8fafc;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-heading p {
+  color: #a9b8ca;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-readonly {
+  color: #f8fafc;
+  background: #162338;
+  border-color: #33465f;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-readonly span {
+  color: #a9b8ca;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-card {
+  color: #f1f5f9;
+  background: #111d2d;
+  border-color: #26364b;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-card:hover {
+  background: #16263a;
+  border-color: #49627f;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-role-code {
+  color: #8fa6c0;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-card strong {
+  color: #f8fafc;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-card p {
+  color: #b2c0d0;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-open {
+  color: #8ea2ff;
+}
+
+/* WBO_ROLE_PREVIEW_PICKER_DARK_SYNC_V1 */
+
+.ops-portal[data-theme="dark"] .role-preview-picker {
+  color: #e7edf7;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-heading h2,
+.ops-portal[data-theme="dark"] .role-preview-picker-heading strong,
+.ops-portal[data-theme="dark"] .role-preview-picker-card strong {
+  color: #f8fafc;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-heading p,
+.ops-portal[data-theme="dark"] .role-preview-role-code,
+.ops-portal[data-theme="dark"] .role-preview-picker-card p,
+.ops-portal[data-theme="dark"] .role-preview-readonly span {
+  color: #a8b7ca;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-readonly {
+  color: #f8fafc;
+  background: #13243a;
+  border: 1px solid #30465d;
+  box-shadow: none;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-card {
+  color: #e8eef7;
+  background: #111c2b;
+  border: 1px solid #26384d;
+  box-shadow: none;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-picker-card:hover {
+  background: #172638;
+  border-color: #49627f;
+}
+
+.ops-portal[data-theme="dark"] .role-preview-open {
+  color: #8ea2ff;
+}

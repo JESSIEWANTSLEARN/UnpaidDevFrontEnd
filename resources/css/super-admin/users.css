@@ -1,0 +1,241 @@
+.ops-portal .user-role-categories,
+.ops-portal .user-filter-panel {
+    padding: 16px;
+}
+
+.ops-portal .user-category-head,
+.ops-portal .user-results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.ops-portal .user-category-head h3,
+.ops-portal .user-results-head h3 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink-strong);
+}
+
+.ops-portal .user-category-head p,
+.ops-portal .user-results-head p {
+    margin: 3px 0 0;
+    font-size: 11.5px;
+    color: var(--muted);
+}
+
+.ops-portal .user-role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.ops-portal .user-role-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.ops-portal .user-role-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.ops-portal .user-role-card.is-active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.ops-portal .user-role-card span {
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.ops-portal .user-role-card strong {
+    min-width: 28px;
+    text-align: center;
+    font-size: 17px;
+    color: var(--ink-strong);
+}
+
+.ops-portal .role-filter-chip {
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.ops-portal .role-filter-chip.is-active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-ink);
+}
+
+.ops-portal .user-filter-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.ops-portal .user-search-wrap {
+    position: relative;
+    flex: 1 1 360px;
+    max-width: 620px;
+}
+
+.ops-portal .user-search-input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 11px 70px 11px 13px;
+    outline: none;
+}
+
+.ops-portal .user-search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.ops-portal .user-search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.ops-portal .user-status-filters {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.ops-portal .user-role-label {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+@media (max-width: 1000px) {
+    .ops-portal .user-role-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .ops-portal .user-role-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ops-portal .user-filter-panel {
+        align-items: stretch;
+    }
+}
+
+.ops-portal .user-presence-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 220px));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ops-portal .presence-count-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+}
+
+.ops-portal .presence-count-card div {
+    display: flex;
+    flex-direction: column;
+}
+
+.ops-portal .presence-count-card strong {
+    font-size: 20px;
+    color: var(--ink-strong);
+}
+
+.ops-portal .presence-count-card span:last-child {
+    font-size: 11.5px;
+    color: var(--muted);
+}
+
+.ops-portal .presence-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    display: inline-block;
+    flex: 0 0 9px;
+}
+
+.ops-portal .presence-dot.is-online {
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgb(34 197 94 / 12%);
+}
+
+.ops-portal .presence-dot.is-offline {
+    background: #94a3b8;
+    box-shadow: 0 0 0 4px rgb(148 163 184 / 12%);
+}
+
+.ops-portal .presence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11.5px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.ops-portal .presence-badge.online {
+    color: #15803d;
+}
+
+.ops-portal .presence-badge.offline {
+    color: var(--muted);
+}
+
+.ops-portal .user-filter-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+@media (max-width: 700px) {
+    .ops-portal .user-presence-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ops-portal .user-filter-groups {
+        align-items: stretch;
+        width: 100%;
+    }
+}
