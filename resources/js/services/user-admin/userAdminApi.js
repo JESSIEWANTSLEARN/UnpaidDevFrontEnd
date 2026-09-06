@@ -1,9 +1,5 @@
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 /* WBO_USER_ADMIN_API_V1 */
-
-const csrfToken = () =>
-  document
-    .querySelector('meta[name="csrf-token"]')
-    ?.getAttribute("content") ?? "";
 
 const messageFrom = (payload, fallback) => {
   const validation = Object.values(
@@ -22,17 +18,21 @@ const messageFrom = (payload, fallback) => {
 async function request(url, options = {}) {
   const method = options.method || "GET";
 
-  const response = await fetch(url, {
+  const token =
+    method !== "GET" && method !== "HEAD"
+      ? await loadCsrfToken()
+      : "";
+
+  const response = await fetch(backendUrl(url), {
     method,
-    credentials: "same-origin",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       ...(method !== "GET"
         ? {
             "Content-Type":
               "application/json",
-            "X-CSRF-TOKEN":
-              csrfToken(),
+            "X-CSRF-TOKEN": token,
           }
         : {}),
     },
