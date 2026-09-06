@@ -1,3 +1,4 @@
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 const DEFAULT_TIMEOUT_MS = 15000;
 function jsonResponse(status, message, extra = {}) {
   return new Response(
@@ -34,8 +35,25 @@ export async function authFetch(
     timeoutMs,
   );
   try {
-    const response = await fetch(url, {
+    const method = String(options.method || "GET").toUpperCase();
+
+    const headers = {
+      Accept: "application/json",
+      ...(options.headers || {}),
+    };
+
+    if (method !== "GET" && method !== "HEAD") {
+      const token = await loadCsrfToken();
+
+      if (token) {
+        headers["X-CSRF-TOKEN"] = token;
+      }
+    }
+
+    const response = await fetch(backendUrl(url), {
       ...options,
+      credentials: "include",
+      headers,
       signal: controller.signal,
     });
     // Laravel normally uses 419 for CSRF/session expiration.

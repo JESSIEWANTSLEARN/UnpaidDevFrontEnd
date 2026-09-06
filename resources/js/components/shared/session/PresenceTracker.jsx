@@ -1,3 +1,4 @@
+import { backendUrl, loadCsrfToken, getCachedCsrfToken } from "../../../config/api.js";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../../../../css/shared/session-security.css";
@@ -20,45 +21,11 @@ const HUMAN_ACTIVITY_EVENTS = [
     "pointermove",
 ];
 
-let csrfToken = "";
-
-const loadCsrfToken = async () => {
-    if (csrfToken) {
-        return csrfToken;
-    }
-
-    const metaToken = document
-        .querySelector('meta[name="csrf-token"]')
-        ?.getAttribute("content");
-
-    if (metaToken) {
-        csrfToken = metaToken;
-        return csrfToken;
-    }
-
-    const response = await fetch("/api/csrf-token", {
-        credentials: "same-origin",
-        headers: {
-            Accept: "application/json",
-        },
-    });
-
-    if (!response.ok) {
-        return "";
-    }
-
-    const data = await response.json();
-
-    csrfToken = data.token ?? "";
-
-    return csrfToken;
-};
-
 async function request(url, options = {}) {
     const token = await loadCsrfToken();
 
-    const response = await fetch(url, {
-        credentials: "same-origin",
+    const response = await fetch(backendUrl(url), {
+        credentials: "include",
         headers: {
             Accept: "application/json",
             "X-CSRF-TOKEN": token,
@@ -189,13 +156,13 @@ export default function PresenceTracker() {
         };
 
         const markOfflineOnClose = () => {
-            fetch("/api/presence/offline", {
+            fetch(backendUrl("/api/presence/offline"), {
                 method: "POST",
-                credentials: "same-origin",
+                credentials: "include",
                 keepalive: true,
                 headers: {
                     Accept: "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
+                    "X-CSRF-TOKEN": getCachedCsrfToken(),
                 },
             }).catch(() => null);
         };
