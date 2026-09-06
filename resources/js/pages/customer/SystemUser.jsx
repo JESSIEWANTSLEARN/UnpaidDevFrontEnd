@@ -1,3 +1,4 @@
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import CustomerReviewsPanel from "../../components/customer/reviews/CustomerReviewsPanel.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 import AppLoadingScreen from "../../components/shared/AppLoadingScreen.jsx";
@@ -29,12 +30,9 @@ import "../../../css/customer/cart-feedback.css";
 import "../../../css/customer/notifications.css";
 import "../../../css/customer/orders.css";
 
-const Logo = "/storage/site/Logo.png";
-const HeroImage = "/storage/site/mainpic.jpg";
+const Logo = backendUrl("/storage/site/Logo.png");
+const HeroImage = backendUrl("/storage/site/mainpic.jpg");
 const THEME_KEY = "wbo_customer_theme_v1";
-
-const getCsrf = () =>
-  document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ?? "";
 
 export default function SystemUser({ previewMode = false }) {
   const navigate = useNavigate();
@@ -97,14 +95,19 @@ export default function SystemUser({ previewMode = false }) {
 
   const api = async (url, options = {}) => {
     const isFormData = options.body instanceof FormData;
+    const method = String(options.method || "GET").toUpperCase();
+    const token =
+      method !== "GET" && method !== "HEAD"
+        ? await loadCsrfToken()
+        : "";
 
-    const response = await fetch(url, {
-      credentials: "same-origin",
+    const response = await fetch(backendUrl(url), {
+      credentials: "include",
       ...options,
       headers: {
         Accept: "application/json",
         ...(options.body && !isFormData ? { "Content-Type": "application/json" } : {}),
-        ...(options.method && options.method !== "GET" ? { "X-CSRF-TOKEN": getCsrf() } : {}),
+        ...(token ? { "X-CSRF-TOKEN": token } : {}),
         ...(options.headers ?? {}),
       },
     });
@@ -1171,7 +1174,7 @@ export default function SystemUser({ previewMode = false }) {
                     >
                       <div className="customer-category-media">
                         {item.product?.image_url ? (
-                          <img src={item.product.image_url} alt="" loading="lazy" />
+                          <img src={backendUrl(item.product.image_url)} alt="" loading="lazy" />
                         ) : (
                           <Icon name="products" size={34} />
                         )}
@@ -1210,7 +1213,7 @@ export default function SystemUser({ previewMode = false }) {
                       <div className="customer-product-media">
                         {product.image_url ? (
                           <img
-                            src={product.image_url}
+                            src={backendUrl(product.image_url)}
                             alt={product.name}
                             loading="lazy"
                             className="wbo-glow-image"
@@ -1344,7 +1347,7 @@ export default function SystemUser({ previewMode = false }) {
                     <div className="customer-product-media">
                       {product.image_url ? (
                         <img
-                          src={product.image_url}
+                          src={backendUrl(product.image_url)}
                           alt={product.name}
                           loading="lazy"
                           className="wbo-glow-image"

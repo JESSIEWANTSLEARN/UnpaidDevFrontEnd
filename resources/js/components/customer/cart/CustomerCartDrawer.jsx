@@ -1,3 +1,4 @@
+import { backendUrl } from "../../../config/api.js";
 import React from "react";
 import { EmptyState, Icon } from "../CustomerUi.jsx";
 import { money } from "../../../utils/customer/customerStoreUtils.js";
@@ -48,7 +49,7 @@ export default function CustomerCartDrawer({
                   <article className="customer-cart-item" key={item.product_id}>
                     <div className="customer-cart-item-image">
                       {item.image_url ? (
-                        <img src={item.image_url} alt={item.name} />
+                        <img src={backendUrl(item.image_url)} alt={item.name} />
                       ) : (
                         <Icon name="products" size={26} />
                       )}

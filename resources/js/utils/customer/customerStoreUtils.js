@@ -1,3 +1,4 @@
+import { backendUrl } from "../../config/api.js";
 // Customer-store formatting and normalization helpers.
 
 export const money = (value) =>
@@ -8,10 +9,17 @@ export const money = (value) =>
 
 const imagePath = (value) => {
   if (!value) return null;
-  if (/^https?:\/\//i.test(value) || value.startsWith("/storage/")) return value;
-  if (value.startsWith("storage/")) return `/${value}`;
-  if (value.startsWith("/")) return value;
-  return `/storage/${value}`;
+  if (/^https?:\/\//i.test(value)) return value;
+
+  if (value.startsWith("storage/")) {
+    return backendUrl(`/${value}`);
+  }
+
+  if (value.startsWith("/")) {
+    return backendUrl(value);
+  }
+
+  return backendUrl(`/storage/${value}`);
 };
 
 export const normalizeProduct = (product, index) => ({
