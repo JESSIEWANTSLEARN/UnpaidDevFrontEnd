@@ -1,3 +1,4 @@
+import { backendUrl } from "../../../config/api.js";
 import React, { useState } from "react";
 import { money, number } from "../../../utils/super-admin/superAdminUtils.js";
 import { apiRequest, toFormData } from "../../../services/super-admin/superAdminApi.js";
@@ -203,7 +204,7 @@ function Products({ data, openModal }) {
             <form className="admin-modal-body" onSubmit={saveProduct}>
               <div className="product-edit-preview">
                 {editing.image_url ? (
-                  <img src={editing.image_url} alt={editing.name} />
+                  <img src={backendUrl(editing.image_url)} alt={editing.name} />
                 ) : (
                   <div className="product-edit-image-empty">No image</div>
                 )}

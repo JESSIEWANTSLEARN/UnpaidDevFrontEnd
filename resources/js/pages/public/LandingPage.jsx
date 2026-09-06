@@ -1,3 +1,4 @@
+import { backendUrl } from "../../config/api.js";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/public/landing-page.css";
@@ -8,28 +9,28 @@ import {
   writeGuestCart,
 } from "../../services/customer/cartStorage.js";
 
-const Logo = "/storage/site/Logo.png";
-const mainpic = "/storage/site/mainpic.jpg";
+const Logo = backendUrl("/storage/site/Logo.png");
+const mainpic = backendUrl("/storage/site/mainpic.jpg");
 
 const services = [
   {
     title: "Portable AC Units",
-    image: "/storage/products/PortableAcUnits.jpg",
+    image: backendUrl("/storage/products/PortableAcUnits.jpg"),
     className: "thumb-one",
   },
   {
     title: "Air Purifiers",
-    image: "/storage/products/AirPurifier.jpg",
+    image: backendUrl("/storage/products/AirPurifier.jpg"),
     className: "thumb-two",
   },
   {
     title: "Replacement Filters",
-    image: "/storage/products/ReplacementFilter.webp",
+    image: backendUrl("/storage/products/ReplacementFilter.webp"),
     className: "thumb-three",
   },
   {
     title: "Smart Thermostats",
-    image: "/storage/products/SmartThermostat.jpg",
+    image: backendUrl("/storage/products/SmartThermostat.jpg"),
     className: "thumb-four",
   },
 ];
@@ -40,7 +41,7 @@ const fallbackProducts = [
     name: "Portable AC Pro",
     description: "Cool rooms fast and quietly",
     unit_price: 18500,
-    image_url: "/storage/products/PortableAcUnits.jpg",
+    image_url: backendUrl("/storage/products/PortableAcUnits.jpg"),
     available_stock: 30,
   },
   {
@@ -48,7 +49,7 @@ const fallbackProducts = [
     name: "Air Purifier Plus",
     description: "Cleaner indoor air",
     unit_price: 12900,
-    image_url: "/storage/products/AirPurifier.jpg",
+    image_url: backendUrl("/storage/products/AirPurifier.jpg"),
     available_stock: 50,
   },
   {
@@ -56,7 +57,7 @@ const fallbackProducts = [
     name: "Carbon Filter Pack",
     description: "High-efficiency replacement",
     unit_price: 2400,
-    image_url: "/storage/products/ReplacementFilter.webp",
+    image_url: backendUrl("/storage/products/ReplacementFilter.webp"),
     available_stock: 100,
   },
   {
@@ -64,7 +65,7 @@ const fallbackProducts = [
     name: "Smart Thermostat",
     description: "Energy-saving control",
     unit_price: 8750,
-    image_url: "/storage/products/SmartThermostat.jpg",
+    image_url: backendUrl("/storage/products/SmartThermostat.jpg"),
     available_stock: 20,
   },
 ];
@@ -72,10 +73,16 @@ const fallbackProducts = [
 function normalizeImagePath(value) {
   if (!value) return null;
   if (/^https?:\/\//i.test(value)) return value;
-  if (value.startsWith("/storage/")) return value;
-  if (value.startsWith("storage/")) return `/${value}`;
-  if (value.startsWith("/")) return value;
-  return `/storage/${value}`;
+
+  if (value.startsWith("storage/")) {
+    return backendUrl(`/${value}`);
+  }
+
+  if (value.startsWith("/")) {
+    return backendUrl(value);
+  }
+
+  return backendUrl(`/storage/${value}`);
 }
 
 function normalizeProduct(product, index) {
@@ -128,8 +135,8 @@ function LandingPage() {
   useEffect(() => {
     let active = true;
 
-    fetch("/api/public/website-content", {
-      credentials: "same-origin",
+    fetch(backendUrl("/api/public/website-content"), {
+      credentials: "include",
       headers: { Accept: "application/json" },
     })
       .then(async (response) => {
@@ -158,8 +165,8 @@ function LandingPage() {
   useEffect(() => {
     let cancelled = false;
 
-    fetch("/api/session/status", {
-      credentials: "same-origin",
+    fetch(backendUrl("/api/session/status"), {
+      credentials: "include",
       headers: { Accept: "application/json" },
     })
       .then(async (response) => {
@@ -185,9 +192,9 @@ function LandingPage() {
 
     async function loadProducts() {
       try {
-        const response = await fetch("/api/store/products", {
+        const response = await fetch(backendUrl("/api/store/products"), {
           method: "GET",
-          credentials: "same-origin",
+          credentials: "include",
           headers: {
             Accept: "application/json",
           },
@@ -512,7 +519,7 @@ function LandingPage() {
                 <div className="product-image">
                   {product.image_url ? (
                     <img
-                      src={product.image_url}
+                      src={backendUrl(product.image_url)}
                       alt={product.name}
                       loading="lazy"
                       decoding="async"

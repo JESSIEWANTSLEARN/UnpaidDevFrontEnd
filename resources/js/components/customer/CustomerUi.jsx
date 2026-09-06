@@ -1,3 +1,4 @@
+import { backendUrl } from "../../config/api.js";
 import React, { useEffect, useState } from "react";
 
 const getInitials = (name) => {
@@ -65,7 +66,7 @@ export function EmptyState({ title, text }) {
 
 export function ProfileAvatar({ user, className = "" }) {
   const photoUrl = user?.has_profile_photo
-    ? `/api/user/profile-photo?v=${encodeURIComponent(user.profile_photo_version ?? "1")}`
+    ? backendUrl(`/api/user/profile-photo?v=${encodeURIComponent(user.profile_photo_version ?? "1")}`)
     : null;
   const [failed, setFailed] = useState(false);
 

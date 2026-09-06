@@ -1,22 +1,19 @@
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/password-reset.css";
 
-const Logo = "/storage/site/Logo.png";
-
-const csrfToken = () =>
-  document
-    .querySelector('meta[name="csrf-token"]')
-    ?.getAttribute("content") ?? "";
+const Logo = backendUrl("/storage/site/Logo.png");
 
 async function postJson(url, body) {
-  const response = await fetch(url, {
+  const token = await loadCsrfToken();
+  const response = await fetch(backendUrl(url), {
     method: "POST",
-    credentials: "same-origin",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "X-CSRF-TOKEN": csrfToken(),
+      "X-CSRF-TOKEN": token,
     },
     body: JSON.stringify(body),
   });
@@ -88,8 +85,8 @@ export default function ForgotPassword() {
     setError("");
     setMessage("");
 
-    fetch("/forgot-password/status", {
-      credentials: "same-origin",
+    fetch(backendUrl("/forgot-password/status"), {
+      credentials: "include",
       headers: {
         Accept: "application/json",
       },

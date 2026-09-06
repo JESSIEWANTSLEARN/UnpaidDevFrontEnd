@@ -1,3 +1,4 @@
+import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import React, {
   useEffect,
   useState,
@@ -75,9 +76,9 @@ export default function RoleDashboardShell({
 
       try {
         const response = await fetch(
-          "/api/session/status",
+          backendUrl("/api/session/status"),
           {
-            credentials: "same-origin",
+            credentials: "include",
             headers: {
               Accept:
                 "application/json",
@@ -293,17 +294,11 @@ export default function RoleDashboardShell({
     );
   async function logout() {
     try {
-      const csrf =
-        document
-          .querySelector(
-            'meta[name="csrf-token"]',
-          )
-          ?.getAttribute("content") ??
-        "";
+      const csrf = await loadCsrfToken();
 
-      await fetch("/logout", {
+      await fetch(backendUrl("/logout"), {
         method: "POST",
-        credentials: "same-origin",
+        credentials: "include",
         headers: {
           Accept:
             "application/json",

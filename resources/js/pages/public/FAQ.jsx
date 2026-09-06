@@ -1,3 +1,4 @@
+import { backendUrl } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/public/faq.css";
@@ -22,8 +23,8 @@ function FAQ() {
   useEffect(() => {
     let active = true;
 
-    fetch("/api/public/website-content", {
-      credentials: "same-origin",
+    fetch(backendUrl("/api/public/website-content"), {
+      credentials: "include",
       headers: {
         Accept: "application/json",
       },
@@ -391,9 +392,7 @@ function FAQ() {
                   <div className="faq-team-avatar">
                     {member.photo_url ? (
                       <img
-                        src={
-                          member.photo_url
-                        }
+                        src={backendUrl(member.photo_url)}
                         alt={member.name}
                       />
                     ) : (

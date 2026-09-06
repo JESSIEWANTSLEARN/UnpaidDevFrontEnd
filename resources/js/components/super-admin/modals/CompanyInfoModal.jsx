@@ -1,3 +1,4 @@
+import { backendUrl } from "../../../config/api.js";
 import React from "react";
 import { ErrorMessage, SubmitButton, submit } from "./FormHelpers.jsx";
 
@@ -46,7 +47,7 @@ export default function CompanyInfoModal({
       </div>
       {data?.settings?.company_logo_url && (
         <div className="company-logo-preview">
-          <img src={data.settings.company_logo_url} alt="Current company logo" />
+          <img src={backendUrl(data.settings.company_logo_url)} alt="Current company logo" />
           <span>Current logo</span>
         </div>
       )}

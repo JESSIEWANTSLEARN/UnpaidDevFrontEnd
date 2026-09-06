@@ -1,18 +1,11 @@
+import { backendUrl } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/otp.css";
 
 import { authFetch } from "../../services/auth/authRequest.js";
-const Logo = "/storage/site/Logo.png";
+const Logo = backendUrl("/storage/site/Logo.png");
 const POLICY_KEY = "wbo_signup_otp_policy";
-
-function csrfToken() {
-  return (
-    document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute("content") ?? ""
-  );
-}
 
 async function readJson(response) {
   const text = await response.text();
@@ -160,11 +153,10 @@ function SignupVerify() {
 
       const response = await authFetch("/signup/verify-otp", {
         method: "POST",
-        credentials: "same-origin",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-CSRF-TOKEN": csrfToken(),
         },
         body: JSON.stringify({ otp }),
       });
@@ -222,11 +214,10 @@ function SignupVerify() {
 
       const response = await authFetch("/signup/resend-otp", {
         method: "POST",
-        credentials: "same-origin",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-CSRF-TOKEN": csrfToken(),
         },
         body: JSON.stringify({}),
       });

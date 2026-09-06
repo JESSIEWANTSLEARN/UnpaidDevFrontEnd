@@ -1,3 +1,4 @@
+import { backendUrl } from "../../../config/api.js";
 import React from "react";
 import Icon from "../Icon.jsx";
 
@@ -45,7 +46,7 @@ function StatCard({ title, value, icon, accent }) {
 function ProductName({ product }) {
   return (
     <div className="product-name-cell">
-      {product.image_url ? <img src={product.image_url} alt={product.name} className="product-thumb" /> : <span className="product-thumb product-thumb-empty"><Icon name="package" size={15} /></span>}
+      {product.image_url ? <img src={backendUrl(product.image_url)} alt={product.name} className="product-thumb" /> : <span className="product-thumb product-thumb-empty"><Icon name="package" size={15} /></span>}
       <span>{product.name}</span>
     </div>
   );

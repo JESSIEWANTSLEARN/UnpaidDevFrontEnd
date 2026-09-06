@@ -1,18 +1,11 @@
+import { backendUrl } from "../../config/api.js";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/login.css";
 import "../../../css/auth/password-reset.css";
 
 import { authFetch } from "../../services/auth/authRequest.js";
-const Logo = "/storage/site/Logo.png";
-
-function csrfToken() {
-  return (
-    document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute("content") ?? ""
-  );
-}
+const Logo = backendUrl("/storage/site/Logo.png");
 
 async function readJson(response) {
   const text = await response.text();
@@ -62,11 +55,10 @@ function LogIn() {
 
       const response = await authFetch("/login", {
         method: "POST",
-        credentials: "same-origin",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-CSRF-TOKEN": csrfToken(),
         },
         body: JSON.stringify({
           email,
