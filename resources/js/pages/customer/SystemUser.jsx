@@ -845,6 +845,10 @@ export default function SystemUser({ previewMode = false }) {
       return;
     }
 
+    window.dispatchEvent(
+      new Event("wbo:logout-started"),
+    );
+
     try {
       setBusy(true);
       const data = await api("/logout", { method: "POST", body: "{}" });

@@ -13,6 +13,8 @@ const PUBLIC_PATHS = new Set([
     "/login-otp",
 ]);
 
+const LOGOUT_START_EVENT = "wbo:logout-started";
+
 const HUMAN_ACTIVITY_EVENTS = [
     "mousedown",
     "keydown",
@@ -64,6 +66,15 @@ export default function PresenceTracker() {
 
         let disposed = false;
 
+        const stopForLogout = () => {
+            logoutStarted.current = true;
+        };
+
+        window.addEventListener(
+            LOGOUT_START_EVENT,
+            stopForLogout,
+        );
+
         const redirectToLogin = () => {
             if (disposed) return;
 
@@ -71,6 +82,9 @@ export default function PresenceTracker() {
         };
 
         const sendActivity = async (force = false) => {
+            if (disposed || logoutStarted.current) {
+                return false;
+            }
             const now = Date.now();
 
             if (!force && now - lastServerSync.current < 10_000) {
@@ -93,6 +107,7 @@ export default function PresenceTracker() {
         };
 
         const markHumanActivity = () => {
+            if (logoutStarted.current) return;
             lastHumanActivity.current = Date.now();
 
             // The local timer resets immediately. Server writes are
@@ -142,6 +157,7 @@ export default function PresenceTracker() {
         };
 
         const heartbeat = async () => {
+            if (disposed || logoutStarted.current) return;
             if (document.visibilityState !== "visible") {
                 return;
             }
@@ -156,6 +172,7 @@ export default function PresenceTracker() {
         };
 
         const markOfflineOnClose = () => {
+            if (logoutStarted.current) return;
             fetch(backendUrl("/api/presence/offline"), {
                 method: "POST",
                 credentials: "include",
@@ -197,6 +214,11 @@ export default function PresenceTracker() {
             document.removeEventListener("visibilitychange", heartbeat);
 
             window.removeEventListener("pagehide", markOfflineOnClose);
+
+            window.removeEventListener(
+                LOGOUT_START_EVENT,
+                stopForLogout,
+            );
         };
     }, [location.pathname, isPublicPage]);
 
