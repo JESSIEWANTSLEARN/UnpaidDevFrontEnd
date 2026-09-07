@@ -25,6 +25,9 @@ export async function apiRequest(url, { method = "GET", body = null, formData = 
 }
 
 export async function logoutRequest() {
+  window.dispatchEvent(
+    new Event("wbo:logout-started"),
+  );
   const token = await loadCsrfToken();
   await fetch(backendUrl("/api/presence/offline"), {
     method: "POST",

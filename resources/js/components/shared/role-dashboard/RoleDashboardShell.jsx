@@ -293,6 +293,9 @@ export default function RoleDashboardShell({
       "Sales order updated.",
     );
   async function logout() {
+    window.dispatchEvent(
+      new Event("wbo:logout-started"),
+    );
     try {
       const csrf = await loadCsrfToken();
 
