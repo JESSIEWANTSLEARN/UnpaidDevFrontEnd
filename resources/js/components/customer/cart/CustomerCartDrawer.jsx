@@ -2,7 +2,6 @@ import { backendUrl } from "../../../config/api.js";
 import React from "react";
 import { EmptyState, Icon } from "../CustomerUi.jsx";
 import { money } from "../../../utils/customer/customerStoreUtils.js";
-
 /** Shopping-cart drawer for the customer storefront. */
 export default function CustomerCartDrawer({
   open,
