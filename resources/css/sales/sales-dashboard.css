@@ -421,3 +421,146 @@
   border-right-color: #26364b;
   border-bottom-color: #26364b;
 }
+
+/* WBO_ROLE_SALES_ACCENT_V2 */
+
+.sales-role-metric {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.045);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.sales-role-metric::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--role-accent);
+  content: "";
+}
+
+.sales-role-metric strong {
+  color: var(--role-accent);
+}
+
+.sales-role-metric:hover {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.45);
+  box-shadow:
+    0 12px 28px
+    rgb(var(--role-accent-rgb) / 0.1);
+  transform: translateY(-2px);
+}
+
+.sales-role-panel {
+  box-shadow: 0 12px 32px rgb(15 23 42 / 0.05);
+}
+
+.sales-role-head {
+  position: relative;
+}
+
+.sales-role-head::before {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--role-accent);
+  content: "";
+}
+
+.sales-role-head h2,
+.sales-role-head p {
+  margin-left: 8px;
+}
+
+.sales-role-primary {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.35);
+  background:
+    rgb(var(--role-accent-rgb) / 0.1);
+  color: var(--role-accent);
+}
+
+.sales-role-primary:hover:not(:disabled) {
+  background: var(--role-accent);
+  color: #ffffff;
+}
+
+.sales-role-secondary:hover:not(:disabled) {
+  border-color: var(--role-accent);
+  color: var(--role-accent);
+}
+
+.sales-role-table tbody tr {
+  transition: background-color 120ms ease;
+}
+
+.sales-role-table tbody tr:not(.sales-role-items-row):hover {
+  background:
+    rgb(var(--role-accent-rgb) / 0.055);
+}
+
+.sales-role-empty {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.28);
+  background:
+    rgb(var(--role-accent-rgb) / 0.035);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .sales-role-metric:hover {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.6);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.22);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .sales-role-primary {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.5);
+  background:
+    rgb(var(--role-accent-rgb) / 0.16);
+  color: #ffffff;
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .sales-role-primary:hover:not(:disabled) {
+  background: var(--role-accent);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .sales-role-empty {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.38);
+  background:
+    rgb(var(--role-accent-rgb) / 0.08);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .sales-role-table tbody tr:not(.sales-role-items-row):hover {
+  background:
+    rgb(var(--role-accent-rgb) / 0.1);
+}
+
+@media (max-width: 560px) {
+  .sales-role-metric:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sales-role-metric,
+  .sales-role-table tbody tr {
+    transition: none;
+  }
+
+  .sales-role-metric:hover {
+    transform: none;
+  }
+}
