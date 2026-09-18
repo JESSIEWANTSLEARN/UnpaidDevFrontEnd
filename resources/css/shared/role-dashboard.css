@@ -557,3 +557,140 @@
     transition: none;
   }
 }
+
+/* WBO_ROLE_ACCENT_SYSTEM_V1 */
+
+.role-dashboard-layout {
+  --role-accent: #2563eb;
+  --role-accent-rgb: 37 99 235;
+}
+
+.role-dashboard-brand {
+  position: relative;
+  padding: 10px 12px;
+  border-left: 3px solid var(--role-accent);
+}
+
+.role-dashboard-brand::after {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--role-accent);
+  box-shadow:
+    0 0 0 5px
+    rgb(var(--role-accent-rgb) / 0.15);
+  content: "";
+}
+
+.role-dashboard-header > div > span {
+  color: var(--role-accent);
+}
+
+.role-dashboard-nav button {
+  position: relative;
+  overflow: hidden;
+}
+
+.role-dashboard-nav button:hover {
+  background:
+    rgb(var(--role-accent-rgb) / 0.12);
+}
+
+.role-dashboard-nav button.is-active {
+  background:
+    rgb(var(--role-accent-rgb) / 0.2);
+  box-shadow:
+    inset 3px 0 0 var(--role-accent);
+}
+
+.role-dashboard-nav button.is-active::after {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--role-accent);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.role-dashboard-user {
+  border-top:
+    3px solid var(--role-accent);
+}
+
+.role-dashboard-theme-toggle:hover {
+  border-color: var(--role-accent);
+  color: var(--role-accent);
+}
+
+.role-dashboard-logout {
+  border: 1px solid
+    rgb(var(--role-accent-rgb) / 0.35);
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.role-dashboard-logout:hover {
+  background: var(--role-accent);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.role-dashboard-layout button:focus-visible,
+.role-dashboard-layout input:focus-visible,
+.role-dashboard-layout select:focus-visible,
+.role-dashboard-layout textarea:focus-visible {
+  outline:
+    3px solid
+    rgb(var(--role-accent-rgb) / 0.3);
+  outline-offset: 2px;
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .role-dashboard-nav button:hover {
+  background:
+    rgb(var(--role-accent-rgb) / 0.16);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .role-dashboard-nav button.is-active {
+  background:
+    rgb(var(--role-accent-rgb) / 0.25);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .role-dashboard-user {
+  border-top-color: var(--role-accent);
+}
+
+@media (max-width: 700px) {
+  .role-dashboard-brand {
+    padding-left: 10px;
+  }
+
+  .role-dashboard-nav button.is-active {
+    box-shadow:
+      inset 0 -3px 0 var(--role-accent);
+  }
+
+  .role-dashboard-nav button.is-active::after {
+    display: none;
+  }
+
+  .role-dashboard-logout:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-dashboard-logout {
+    transition: none;
+  }
+}

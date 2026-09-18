@@ -26,6 +26,14 @@ export default function RoleDashboardShell({
   previewMode = false,
 }) {
   const config = ROLE_DASHBOARDS[roleKey];
+
+  const roleThemeStyle = {
+    "--role-accent":
+      config?.accent ?? "#2563eb",
+    "--role-accent-rgb":
+      config?.accentRgb ?? "37 99 235",
+  };
+
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("wbo-ui-theme");
 
@@ -344,6 +352,8 @@ export default function RoleDashboardShell({
   return (
     <div
       data-theme={theme}
+      data-role={roleKey}
+      style={roleThemeStyle}
       className={`role-dashboard-layout app-page-enter ${
         previewMode
           ? "is-preview"
