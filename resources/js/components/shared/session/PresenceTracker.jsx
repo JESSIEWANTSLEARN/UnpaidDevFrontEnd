@@ -1,4 +1,8 @@
-import { backendUrl, loadCsrfToken, getCachedCsrfToken } from "../../../config/api.js";
+import {
+    backendUrl,
+    csrfFetch,
+    getCachedCsrfToken,
+} from "../../../config/api.js";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../../../../css/shared/session-security.css";
@@ -24,19 +28,22 @@ const HUMAN_ACTIVITY_EVENTS = [
 ];
 
 async function request(url, options = {}) {
-    const token = await loadCsrfToken();
+    const headers = {
+        Accept: "application/json",
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers || {}),
+    };
 
-    const response = await fetch(backendUrl(url), {
-        credentials: "include",
-        headers: {
-            Accept: "application/json",
-            "X-CSRF-TOKEN": token,
-            ...(options.body ? { "Content-Type": "application/json" } : {}),
-        },
+    const response = await csrfFetch(url, {
         ...options,
+        headers,
     });
 
     const data = await response.json().catch(() => ({}));
+
+    if (response.status === 419) {
+        window.location.href = "/login";
+    }
 
     return {
         response,
