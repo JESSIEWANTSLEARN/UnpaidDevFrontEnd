@@ -8,6 +8,10 @@ import {
   routeForRole,
 } from "../../../config/roleDashboardConfig.js";
 import AppLoadingScreen from "../AppLoadingScreen.jsx";
+import RoleDashboardMessages from "./feedback/RoleDashboardMessages.jsx";
+import RoleDashboardHeader from "./layout/RoleDashboardHeader.jsx";
+import RoleDashboardSidebar from "./layout/RoleDashboardSidebar.jsx";
+import RolePreviewBanner from "./layout/RolePreviewBanner.jsx";
 import RoleDashboardContent from "./RoleDashboardContent.jsx";
 import {
   loadRoleDashboard,
@@ -360,170 +364,40 @@ export default function RoleDashboardShell({
           : ""
       }`}
     >
-      <aside className="role-dashboard-sidebar">
-        <div className="role-dashboard-brand">
-          <strong>
-            WalangBrownOut
-          </strong>
-          <span>{config.title}</span>
-        </div>
-
-        <nav
-          className="role-dashboard-nav"
-          aria-label={`${config.title} navigation`}
-        >
-          <button
-            type="button"
-            className={
-              activeModule ===
-              "Overview"
-                ? "is-active"
-                : ""
-            }
-            onClick={() =>
-              setActiveModule(
-                "Overview",
-              )
-            }
-          >
-            Overview
-          </button>
-
-          {config.modules.map(
-            (module) => (
-              <button
-                key={module}
-                type="button"
-                className={
-                  activeModule ===
-                  module
-                    ? "is-active"
-                    : ""
-                }
-                onClick={() =>
-                  setActiveModule(
-                    module,
-                  )
-                }
-              >
-                {module}
-              </button>
-            ),
-          )}
-        </nav>
-
-        <button
-          type="button"
-          className="role-dashboard-logout"
-          onClick={
-            previewMode
-              ? exitPreview
-              : logout
-          }
-        >
-          {previewMode
-            ? "Exit preview"
-            : "Sign out"}
-        </button>
-      </aside>
+      <RoleDashboardSidebar
+        config={config}
+        activeModule={activeModule}
+        onModuleChange={setActiveModule}
+        previewMode={previewMode}
+        onExitPreview={exitPreview}
+        onLogout={logout}
+      />
 
       <main className="role-dashboard-main">
         {previewMode && (
-          <div
-            className="role-preview-banner"
-            role="status"
-          >
-            <div>
-              <strong>
-                Preview Mode:{" "}
-                {config.title}
-              </strong>
-              <span>
-                You are still signed in
-                as Super Admin. This
-                workspace is read-only.
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={exitPreview}
-            >
-              Exit Preview
-            </button>
-          </div>
+          <RolePreviewBanner
+            title={config.title}
+            onExit={exitPreview}
+          />
         )}
 
-        <header className="role-dashboard-header">
-          <div>
-            <span>
-              {previewMode
-                ? "Role Preview"
-                : "Role Workspace"}
-            </span>
-            <h1>
-              {activeModule ===
-              "Overview"
-                ? config.title
-                : activeModule}
-            </h1>
-            <p>{config.subtitle}</p>
-          </div>
+        <RoleDashboardHeader
+          config={config}
+          activeModule={activeModule}
+          previewMode={previewMode}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          userName={
+            session?.name ||
+            config.title
+          }
+        />
 
-          <div className="role-dashboard-user">
-            <button
-              type="button"
-              className="role-dashboard-theme-toggle"
-              onClick={toggleTheme}
-              aria-label={
-                theme === "dark"
-                  ? "Switch to light mode"
-                  : "Switch to dark mode"
-              }
-              title={
-                theme === "dark"
-                  ? "Light mode"
-                  : "Dark mode"
-              }
-            >
-              {theme === "dark" ? "\u2600" : "\u263E"}
-            </button>
-            <strong>
-              {session?.name ||
-                config.title}
-            </strong>
-            <small>
-              {previewMode
-                ? "Signed in as Super Admin"
-                : config.title}
-            </small>
-          </div>
-        </header>
-
-        {notice && (
-          <div
-            className="role-live-notice"
-            role="status"
-          >
-            {notice}
-          </div>
-        )}
-
-        {error && (
-          <div
-            className="role-live-error"
-            role="alert"
-          >
-            {error}
-            <button
-              type="button"
-              className="role-live-retry"
-              onClick={refresh}
-            >
-              Retry
-            </button>
-          </div>
-        )}
+        <RoleDashboardMessages
+          notice={notice}
+          error={error}
+          onRetry={refresh}
+        />
 
         {!error && (
           <RoleDashboardContent
