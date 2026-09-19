@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   backendUrl,
-  loadCsrfToken,
+  csrfFetch,
 } from "../../config/api.js";
 import { routeForRole } from "../../config/roleDashboardConfig.js";
 import {
@@ -233,15 +233,11 @@ export default function useRoleDashboard({
     window.dispatchEvent(new Event("wbo:logout-started"));
 
     try {
-      const csrf = await loadCsrfToken();
-
-      await fetch(backendUrl("/logout"), {
+      await csrfFetch("/logout", {
         method: "POST",
-        credentials: "include",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrf,
         },
         body: JSON.stringify({
           reason: "manual",
