@@ -7,8 +7,8 @@
   --ink-strong: #10121a;
   --muted: rgba(28, 32, 41, 0.6);
   --muted-soft: rgba(28, 32, 41, 0.45);
-  --border: rgba(17, 20, 30, 0.08);
-  --border-soft: rgba(17, 20, 30, 0.06);
+  --border: rgba(17, 20, 30, 0.16);
+  --border-soft: rgba(17, 20, 30, 0.12);
   --primary: #4f46e5;
   --primary-ink: #ffffff;
   --dark-fill: #111111;
@@ -46,8 +46,8 @@
   --ink-strong: #ffffff;
   --muted: rgba(229, 233, 240, 0.62);
   --muted-soft: rgba(229, 233, 240, 0.4);
-  --border: rgba(229, 233, 240, 0.09);
-  --border-soft: rgba(229, 233, 240, 0.06);
+  --border: rgba(229, 233, 240, 0.18);
+  --border-soft: rgba(229, 233, 240, 0.12);
   --primary: #818cf8;
   --primary-ink: #0b1220;
   --dark-fill: #e5e9f0;
