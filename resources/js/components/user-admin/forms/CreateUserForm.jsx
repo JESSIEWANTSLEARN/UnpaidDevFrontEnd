@@ -1,4 +1,5 @@
 import { useState } from "react";
+import UserAdminPasswordField from "./UserAdminPasswordField.jsx";
 import { labelUserRole } from "../utils/userAdminFormatters.js";
 
 const EMPTY_CREATE = {
@@ -113,27 +114,21 @@ export default function CreateUserForm({
           </select>
         </label>
 
-        <label>
-          Password
-          <input
-            type="password"
-            minLength="6"
-            value={form.password}
-            onChange={update("password")}
-            required
-          />
-        </label>
+        <UserAdminPasswordField
+          id="user-admin-create-password"
+          label="Password"
+          value={form.password}
+          onChange={update("password")}
+          disabled={busy}
+        />
 
-        <label>
-          Confirm password
-          <input
-            type="password"
-            minLength="6"
-            value={form.password_confirmation}
-            onChange={update("password_confirmation")}
-            required
-          />
-        </label>
+        <UserAdminPasswordField
+          id="user-admin-confirm-password"
+          label="Confirm password"
+          value={form.password_confirmation}
+          onChange={update("password_confirmation")}
+          disabled={busy}
+        />
       </div>
 
       {error && (
