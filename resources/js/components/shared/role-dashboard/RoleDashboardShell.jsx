@@ -1,24 +1,12 @@
-import { backendUrl, loadCsrfToken } from "../../../config/api.js";
-import React, {
-  useEffect,
-  useState,
-} from "react";
-import {
-  ROLE_DASHBOARDS,
-  routeForRole,
-} from "../../../config/roleDashboardConfig.js";
+import React from "react";
+import { ROLE_DASHBOARDS } from "../../../config/roleDashboardConfig.js";
+import useRoleDashboard from "../../../hooks/role-dashboard/useRoleDashboard.js";
 import AppLoadingScreen from "../AppLoadingScreen.jsx";
 import RoleDashboardContent from "./RoleDashboardContent.jsx";
-import {
-  loadRoleDashboard,
-  roleAdjustStock,
-  roleCreatePurchaseOrder,
-  roleCreateSupplier,
-  roleStockIn,
-  roleUpdatePurchaseOrderStatus,
-  roleUpdateSalesOrderStatus,
-  roleUpdateSupplier,
-} from "../../../services/shared/roleDashboardApi.js";
+import RoleDashboardMessages from "./feedback/RoleDashboardMessages.jsx";
+import RoleDashboardHeader from "./layout/RoleDashboardHeader.jsx";
+import RoleDashboardSidebar from "./layout/RoleDashboardSidebar.jsx";
+import RolePreviewBanner from "./layout/RolePreviewBanner.jsx";
 import "../../../../css/shared/role-dashboard.css";
 
 export default function RoleDashboardShell({
@@ -26,302 +14,37 @@ export default function RoleDashboardShell({
   previewMode = false,
 }) {
   const config = ROLE_DASHBOARDS[roleKey];
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem("wbo-ui-theme");
-
-    if (saved === "dark" || saved === "light") {
-      return saved;
-    }
-
-    return window.matchMedia?.(
-      "(prefers-color-scheme: dark)",
-    ).matches
-      ? "dark"
-      : "light";
-  });
-
-  useEffect(() => {
-    localStorage.setItem("wbo-ui-theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((current) =>
-      current === "dark" ? "light" : "dark",
-    );
-  };
-
-  const [session, setSession] =
-    useState(null);
-  const [
+  const {
+    theme,
+    toggleTheme,
+    session,
     activeModule,
     setActiveModule,
-  ] = useState("Overview");
-  const [data, setData] = useState(null);
-  const [loading, setLoading] =
-    useState(true);
-  const [actionBusy, setActionBusy] =
-    useState(false);
-  const [error, setError] = useState("");
-  const [notice, setNotice] =
-    useState("");
-  const [reloadToken, setReloadToken] =
-    useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadPage() {
-      setLoading(true);
-      setError("");
-
-      try {
-        const response = await fetch(
-          backendUrl("/api/session/status"),
-          {
-            credentials: "include",
-            headers: {
-              Accept:
-                "application/json",
-            },
-          },
-        );
-
-        const sessionData =
-          await response
-            .json()
-            .catch(() => ({}));
-
-        if (cancelled) return;
-
-        if (
-          !response.ok ||
-          sessionData.authenticated !==
-            true
-        ) {
-          window.location.href =
-            "/login";
-          return;
-        }
-
-        const allowed = previewMode
-          ? sessionData.role ===
-            "super_admin"
-          : sessionData.role ===
-            roleKey;
-
-        if (!allowed) {
-          window.location.href =
-            sessionData.role ===
-            "super_admin"
-              ? "/super-admin"
-              : routeForRole(
-                  sessionData.role,
-                );
-          return;
-        }
-
-        setSession(sessionData);
-
-        if (config?.liveData === true) {
-          const roleData =
-            await loadRoleDashboard(
-              roleKey,
-              previewMode,
-            );
-
-          if (!cancelled) {
-            setData({
-              ...roleData,
-              live: true,
-            });
-          }
-        } else if (!cancelled) {
-          setData({
-            live: false,
-            role: roleKey,
-          });
-        }
-      } catch (requestError) {
-        if (cancelled) return;
-
-        if (
-          requestError.status === 401
-        ) {
-          window.location.href =
-            "/login";
-          return;
-        }
-
-        if (
-          requestError.status === 403
-        ) {
-          window.location.href =
-            previewMode
-              ? "/super-admin"
-              : routeForRole(roleKey);
-          return;
-        }
-
-        setError(
-          requestError.message ||
-            "Unable to load this role dashboard.",
-        );
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadPage();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    config?.liveData,
-    previewMode,
-    reloadToken,
+    data,
+    loading,
+    actionBusy,
+    error,
+    notice,
+    refresh,
+    handleStockIn,
+    handleAdjustment,
+    handleCreateSupplier,
+    handleUpdateSupplier,
+    handleCreatePurchaseOrder,
+    handlePurchaseOrderStatus,
+    handleSalesOrderStatus,
+    logout,
+    exitPreview,
+  } = useRoleDashboard({
     roleKey,
-  ]);
+    previewMode,
+    config,
+  });
 
-  const refresh = () => {
-    setReloadToken(
-      (value) => value + 1,
-    );
-  };
-
-  const runAction = async (
-    action,
-    successFallback,
-  ) => {
-    if (previewMode || actionBusy) {
-      return;
-    }
-
-    setActionBusy(true);
-    setError("");
-    setNotice("");
-
-    try {
-      const result = await action();
-
-      setNotice(
-        result?.message ||
-          successFallback,
-      );
-
-      refresh();
-
-      return result;
-    } catch (requestError) {
-      setError(
-        requestError.message ||
-          "The role action could not be completed.",
-      );
-      throw requestError;
-    } finally {
-      setActionBusy(false);
-    }
-  };
-
-  const handleStockIn = (form) =>
-    runAction(
-      () => roleStockIn(form),
-      "Stock received successfully.",
-    );
-
-  const handleAdjustment = (form) =>
-    runAction(
-      () => roleAdjustStock(form),
-      "Inventory adjustment saved.",
-    );
-
-  const handleCreateSupplier = (
-    form,
-  ) =>
-    runAction(
-      () => roleCreateSupplier(form),
-      "Supplier added successfully.",
-    );
-
-  const handleUpdateSupplier = (
-    supplierId,
-    form,
-  ) =>
-    runAction(
-      () =>
-        roleUpdateSupplier(
-          supplierId,
-          form,
-        ),
-      "Supplier updated successfully.",
-    );
-
-  const handleCreatePurchaseOrder = (
-    form,
-  ) =>
-    runAction(
-      () =>
-        roleCreatePurchaseOrder(form),
-      "Purchase order created.",
-    );
-
-  const handlePurchaseOrderStatus = (
-    poId,
-    action,
-  ) =>
-    runAction(
-      () =>
-        roleUpdatePurchaseOrderStatus(
-          poId,
-          action,
-        ),
-      "Purchase order updated.",
-    );
-
-  const handleSalesOrderStatus = (
-    orderId,
-    action,
-  ) =>
-    runAction(
-      () =>
-        roleUpdateSalesOrderStatus(
-          orderId,
-          action,
-        ),
-      "Sales order updated.",
-    );
-  async function logout() {
-    window.dispatchEvent(
-      new Event("wbo:logout-started"),
-    );
-    try {
-      const csrf = await loadCsrfToken();
-
-      await fetch(backendUrl("/logout"), {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Accept:
-            "application/json",
-          "Content-Type":
-            "application/json",
-          "X-CSRF-TOKEN": csrf,
-        },
-        body: JSON.stringify({
-          reason: "manual",
-        }),
-      });
-    } finally {
-      window.location.href =
-        "/login";
-    }
-  }
-
-  const exitPreview = () => {
-    window.location.href =
-      "/super-admin";
+  const roleThemeStyle = {
+    "--role-accent": config?.accent ?? "#2563eb",
+    "--role-accent-rgb":
+      config?.accentRgb ?? "37 99 235",
   };
 
   if (!config) {
@@ -344,209 +67,62 @@ export default function RoleDashboardShell({
   return (
     <div
       data-theme={theme}
+      data-role={roleKey}
+      style={roleThemeStyle}
       className={`role-dashboard-layout app-page-enter ${
-        previewMode
-          ? "is-preview"
-          : ""
+        previewMode ? "is-preview" : ""
       }`}
     >
-      <aside className="role-dashboard-sidebar">
-        <div className="role-dashboard-brand">
-          <strong>
-            WalangBrownOut
-          </strong>
-          <span>{config.title}</span>
-        </div>
-
-        <nav
-          className="role-dashboard-nav"
-          aria-label={`${config.title} navigation`}
-        >
-          <button
-            type="button"
-            className={
-              activeModule ===
-              "Overview"
-                ? "is-active"
-                : ""
-            }
-            onClick={() =>
-              setActiveModule(
-                "Overview",
-              )
-            }
-          >
-            Overview
-          </button>
-
-          {config.modules.map(
-            (module) => (
-              <button
-                key={module}
-                type="button"
-                className={
-                  activeModule ===
-                  module
-                    ? "is-active"
-                    : ""
-                }
-                onClick={() =>
-                  setActiveModule(
-                    module,
-                  )
-                }
-              >
-                {module}
-              </button>
-            ),
-          )}
-        </nav>
-
-        <button
-          type="button"
-          className="role-dashboard-logout"
-          onClick={
-            previewMode
-              ? exitPreview
-              : logout
-          }
-        >
-          {previewMode
-            ? "Exit preview"
-            : "Sign out"}
-        </button>
-      </aside>
+      <RoleDashboardSidebar
+        config={config}
+        activeModule={activeModule}
+        onModuleChange={setActiveModule}
+        previewMode={previewMode}
+        onExitPreview={exitPreview}
+        onLogout={logout}
+      />
 
       <main className="role-dashboard-main">
         {previewMode && (
-          <div
-            className="role-preview-banner"
-            role="status"
-          >
-            <div>
-              <strong>
-                Preview Mode:{" "}
-                {config.title}
-              </strong>
-              <span>
-                You are still signed in
-                as Super Admin. This
-                workspace is read-only.
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={exitPreview}
-            >
-              Exit Preview
-            </button>
-          </div>
+          <RolePreviewBanner
+            title={config.title}
+            onExit={exitPreview}
+          />
         )}
 
-        <header className="role-dashboard-header">
-          <div>
-            <span>
-              {previewMode
-                ? "Role Preview"
-                : "Role Workspace"}
-            </span>
-            <h1>
-              {activeModule ===
-              "Overview"
-                ? config.title
-                : activeModule}
-            </h1>
-            <p>{config.subtitle}</p>
-          </div>
+        <RoleDashboardHeader
+          config={config}
+          activeModule={activeModule}
+          previewMode={previewMode}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          userName={session?.name || config.title}
+        />
 
-          <div className="role-dashboard-user">
-            <button
-              type="button"
-              className="role-dashboard-theme-toggle"
-              onClick={toggleTheme}
-              aria-label={
-                theme === "dark"
-                  ? "Switch to light mode"
-                  : "Switch to dark mode"
-              }
-              title={
-                theme === "dark"
-                  ? "Light mode"
-                  : "Dark mode"
-              }
-            >
-              {theme === "dark" ? "\u2600" : "\u263E"}
-            </button>
-            <strong>
-              {session?.name ||
-                config.title}
-            </strong>
-            <small>
-              {previewMode
-                ? "Signed in as Super Admin"
-                : config.title}
-            </small>
-          </div>
-        </header>
-
-        {notice && (
-          <div
-            className="role-live-notice"
-            role="status"
-          >
-            {notice}
-          </div>
-        )}
-
-        {error && (
-          <div
-            className="role-live-error"
-            role="alert"
-          >
-            {error}
-            <button
-              type="button"
-              className="role-live-retry"
-              onClick={refresh}
-            >
-              Retry
-            </button>
-          </div>
-        )}
+        <RoleDashboardMessages
+          notice={notice}
+          error={error}
+          onRetry={refresh}
+        />
 
         {!error && (
           <RoleDashboardContent
             roleKey={roleKey}
-            activeModule={
-              activeModule
-            }
+            activeModule={activeModule}
             data={data}
-            previewMode={
-              previewMode
-            }
+            previewMode={previewMode}
             busy={actionBusy}
-            onStockIn={
-              handleStockIn
-            }
-            onAdjustment={
-              handleAdjustment
-            }
-            onCreateSupplier={
-              handleCreateSupplier
-            }
-            onUpdateSupplier={
-              handleUpdateSupplier
-            }
+            onStockIn={handleStockIn}
+            onAdjustment={handleAdjustment}
+            onCreateSupplier={handleCreateSupplier}
+            onUpdateSupplier={handleUpdateSupplier}
             onCreatePurchaseOrder={
               handleCreatePurchaseOrder
             }
             onPurchaseOrderStatus={
               handlePurchaseOrderStatus
             }
-            onSalesOrderStatus={
-              handleSalesOrderStatus
-            }
+            onSalesOrderStatus={handleSalesOrderStatus}
             theme={theme}
           />
         )}

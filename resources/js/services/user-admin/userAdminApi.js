@@ -1,4 +1,4 @@
-import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { csrfFetch } from "../../config/api.js";
 /* WBO_USER_ADMIN_API_V1 */
 
 const messageFrom = (payload, fallback) => {
@@ -18,21 +18,14 @@ const messageFrom = (payload, fallback) => {
 async function request(url, options = {}) {
   const method = options.method || "GET";
 
-  const token =
-    method !== "GET" && method !== "HEAD"
-      ? await loadCsrfToken()
-      : "";
-
-  const response = await fetch(backendUrl(url), {
+  const response = await csrfFetch(url, {
     method,
-    credentials: "include",
     headers: {
       Accept: "application/json",
-      ...(method !== "GET"
+      ...(method !== "GET" && method !== "HEAD"
         ? {
             "Content-Type":
               "application/json",
-            "X-CSRF-TOKEN": token,
           }
         : {}),
     },
@@ -47,10 +40,15 @@ async function request(url, options = {}) {
     .catch(() => ({}));
 
   if (!response.ok) {
+    const fallback =
+      response.status === 419
+        ? "Your session expired. Please sign in again."
+        : "User administration request failed.";
+
     const error = new Error(
       messageFrom(
         payload,
-        "User administration request failed.",
+        fallback,
       ),
     );
 

@@ -383,3 +383,170 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* WBO_USER_ADMIN_ACCENT_SYSTEM_V1 */
+
+.user-admin-metric {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.user-admin-metric::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--role-accent);
+  content: "";
+}
+
+.user-admin-metric strong {
+  color: var(--role-accent);
+}
+
+.user-admin-metric:hover {
+  border-color:
+    rgb(var(--role-accent-rgb) / 0.45);
+  box-shadow:
+    0 12px 28px
+    rgb(var(--role-accent-rgb) / 0.1);
+  transform: translateY(-2px);
+}
+
+.user-admin-panel-head {
+  position: relative;
+}
+
+.user-admin-panel-head::before {
+  position: absolute;
+  left: 0;
+  top: 16px;
+  bottom: 16px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--role-accent);
+  content: "";
+}
+
+.user-admin-panel-head h2,
+.user-admin-panel-head p {
+  margin-left: 8px;
+}
+
+.user-admin-primary {
+  border-color:
+    var(--role-accent) !important;
+  background:
+    var(--role-accent) !important;
+  box-shadow:
+    0 8px 18px
+    rgb(var(--role-accent-rgb) / 0.2);
+}
+
+.user-admin-table tbody tr:hover {
+  background:
+    rgb(var(--role-accent-rgb) / 0.06);
+}
+
+.user-admin-filters input:focus,
+.user-admin-filters select:focus,
+.user-admin-form input:focus,
+.user-admin-form select:focus {
+  border-color: var(--role-accent);
+  box-shadow:
+    0 0 0 3px
+    rgb(var(--role-accent-rgb) / 0.12);
+}
+
+.user-admin-actions button:hover:not(:disabled),
+.user-admin-session-toolbar button:hover:not(:disabled) {
+  border-color: var(--role-accent);
+  color: var(--role-accent);
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .user-admin-table tbody tr:hover {
+  background:
+    rgb(var(--role-accent-rgb) / 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-admin-metric {
+    transition: none;
+  }
+
+  .user-admin-metric:hover {
+    transform: none;
+  }
+}
+/* WBO_USER_ADMIN_PASSWORD_VISIBILITY_V1 */
+.user-admin-password-control {
+  display: grid;
+  gap: 6px;
+}
+
+.user-admin-password-control > label {
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.user-admin-password-field {
+  position: relative;
+}
+
+.user-admin-password-field input {
+  padding-right: 68px;
+}
+
+.user-admin-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  min-width: 52px;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--role-accent);
+  background: rgb(var(--role-accent-rgb) / 0.1);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.user-admin-password-toggle:hover:not(:disabled) {
+  background: rgb(var(--role-accent-rgb) / 0.18);
+}
+
+.user-admin-password-toggle:focus-visible {
+  outline: 3px solid rgb(var(--role-accent-rgb) / 0.28);
+  outline-offset: 2px;
+}
+
+.user-admin-password-toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .user-admin-password-control > label {
+  color: #cbd5e1;
+}
+
+.role-dashboard-layout[data-theme="dark"]
+  .user-admin-password-toggle {
+  color: #ffffff;
+  background: rgb(var(--role-accent-rgb) / 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-admin-password-toggle {
+    transition: none;
+  }
+}
