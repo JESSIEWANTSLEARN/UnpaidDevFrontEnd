@@ -1,3 +1,16 @@
+/*
+ * Walang BrownOut public landing page
+ *
+ * Sections:
+ * 01. Base and page shell
+ * 02. Header and navigation
+ * 03. Main content and reveal animation
+ * 04. Hero, about, services, and products
+ * 05. Promo strip, newsletter, and footer
+ * 06. Responsive layouts
+ * 07. Interaction and accessibility
+ */
+
 * {
     box-sizing: border-box;
     scrollbar-width: none;
@@ -45,10 +58,18 @@ img {
 /* ================= PAGE ================= */
 
 .page-shell {
-    /* Shared landing-page interaction tokens. */
-    --wbo-blue: #2563eb;
-    --wbo-blue-soft: rgba(37, 99, 235, 0.14);
-    --wbo-blue-mid: rgba(37, 99, 235, 0.38);
+    /* Dark store palette shared by every landing-page section. */
+    --public-bg: #07101d;
+    --public-surface: #0d1726;
+    --public-surface-soft: #111d2e;
+    --public-text: #f8fafc;
+    --public-muted: #94a3b8;
+    --public-border: #243247;
+    --public-navy: #020817;
+    --public-blue: #2563eb;
+    --public-blue-hover: #60a5fa;
+    --public-blue-soft: rgba(37, 99, 235, 0.18);
+    --public-focus-ring: rgba(37, 99, 235, 0.14);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -57,6 +78,8 @@ img {
     overflow-x: hidden;
     width: 100%;
     height: auto;
+    background: var(--public-bg);
+    color: var(--public-text);
 }
 
 .site-header,
@@ -69,8 +92,8 @@ img {
 /* ================= HEADER ================= */
 
 .site-header {
-    background: #f6f4f1;
-    border-bottom: 2px solid rgba(17, 17, 17, 0.08);
+    background: var(--public-navy);
+    border-bottom: 2px solid var(--public-border);
     padding-bottom: 24px;
 }
 
@@ -110,14 +133,14 @@ img {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: #4b5563;
+    color: var(--public-muted);
 }
 
 .brand-title {
     margin-top: 4px;
     font-size: 18px;
     font-weight: 800;
-    color: #1d4ed8;
+    color: var(--public-blue-hover);
 }
 
 .nav-actions {
@@ -131,9 +154,9 @@ img {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(30, 30, 30, 0.12);
-    background: rgba(255, 255, 255, 0.35);
-    color: #1d1d1d;
+    border: 1px solid var(--public-border);
+    background: var(--public-surface-soft);
+    color: var(--public-text);
     border-radius: 999px;
     padding: 10px 18px;
     font-size: 0.7rem;
@@ -153,7 +176,7 @@ img {
 
 .primary-nav-button,
 .cart-button {
-    background: #151515;
+    background: var(--public-blue);
     color: #fff;
 }
 
@@ -162,31 +185,34 @@ img {
     align-items: center;
     justify-content: center;
     gap: 24px;
-    color: #fff;
-    background: #0d1726;
+    color: var(--public-text);
+    background: var(--public-surface);
     padding: 14px 20px;
-    border-top: 2px solid rgba(17, 17, 17, 0.08);
-    border-bottom: 2px solid rgba(17, 17, 17, 0.08);
+    border-top: 2px solid var(--public-border);
+    border-bottom: 2px solid var(--public-border);
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
 }
 
 .main-nav a {
-    color: inherit;
+    color: var(--public-text);
     font-weight: 700;
+    opacity: 0.9;
     transition: opacity 0.2s ease;
 }
 
-.main-nav a:hover {
-    opacity: 0.55;
+.main-nav a:hover,
+.main-nav a:focus-visible {
+    color: var(--public-blue-hover);
+    opacity: 1;
 }
 
 /* ================= MAIN ================= */
 
 .storefront {
-    background: #f6f4f1;
-    padding: 18px 20px 32px;
+    background: var(--public-bg);
+    padding: 18px 20px 0;
 }
 
 /* ================= ANIMATIONS ================= */
@@ -231,7 +257,7 @@ img {
     grid-template-columns: 1.2fr 0.8fr;
     gap: 20px;
     align-items: center;
-    background: #ece8e3;
+    background: var(--public-surface);
     border-radius: 24px;
     padding: 28px;
     min-height: 360px;
@@ -242,7 +268,7 @@ img {
     font-size: clamp(2.6rem, 4vw, 4.5rem);
     line-height: 0.95;
     letter-spacing: -0.07em;
-    color: #191919;
+    color: var(--public-text);
 }
 
 .promo-copy p {
@@ -250,14 +276,15 @@ img {
     max-width: 520px;
     font-size: 0.88rem;
     line-height: 1.7;
-    color: rgba(28, 28, 28, 0.75);
+    color: var(--public-muted);
 }
 
 .promo-tag {
     display: inline-block;
     padding: 8px 12px;
     border-radius: 999px;
-    background: rgba(19, 19, 19, 0.06);
+    background: var(--public-blue-soft);
+    color: var(--public-blue-hover);
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -287,14 +314,14 @@ img {
 }
 
 .primary-link {
-    background: #111;
+    background: var(--public-blue);
     color: #fff;
 }
 
 .secondary-link {
-    background: rgba(255, 255, 255, 0.4);
-    color: #1d1d1d;
-    border: 1px solid rgba(17, 17, 17, 0.08);
+    background: var(--public-surface-soft);
+    color: var(--public-text);
+    border: 1px solid var(--public-border);
 }
 
 .primary-link:hover,
@@ -349,26 +376,30 @@ img {
     margin: 0;
     font-size: clamp(1.6rem, 2vw, 2.3rem);
     letter-spacing: -0.05em;
-    color: #171717;
+    color: var(--public-text);
 }
 
 .section-heading a {
-    color: rgba(22, 22, 22, 0.7);
+    color: var(--public-muted);
     font-size: 0.72rem;
     font-weight: 700;
+}
+
+.section-heading a:hover {
+    color: var(--public-blue-hover);
 }
 
 /* ================= ABOUT ================= */
 
 .about-box {
-    background: #ededeb;
+    background: var(--public-surface);
     border-radius: 18px;
     padding: 18px 20px;
 }
 
 .about-box p {
     margin: 0;
-    color: rgba(24, 24, 24, 0.78);
+    color: var(--public-muted);
     line-height: 1.8;
     font-size: 0.86rem;
 }
@@ -382,8 +413,8 @@ img {
 }
 
 .category-card {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(17, 17, 17, 0.14);
+    background: var(--public-surface);
+    border: 1px solid var(--public-border);
     border-radius: 18px;
     padding: 12px;
     transition:
@@ -423,7 +454,7 @@ img {
 .category-card h3 {
     margin: 12px 0 0;
     font-size: 1rem;
-    color: #1d1d1d;
+    color: var(--public-text);
 }
 
 /* ================= PRODUCTS ================= */
@@ -435,8 +466,8 @@ img {
 }
 
 .product-card {
-    background: rgba(255, 255, 255, 0.24);
-    border: 1px solid rgba(17, 17, 17, 0.14);
+    background: var(--public-surface);
+    border: 1px solid var(--public-border);
     border-radius: 18px;
     overflow: hidden;
     transition:
@@ -514,13 +545,13 @@ img {
 .product-info h3 {
     margin: 0;
     font-size: 1.05rem;
-    color: #1b1b1b;
+    color: var(--public-text);
 }
 
 .product-info p {
     margin: 6px 0 0;
     font-size: 0.72rem;
-    color: rgba(24, 24, 24, 0.7);
+    color: var(--public-muted);
 }
 
 .product-meta {
@@ -534,12 +565,12 @@ img {
 .price {
     font-size: 1rem;
     font-weight: 800;
-    color: #141414;
+    color: var(--public-text);
 }
 
 .product-meta button {
     border: 0;
-    background: #151515;
+    background: var(--public-blue);
     color: #fff;
     border-radius: 999px;
     padding: 10px 14px;
@@ -566,12 +597,14 @@ img {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
-    background: #ededeb;
+    background: var(--public-surface-soft);
+    border: 1px solid var(--public-border);
     border-radius: 18px;
     padding: 18px 20px;
 }
 
 .promo-strip > div {
+    background: var(--public-surface);
     border-radius: 14px;
     padding: 14px 16px;
 }
@@ -582,13 +615,13 @@ img {
     font-size: 0.68rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: rgba(17, 17, 17, 0.7);
+    color: var(--public-muted);
 }
 
 .promo-strip h3 {
     margin: 0;
     font-size: 1rem;
-    color: #1d1d1d;
+    color: var(--public-text);
 }
 
 /* ================= NEWSLETTER ================= */
@@ -600,7 +633,8 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    background: #1b1b1b;
+    background: var(--public-navy);
+    border: 1px solid var(--public-border);
     color: #fff;
     border-radius: 22px;
     padding: 22px 24px;
@@ -658,8 +692,9 @@ img {
 /* ================= FOOTER ================= */
 
 .site-footer {
-    background: #f6f4f1;
-    border-top: 2px solid rgba(17, 17, 17, 0.08);
+    margin-top: 0;
+    background: var(--public-surface);
+    border-top: 2px solid var(--public-border);
     border-radius: 22px 22px 0 0;
     padding: 28px 24px 18px;
 }
@@ -674,13 +709,14 @@ img {
     font-size: 1.2rem;
     font-weight: 800;
     letter-spacing: -0.05em;
+    color: var(--public-text);
 }
 
 .footer-brand p {
     margin: 12px 0 0;
     max-width: 250px;
     line-height: 1.7;
-    color: rgba(24, 24, 24, 0.72);
+    color: var(--public-muted);
     font-size: 0.8rem;
 }
 
@@ -695,17 +731,17 @@ img {
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: rgba(17, 17, 17, 0.8);
+    color: var(--public-text);
 }
 
 .footer-column a {
-    color: rgba(17, 17, 17, 0.72);
+    color: var(--public-muted);
     font-size: 0.8rem;
 }
 
 .footer-column a:hover,
 .social-links a:hover {
-    color: #000;
+    color: var(--public-blue-hover);
 }
 
 .footer-bottom {
@@ -716,7 +752,7 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    color: rgba(17, 17, 17, 0.72);
+    color: var(--public-muted);
     font-size: 0.75rem;
 }
 
@@ -824,7 +860,7 @@ img {
     }
 
     .storefront {
-        padding: 16px 14px 24px;
+        padding: 16px 14px 0;
     }
 
     .promo-banner {
@@ -899,7 +935,7 @@ img {
 }
 .category-thumb:hover,
 .product-image:hover {
-  outline-color: #2563eb;
+  outline-color: var(--public-blue);
   box-shadow:
     0 0 8px rgba(37, 99, 235, 0.82),
     0 0 18px rgba(37, 99, 235, 0.58),
@@ -915,7 +951,7 @@ img {
 /* Keyboard accessibility: same visual effect when the card is focused. */
 .category-card:focus-within .category-thumb,
 .product-card:focus-within .product-image {
-  outline-color: #2563eb;
+  outline-color: var(--public-blue);
   box-shadow:
     0 0 8px rgba(37, 99, 235, 0.82),
     0 0 18px rgba(37, 99, 235, 0.58);
@@ -942,7 +978,7 @@ img {
 
 .page-shell .category-card:active,
 .page-shell .product-card:active {
-  outline-color: var(--wbo-blue);
+  outline-color: var(--public-blue);
   box-shadow:
     0 0 8px rgba(37, 99, 235, 0.78),
     0 0 20px rgba(37, 99, 235, 0.42),
@@ -971,7 +1007,7 @@ img {
 .page-shell .primary-link:active,
 .page-shell .secondary-link:active {
   box-shadow:
-    0 0 0 3px var(--wbo-blue-soft),
+    0 0 0 3px var(--public-focus-ring),
     0 0 18px rgba(37, 99, 235, 0.26);
   transform: scale(0.97);
 }
@@ -979,7 +1015,7 @@ img {
 @media (hover: none), (pointer: coarse) {
   .page-shell .category-card:active,
   .page-shell .product-card:active {
-    outline-color: var(--wbo-blue);
+    outline-color: var(--public-blue);
     box-shadow:
       0 0 8px rgba(37, 99, 235, 0.82),
       0 0 20px rgba(37, 99, 235, 0.44),
@@ -987,130 +1023,6 @@ img {
   }
 }
 
-/* ================= DARK STORE PALETTE ================= */
-/* Landing-page colors mirror the customer store's dark theme. */
-.page-shell.wbo-landing {
-    --public-bg: #07101d;
-    --public-surface: #0d1726;
-    --public-surface-soft: #111d2e;
-    --public-text: #f8fafc;
-    --public-muted: #94a3b8;
-    --public-border: #243247;
-    --public-navy: #020817;
-    --public-blue: #2563eb;
-    --public-blue-soft: rgba(37, 99, 235, 0.18);
-    min-height: 100vh;
-    background: var(--public-bg);
-    color: var(--public-text);
-}
-
-.page-shell.wbo-landing .site-header {
-    background: var(--public-navy);
-    border-color: var(--public-border);
-}
-
-.page-shell.wbo-landing .storefront {
-    background: var(--public-bg);
-    padding-bottom: 0;
-}
-
-.page-shell.wbo-landing .promo-banner,
-.page-shell.wbo-landing .about-box,
-.page-shell.wbo-landing .category-card,
-.page-shell.wbo-landing .product-card,
-.page-shell.wbo-landing .promo-strip > div,
-.page-shell.wbo-landing .site-footer {
-    background: var(--public-surface);
-    border-color: var(--public-border);
-}
-
-.page-shell.wbo-landing .main-nav {
-    border-color: var(--public-border);
-}
-
-.page-shell.wbo-landing .republic-text,
-.page-shell.wbo-landing .section-heading a {
-    color: var(--public-muted);
-}
-
-.page-shell.wbo-landing .brand-title,
-.page-shell.wbo-landing .promo-tag,
-.page-shell.wbo-landing .section-heading a:hover,
-.page-shell.wbo-landing .footer-column a:hover,
-.page-shell.wbo-landing .social-links a:hover {
-    color: #60a5fa;
-}
-
-.page-shell.wbo-landing .promo-tag {
-    background: var(--public-blue-soft);
-}
-
-.page-shell.wbo-landing .promo-strip {
-    background: var(--public-surface-soft);
-    border: 1px solid var(--public-border);
-}
-
-.page-shell.wbo-landing .promo-copy h1,
-.page-shell.wbo-landing .section-heading h2,
-.page-shell.wbo-landing .category-card h3,
-.page-shell.wbo-landing .product-info h3,
-.page-shell.wbo-landing .price,
-.page-shell.wbo-landing .promo-strip h3 {
-    color: var(--public-text);
-}
-
-.page-shell.wbo-landing .footer-brand .brand,
-.page-shell.wbo-landing .footer-column h4 {
-    color: var(--public-text);
-}
-
-.page-shell.wbo-landing .promo-copy p,
-.page-shell.wbo-landing .about-box p,
-.page-shell.wbo-landing .product-info p,
-.page-shell.wbo-landing .section-heading a,
-.page-shell.wbo-landing .promo-badge,
-.page-shell.wbo-landing .footer-brand p,
-.page-shell.wbo-landing .footer-column a,
-.page-shell.wbo-landing .footer-bottom {
-    color: var(--public-muted);
-}
-
-.page-shell.wbo-landing .primary-nav-button,
-.page-shell.wbo-landing .cart-button,
-.page-shell.wbo-landing .primary-link,
-.page-shell.wbo-landing .product-meta button {
-    background: var(--public-blue);
-    color: #ffffff;
-}
-
-.page-shell.wbo-landing .nav-button:not(.primary-nav-button),
-.page-shell.wbo-landing .secondary-link {
-    background: var(--public-surface-soft);
-    border-color: var(--public-border);
-    color: var(--public-text);
-}
-
-.page-shell.wbo-landing .newsletter-box {
-    background: var(--public-navy);
-    border: 1px solid var(--public-border);
-}
-
-.page-shell.wbo-landing .site-footer {
-    margin-top: 0;
-}
-
-/* High-contrast navigation for the dark header. */
-.page-shell.wbo-landing .main-nav a {
-    color: #f8fafc;
-    font-weight: 700;
-    opacity: 0.9;
-}
-
-.page-shell.wbo-landing .main-nav a:hover,
-.page-shell.wbo-landing .main-nav a:focus-visible {
-    color: #60a5fa;
-    opacity: 1;
-}
 /* ================= REDUCED MOTION ================= */
 /* Keep the interface usable for visitors who disable animation. */
 @media (prefers-reduced-motion: reduce) {
