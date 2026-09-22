@@ -61,18 +61,19 @@ img {
 .storefront,
 .site-footer {
     width: 100%;
-    max-width: 1280px;
+    max-width: none;
 }
 
 /* ================= HEADER ================= */
 
 .site-header {
     background: #f6f4f1;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.16);
 }
 
 .max-width-container {
     width: 100%;
-    max-width: 1280px;
+    max-width: none;
     margin: 0 auto;
 }
 
@@ -224,6 +225,7 @@ img {
     gap: 20px;
     align-items: center;
     background: #ece8e3;
+    border: 1px solid rgba(17, 17, 17, 0.16);
     border-radius: 24px;
     padding: 28px;
     min-height: 360px;
@@ -354,7 +356,7 @@ img {
 
 .about-box {
     background: rgba(255, 255, 255, 0.24);
-    border: 1px solid rgba(17, 17, 17, 0.06);
+    border: 1px solid rgba(17, 17, 17, 0.14);
     border-radius: 18px;
     padding: 18px 20px;
 }
@@ -376,7 +378,7 @@ img {
 
 .category-card {
     background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(17, 17, 17, 0.06);
+    border: 1px solid rgba(17, 17, 17, 0.14);
     border-radius: 18px;
     padding: 12px;
     transition:
@@ -429,7 +431,7 @@ img {
 
 .product-card {
     background: rgba(255, 255, 255, 0.24);
-    border: 1px solid rgba(17, 17, 17, 0.06);
+    border: 1px solid rgba(17, 17, 17, 0.14);
     border-radius: 18px;
     overflow: hidden;
     transition:
