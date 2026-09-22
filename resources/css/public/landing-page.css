@@ -1,5 +1,7 @@
 * {
     box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 html,
@@ -20,11 +22,6 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 #root::-webkit-scrollbar {
     display: none;
-}
-
-* {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
 }
 
 *::-webkit-scrollbar {
@@ -48,6 +45,10 @@ img {
 /* ================= PAGE ================= */
 
 .page-shell {
+    /* Shared landing-page interaction tokens. */
+    --wbo-blue: #2563eb;
+    --wbo-blue-soft: rgba(37, 99, 235, 0.14);
+    --wbo-blue-mid: rgba(37, 99, 235, 0.38);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -169,7 +170,6 @@ img {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: rgba(30, 30, 30, 0.82);
 }
 
 .main-nav a {
@@ -455,6 +455,7 @@ img {
     position: relative;
     height: 260px;
     overflow: hidden;
+    border-radius: 14px;
     background: linear-gradient(135deg, #e6e2de, #dfe1e4);
 }
 
@@ -885,39 +886,10 @@ img {
     }
 }
 
-/* ================= ACCESSIBILITY / MOTION ================= */
-
-@media (prefers-reduced-motion: reduce) {
-    .reveal-up,
-    .reveal-up.is-visible {
-        opacity: 1 !important;
-        transform: none !important;
-        filter: none !important;
-        transition: none !important;
-    }
-
-    .promo-visual {
-        animation: none !important;
-    }
-
-    .category-card,
-    .product-card,
-    .nav-button,
-    .cart-button,
-    .primary-link,
-    .secondary-link {
-        transition: none !important;
-    }
-}
-
-/* =========================================================
-   WBO BLUE IMAGE GLOW
-   Landing/Home page service + product pictures
-   ========================================================= */
+/* ================= IMAGE INTERACTION ================= */
+/* Blue hover/focus treatment shared by service and product images. */
 .category-thumb,
 .product-image {
-  position: relative;
-  border-radius: 14px;
   outline: 3px solid transparent;
   outline-offset: 0;
   transition:
@@ -948,28 +920,8 @@ img {
     0 0 8px rgba(37, 99, 235, 0.82),
     0 0 18px rgba(37, 99, 235, 0.58);
 }
-@media (prefers-reduced-motion: reduce) {
-  .category-thumb,
-  .product-image {
-    transition: none;
-  }
-  .category-thumb:hover,
-  .product-image:hover {
-    transform: none;
-  }
-}
-
-/* === WBO PHASE 4 FINAL START === */
-/* =========================================================
-   WBO PHASE 4 FINAL INTERACTION SYSTEM
-   Landing: consistent blue hover / focus / touch feedback
-   ========================================================= */
-
-.page-shell {
-  --wbo-blue: #2563eb;
-  --wbo-blue-soft: rgba(37, 99, 235, 0.14);
-  --wbo-blue-mid: rgba(37, 99, 235, 0.38);
-}
+/* ================= INTERACTION FEEDBACK ================= */
+/* Consistent blue hover, keyboard-focus, and touch feedback. */
 
 .page-shell .category-card,
 .page-shell .product-card {
@@ -1035,21 +987,8 @@ img {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .page-shell .category-card:active,
-  .page-shell .product-card:active,
-  .page-shell .product-meta button:active:not(:disabled),
-  .page-shell .nav-button:active,
-  .page-shell .cart-button:active,
-  .page-shell .primary-link:active,
-  .page-shell .secondary-link:active {
-    transform: none;
-  }
-}
-/* === WBO PHASE 4 FINAL END === */
-/* === WBO PHASE 5C PUBLIC PALETTE START === */
-/* Match the landing page to the customer store's dark theme.
-   Intentionally scoped: existing html/body/#root fixes are preserved. */
+/* ================= DARK STORE PALETTE ================= */
+/* Landing-page colors mirror the customer store's dark theme. */
 .page-shell.wbo-landing {
     --public-bg: #07101d;
     --public-surface: #0d1726;
@@ -1072,9 +1011,6 @@ img {
 
 .page-shell.wbo-landing .storefront {
     background: var(--public-bg);
-}
-
-.page-shell.wbo-landing .storefront {
     padding-bottom: 0;
 }
 
@@ -1161,10 +1097,9 @@ img {
 
 .page-shell.wbo-landing .site-footer {
     margin-top: 0;
-    border-radius: 22px 22px 0 0;
 }
-/* === WBO PHASE 5C PUBLIC PALETTE END === */
-/* Dark landing-page navigation text */
+
+/* High-contrast navigation for the dark header. */
 .page-shell.wbo-landing .main-nav a {
     color: #f8fafc;
     font-weight: 700;
@@ -1175,4 +1110,42 @@ img {
 .page-shell.wbo-landing .main-nav a:focus-visible {
     color: #60a5fa;
     opacity: 1;
+}
+/* ================= REDUCED MOTION ================= */
+/* Keep the interface usable for visitors who disable animation. */
+@media (prefers-reduced-motion: reduce) {
+    .reveal-up,
+    .reveal-up.is-visible {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+    }
+
+    .promo-visual {
+        animation: none !important;
+    }
+
+    .category-card,
+    .product-card,
+    .category-thumb,
+    .product-image,
+    .nav-button,
+    .cart-button,
+    .primary-link,
+    .secondary-link {
+        transition: none !important;
+    }
+
+    .category-thumb:hover,
+    .product-image:hover,
+    .page-shell .category-card:active,
+    .page-shell .product-card:active,
+    .page-shell .product-meta button:active:not(:disabled),
+    .page-shell .nav-button:active,
+    .page-shell .cart-button:active,
+    .page-shell .primary-link:active,
+    .page-shell .secondary-link:active {
+        transform: none;
+    }
 }
