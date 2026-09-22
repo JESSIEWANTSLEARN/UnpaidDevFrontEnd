@@ -5,6 +5,7 @@
 html,
 body,
 #root {
+    background: #f6f4f1;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -68,7 +69,8 @@ img {
 
 .site-header {
     background: #f6f4f1;
-    border-bottom: 1px solid rgba(17, 17, 17, 0.16);
+    border-bottom: 2px solid rgba(17, 17, 17, 0.08);
+    padding-bottom: 24px;
 }
 
 .max-width-container {
@@ -134,7 +136,7 @@ img {
     border-radius: 999px;
     padding: 10px 18px;
     font-size: 0.7rem;
-    font-weight: 700;
+    font-weight: 900;
     cursor: pointer;
     transition:
         transform 0.35s ease,
@@ -159,7 +161,11 @@ img {
     align-items: center;
     justify-content: center;
     gap: 24px;
-    padding: 0 20px 24px;
+    color: #fff;
+    background: #0d1726;
+    padding: 14px 20px;
+    border-top: 2px solid rgba(17, 17, 17, 0.08);
+    border-bottom: 2px solid rgba(17, 17, 17, 0.08);
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -168,6 +174,7 @@ img {
 
 .main-nav a {
     color: inherit;
+    font-weight: 700;
     transition: opacity 0.2s ease;
 }
 
@@ -225,7 +232,6 @@ img {
     gap: 20px;
     align-items: center;
     background: #ece8e3;
-    border: 1px solid rgba(17, 17, 17, 0.16);
     border-radius: 24px;
     padding: 28px;
     min-height: 360px;
@@ -355,8 +361,7 @@ img {
 /* ================= ABOUT ================= */
 
 .about-box {
-    background: rgba(255, 255, 255, 0.24);
-    border: 1px solid rgba(17, 17, 17, 0.14);
+    background: #ededeb;
     border-radius: 18px;
     padding: 18px 20px;
 }
@@ -567,7 +572,6 @@ img {
 
 .promo-strip > div {
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.18);
     padding: 14px 16px;
 }
 
@@ -590,6 +594,7 @@ img {
 
 .newsletter-box {
     margin-top: 28px;
+    margin-bottom: 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -652,9 +657,8 @@ img {
 /* ================= FOOTER ================= */
 
 .site-footer {
-    margin-top: 28px;
-    background: #f1eee9;
-    border-top: 1px solid rgba(17, 17, 17, 0.08);
+    background: #f6f4f1;
+    border-top: 2px solid rgba(17, 17, 17, 0.08);
     border-radius: 22px 22px 0 0;
     padding: 28px 24px 18px;
 }
@@ -1043,3 +1047,132 @@ img {
   }
 }
 /* === WBO PHASE 4 FINAL END === */
+/* === WBO PHASE 5C PUBLIC PALETTE START === */
+/* Match the landing page to the customer store's dark theme.
+   Intentionally scoped: existing html/body/#root fixes are preserved. */
+.page-shell.wbo-landing {
+    --public-bg: #07101d;
+    --public-surface: #0d1726;
+    --public-surface-soft: #111d2e;
+    --public-text: #f8fafc;
+    --public-muted: #94a3b8;
+    --public-border: #243247;
+    --public-navy: #020817;
+    --public-blue: #2563eb;
+    --public-blue-soft: rgba(37, 99, 235, 0.18);
+    min-height: 100vh;
+    background: var(--public-bg);
+    color: var(--public-text);
+}
+
+.page-shell.wbo-landing .site-header {
+    background: var(--public-navy);
+    border-color: var(--public-border);
+}
+
+.page-shell.wbo-landing .storefront {
+    background: var(--public-bg);
+}
+
+.page-shell.wbo-landing .storefront {
+    padding-bottom: 0;
+}
+
+.page-shell.wbo-landing .promo-banner,
+.page-shell.wbo-landing .about-box,
+.page-shell.wbo-landing .category-card,
+.page-shell.wbo-landing .product-card,
+.page-shell.wbo-landing .promo-strip > div,
+.page-shell.wbo-landing .site-footer {
+    background: var(--public-surface);
+    border-color: var(--public-border);
+}
+
+.page-shell.wbo-landing .main-nav {
+    border-color: var(--public-border);
+}
+
+.page-shell.wbo-landing .republic-text,
+.page-shell.wbo-landing .section-heading a {
+    color: var(--public-muted);
+}
+
+.page-shell.wbo-landing .brand-title,
+.page-shell.wbo-landing .promo-tag,
+.page-shell.wbo-landing .section-heading a:hover,
+.page-shell.wbo-landing .footer-column a:hover,
+.page-shell.wbo-landing .social-links a:hover {
+    color: #60a5fa;
+}
+
+.page-shell.wbo-landing .promo-tag {
+    background: var(--public-blue-soft);
+}
+
+.page-shell.wbo-landing .promo-strip {
+    background: var(--public-surface-soft);
+    border: 1px solid var(--public-border);
+}
+
+.page-shell.wbo-landing .promo-copy h1,
+.page-shell.wbo-landing .section-heading h2,
+.page-shell.wbo-landing .category-card h3,
+.page-shell.wbo-landing .product-info h3,
+.page-shell.wbo-landing .price,
+.page-shell.wbo-landing .promo-strip h3 {
+    color: var(--public-text);
+}
+
+.page-shell.wbo-landing .footer-brand .brand,
+.page-shell.wbo-landing .footer-column h4 {
+    color: var(--public-text);
+}
+
+.page-shell.wbo-landing .promo-copy p,
+.page-shell.wbo-landing .about-box p,
+.page-shell.wbo-landing .product-info p,
+.page-shell.wbo-landing .section-heading a,
+.page-shell.wbo-landing .promo-badge,
+.page-shell.wbo-landing .footer-brand p,
+.page-shell.wbo-landing .footer-column a,
+.page-shell.wbo-landing .footer-bottom {
+    color: var(--public-muted);
+}
+
+.page-shell.wbo-landing .primary-nav-button,
+.page-shell.wbo-landing .cart-button,
+.page-shell.wbo-landing .primary-link,
+.page-shell.wbo-landing .product-meta button {
+    background: var(--public-blue);
+    color: #ffffff;
+}
+
+.page-shell.wbo-landing .nav-button:not(.primary-nav-button),
+.page-shell.wbo-landing .secondary-link {
+    background: var(--public-surface-soft);
+    border-color: var(--public-border);
+    color: var(--public-text);
+}
+
+.page-shell.wbo-landing .newsletter-box {
+    background: var(--public-navy);
+    border: 1px solid var(--public-border);
+}
+
+.page-shell.wbo-landing .site-footer {
+    margin-top: 0;
+    border-radius: 22px 22px 0 0;
+}
+/* === WBO PHASE 5C PUBLIC PALETTE END === */
+/* Dark landing-page navigation text */
+.page-shell.wbo-landing .main-nav a {
+    color: #f8fafc;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+.page-shell.wbo-landing .main-nav a:hover,
+.page-shell.wbo-landing .main-nav a:focus-visible {
+    color: #60a5fa;
+    opacity: 1;
+}
