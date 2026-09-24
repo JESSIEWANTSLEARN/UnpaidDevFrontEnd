@@ -412,21 +412,48 @@
   line-height: 1.45;
 }
 
+/* FAQ accordion toggle: rotate the icon without rotating its container. */
 .faq-plus {
+  position: relative;
   width: 30px;
   height: 30px;
   flex: 0 0 30px;
-  display: grid;
-  place-items: center;
   border-radius: 8px;
   color: var(--faq-blue-light);
   background: var(--faq-blue-soft);
-  font-size: 18px;
+  font-size: 0;
+}
+
+.faq-plus::before,
+.faq-plus::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: center;
   transition: transform 180ms ease;
 }
 
-.faq-item[open] .faq-plus {
-  transform: rotate(45deg);
+/* Closed state: + */
+.faq-plus::before {
+  transform: translate(-50%, -50%);
+}
+
+.faq-plus::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Open state: × */
+.faq-item[open] .faq-plus::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.faq-item[open] .faq-plus::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .faq-answer {
