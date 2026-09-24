@@ -270,6 +270,7 @@ function FAQ() {
                   <button
                     type="button"
                     key={item}
+                    aria-pressed={category === item}
                     className={
                       category === item
                         ? "is-active"
@@ -284,7 +285,11 @@ function FAQ() {
                 ))}
               </div>
 
-              <div className="faq-results-head">
+              <div
+                className="faq-results-head"
+                role="status"
+                aria-live="polite"
+              >
                 <strong>
                   {filteredFaqs.length}
                 </strong>
@@ -303,7 +308,7 @@ function FAQ() {
                     <details
                       className="faq-item"
                       key={item.faq_id}
-                      open={
+                      defaultOpen={
                         index === 0 &&
                         !query &&
                         category === "All"
