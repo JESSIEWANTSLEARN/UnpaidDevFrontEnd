@@ -564,3 +564,74 @@
     transform: none;
   }
 }
+
+/* === WBO FINAL SALES UI ALIGNMENT START ===
+   Sales keeps its workflow and green role accent while sharing the same
+   card hierarchy, borders, and readable surfaces as Super Admin. */
+.sales-role-metric,
+.sales-role-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+  box-shadow: var(--role-panel-shadow);
+}
+
+.sales-role-metric {
+  border-radius: 15px;
+}
+
+.sales-role-metric span,
+.sales-role-head p,
+.sales-role-alert p,
+.sales-role-muted,
+.sales-role-table td small,
+.sales-role-item div span {
+  color: var(--role-muted);
+}
+
+.sales-role-head {
+  background: var(--role-panel-bg);
+  border-bottom-color: var(--role-border);
+}
+
+.sales-role-alert {
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+  border-top-color: var(--role-border);
+  border-right-color: var(--role-border);
+  border-bottom-color: var(--role-border);
+}
+
+.sales-role-table th {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+}
+
+.sales-role-table th,
+.sales-role-table td,
+.sales-role-item {
+  border-bottom-color: var(--role-border);
+}
+
+.sales-role-table tbody tr:not(.sales-role-items-row):hover {
+  background: var(--role-row-hover);
+}
+
+.sales-role-items-row td,
+.sales-role-empty {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+  border-color: var(--role-border);
+}
+
+.sales-role-secondary {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+/* === WBO FINAL SALES UI ALIGNMENT END === */
+
+/* Separate Sales table headings without doubling the panel border. */
+.sales-role-table thead th {
+  border-bottom: 1px solid var(--role-border);
+}

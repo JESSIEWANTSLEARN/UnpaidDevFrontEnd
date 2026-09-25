@@ -886,3 +886,281 @@
     overflow-y: auto;
   }
 }
+
+/* === WBO FINAL STAFF UI ALIGNMENT START ===
+   Shared presentation layer for every staff workspace. The Super Admin
+   dashboard is the visual reference; role colors and behavior stay intact. */
+.role-dashboard-layout {
+  --role-page-bg: #f4f5f7;
+  --role-panel-bg: #ffffff;
+  --role-panel-soft: #f8fafc;
+  --role-border: #d7dee8;
+  --role-text: #111827;
+  --role-muted: #64748b;
+  --role-sidebar: #ffffff;
+  --role-sidebar-text: #1f2937;
+  --role-sidebar-muted: #64748b;
+  --role-sidebar-hover: rgb(var(--role-accent-rgb) / 0.08);
+  --role-row-hover: rgb(var(--role-accent-rgb) / 0.055);
+  --role-panel-shadow: 0 8px 24px rgb(15 23 42 / 0.045);
+
+  background: var(--role-page-bg);
+  color: var(--role-text);
+}
+
+.role-dashboard-layout[data-theme="dark"] {
+  --role-page-bg: #0b1220;
+  --role-panel-bg: #111c2e;
+  --role-panel-soft: #182438;
+  --role-border: #314158;
+  --role-text: #f8fafc;
+  --role-muted: #9aabc0;
+  --role-sidebar: #101a2a;
+  --role-sidebar-text: #f8fafc;
+  --role-sidebar-muted: #a8b6c9;
+  --role-sidebar-hover: rgb(var(--role-accent-rgb) / 0.15);
+  --role-row-hover: rgb(var(--role-accent-rgb) / 0.1);
+  --role-panel-shadow: 0 10px 28px rgb(0 0 0 / 0.18);
+}
+
+.role-dashboard-sidebar {
+  color: var(--role-sidebar-text);
+  background: var(--role-sidebar);
+  border-right-color: var(--role-border);
+  box-shadow: 6px 0 22px rgb(15 23 42 / 0.035);
+}
+
+.role-dashboard-brand strong {
+  color: var(--role-sidebar-text);
+}
+
+.role-dashboard-brand span {
+  color: var(--role-sidebar-muted);
+}
+
+.role-dashboard-nav button {
+  color: var(--role-sidebar-text);
+}
+
+.role-dashboard-nav button:hover {
+  color: var(--role-accent);
+  background: var(--role-sidebar-hover);
+}
+
+.role-dashboard-nav button.is-active,
+.role-dashboard-layout[data-theme="dark"]
+  .role-dashboard-nav button.is-active {
+  color: #ffffff;
+  background: var(--role-accent);
+  box-shadow: 0 7px 16px rgb(var(--role-accent-rgb) / 0.2);
+}
+
+.role-dashboard-nav button.is-active::after {
+  background: #ffffff;
+}
+
+.role-dashboard-logout {
+  color: var(--role-sidebar-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-dashboard-main {
+  color: var(--role-text);
+  background: var(--role-page-bg);
+}
+
+.role-dashboard-header > div > span {
+  color: var(--role-accent);
+}
+
+.role-dashboard-header p,
+.role-dashboard-user small,
+.role-preview-banner span {
+  color: var(--role-muted);
+}
+
+.role-dashboard-user,
+.role-dashboard-welcome,
+.role-dashboard-module,
+.role-dashboard-grid button {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+  box-shadow: var(--role-panel-shadow);
+}
+
+.role-dashboard-session {
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+}
+
+.role-dashboard-theme-toggle {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-preview-banner {
+  color: var(--role-text);
+  background: linear-gradient(
+    100deg,
+    rgb(var(--role-accent-rgb) / 0.11),
+    var(--role-panel-bg)
+  );
+  border-color: rgb(var(--role-accent-rgb) / 0.28);
+}
+
+@media (max-width: 700px) {
+  .role-dashboard-sidebar {
+    border-right: 0;
+    border-bottom-color: var(--role-border);
+  }
+
+  .role-dashboard-nav button.is-active {
+    box-shadow: 0 5px 13px rgb(var(--role-accent-rgb) / 0.2);
+  }
+}
+/* === WBO FINAL STAFF UI ALIGNMENT END === */
+
+/* === WBO SUPER ADMIN HEADER SYNC START ===
+   Compact staff top bar based on the Super Admin header. The role preview
+   notice remains directly below it so preview status stays unmistakable. */
+.role-dashboard-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  align-items: center;
+  margin: -28px -28px 22px;
+  padding: 14px 20px;
+  background: var(--role-page-bg);
+  border-bottom: 1px solid var(--role-border);
+}
+
+.role-dashboard-header-copy {
+  min-width: 0;
+}
+
+.role-dashboard-header-eyebrow {
+  display: block;
+  margin: 0 0 2px;
+  color: var(--role-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.role-dashboard-header .role-dashboard-header-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--role-text);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.role-dashboard-theme-toggle {
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  flex: 0 0 36px;
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.role-dashboard-user {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  border: 1px solid var(--role-border);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.role-dashboard-user-avatar {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 28px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--role-accent);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.role-dashboard-user-copy,
+.role-dashboard-user-copy strong,
+.role-dashboard-user-copy small {
+  display: block;
+  min-width: 0;
+}
+
+.role-dashboard-user-copy strong {
+  max-width: 190px;
+  overflow: hidden;
+  color: var(--role-text);
+  font-size: 0.75rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-dashboard-user-copy small {
+  max-width: 190px;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--role-muted);
+  font-size: 0.65rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-dashboard-user:hover {
+  border-color: rgb(var(--role-accent-rgb) / 0.45);
+  box-shadow: var(--role-panel-shadow);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 700px) {
+  .role-dashboard-header {
+    display: flex;
+    margin: -16px -16px 18px;
+    padding: 12px 16px;
+  }
+
+  .role-dashboard-user {
+    width: auto;
+    margin: 0;
+  }
+
+  .role-dashboard-user-copy small {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-dashboard-user-copy {
+    display: none;
+  }
+
+  .role-dashboard-user {
+    padding-right: 5px;
+  }
+}
+/* === WBO SUPER ADMIN HEADER SYNC END === */

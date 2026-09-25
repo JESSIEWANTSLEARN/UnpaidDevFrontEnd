@@ -618,3 +618,84 @@
     transform: none;
   }
 }
+
+/* === WBO FINAL SHARED DATA UI START ===
+   Consistent cards, tables, controls, and states for Operations,
+   Purchasing, Warehouse, and Inventory workspaces. */
+.role-live-metric,
+.role-live-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+  box-shadow: var(--role-panel-shadow);
+}
+
+.role-live-metric {
+  border-radius: 15px;
+}
+
+.role-live-metric span,
+.role-live-section-head p,
+.role-live-alert p,
+.role-live-form-help,
+.role-live-muted {
+  color: var(--role-muted);
+}
+
+.role-live-section-head {
+  background: var(--role-panel-bg);
+  border-bottom-color: var(--role-border);
+}
+
+.role-live-alert {
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+  border-top-color: var(--role-border);
+  border-right-color: var(--role-border);
+  border-bottom-color: var(--role-border);
+}
+
+.role-live-table th {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+}
+
+.role-live-table th,
+.role-live-table td {
+  border-bottom-color: var(--role-border);
+}
+
+.role-live-table tbody tr:hover {
+  background: var(--role-row-hover);
+}
+
+.role-live-empty,
+.role-live-readonly {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+  border-color: var(--role-border);
+}
+
+.role-live-form label {
+  color: var(--role-text);
+}
+
+.role-live-form input,
+.role-live-form select,
+.role-live-form textarea,
+.role-live-secondary,
+.role-live-table-action {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-live-primary {
+  background: var(--role-accent);
+}
+/* === WBO FINAL SHARED DATA UI END === */
+
+/* Separate table headings from body rows without doubling the panel border. */
+.role-live-table thead th {
+  border-bottom: 1px solid var(--role-border);
+}

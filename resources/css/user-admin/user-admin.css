@@ -550,3 +550,77 @@
     transition: none;
   }
 }
+
+/* === WBO FINAL USER ADMIN UI ALIGNMENT START ===
+   User administration uses the shared staff palette while preserving its
+   forms, session controls, status colors, and rose role accent. */
+.user-admin-metric,
+.user-admin-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+  box-shadow: var(--role-panel-shadow);
+}
+
+.user-admin-metric {
+  border-radius: 15px;
+}
+
+.user-admin-metric span,
+.user-admin-panel-head p,
+.user-admin-table td small,
+.user-admin-session-card span,
+.user-admin-session-card dt {
+  color: var(--role-muted);
+}
+
+.user-admin-panel-head,
+.user-admin-session-toolbar {
+  background: var(--role-panel-bg);
+  border-bottom-color: var(--role-border);
+}
+
+.user-admin-table th {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+}
+
+.user-admin-table th,
+.user-admin-table td {
+  border-bottom-color: var(--role-border);
+}
+
+.user-admin-table tbody tr:hover {
+  background: var(--role-row-hover);
+}
+
+.user-admin-filters input,
+.user-admin-filters select,
+.user-admin-form input,
+.user-admin-form select,
+.user-admin-actions button,
+.user-admin-session-toolbar button,
+.user-admin-error button {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.user-admin-form label,
+.user-admin-password-control > label {
+  color: var(--role-text);
+}
+
+.user-admin-session-card,
+.user-admin-empty,
+.user-admin-readonly {
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+  border-color: var(--role-border);
+}
+/* === WBO FINAL USER ADMIN UI ALIGNMENT END === */
+
+/* Match Access Activity's single separator below the table heading. */
+.user-admin-table thead th {
+  border-bottom: 1px solid var(--role-border);
+}

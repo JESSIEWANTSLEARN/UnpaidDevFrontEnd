@@ -6,8 +6,16 @@ export default function RoleDashboardUserCard({
   userName,
   roleLabel,
 }) {
+  const initials = String(userName || "User")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join("")
+    .toUpperCase();
+
   return (
-    <div className="role-dashboard-user">
+    <div className="role-dashboard-header-actions">
       <button
         type="button"
         className="role-dashboard-theme-toggle"
@@ -26,8 +34,18 @@ export default function RoleDashboardUserCard({
         {theme === "dark" ? "\u2600" : "\u263E"}
       </button>
 
-      <strong>{userName}</strong>
-      <small>{roleLabel}</small>
+      <div className="role-dashboard-user">
+        <span
+          className="role-dashboard-user-avatar"
+          aria-hidden="true"
+        >
+          {initials}
+        </span>
+        <span className="role-dashboard-user-copy">
+          <strong>{userName}</strong>
+          <small>{roleLabel}</small>
+        </span>
+      </div>
     </div>
   );
 }
