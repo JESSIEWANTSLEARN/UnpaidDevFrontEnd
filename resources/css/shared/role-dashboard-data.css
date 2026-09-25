@@ -19,6 +19,17 @@
   border-radius: 14px;
 }
 
+.role-live-metric .role-live-metric-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: var(--role-accent);
+}
+
 .role-live-metric span {
   display: block;
   color: #64748b;
@@ -509,11 +520,7 @@
 }
 
 .role-live-metric::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .role-live-metric:hover {
@@ -526,7 +533,7 @@
 }
 
 .role-live-metric strong {
-  color: var(--role-accent);
+  color: var(--role-text);
 }
 
 .role-live-panel {
@@ -539,19 +546,12 @@
 }
 
 .role-live-section-head::before {
-  position: absolute;
-  left: 0;
-  top: 16px;
-  bottom: 16px;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .role-live-section-head h2,
 .role-live-section-head p {
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .role-live-primary {

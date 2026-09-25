@@ -125,8 +125,8 @@ export const ROLE_DASHBOARDS = {
   User_Admin: {
     title: "User Admin",
     route: "/user-admin",
-    accent: "#e11d48",
-    accentRgb: "225 29 72",
+    accent: "#4f46e5",
+    accentRgb: "79 70 229",
     subtitle:
       "Manage user accounts, roles, account status, and session access.",
     modules: [

@@ -89,6 +89,7 @@ export default function RoleDashboardShell({
           previewMode={previewMode}
           theme={theme}
           onToggleTheme={toggleTheme}
+          onRefresh={refresh}
           userName={session?.name || config.title}
         />
 

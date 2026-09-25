@@ -264,6 +264,10 @@
 
 @media (max-width: 900px) {
   .ops-portal .ops-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    height: 100vh;
+    max-height: 100vh;
     transform: translateX(-100%);
     box-shadow: var(--shadow-lg);
   }

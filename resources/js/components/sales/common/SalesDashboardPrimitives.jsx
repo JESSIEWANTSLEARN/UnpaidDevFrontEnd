@@ -2,6 +2,7 @@ import {
   formatMoney,
   formatNumber,
 } from "../utils/salesFormatters.js";
+import Icon from "../../super-admin/Icon.jsx";
 
 export function SalesEmpty({ text }) {
   return (
@@ -34,11 +35,11 @@ export function SalesMetrics({
   manager,
 }) {
   const cards = [
-    ["Pending", metrics.pending_orders],
-    ["Processing", metrics.processing_orders],
-    ["Fulfilled", metrics.fulfilled_orders],
-    ["Unfulfilled", metrics.unfulfilled_orders],
-    ["Customers", metrics.customers],
+    ["Pending", metrics.pending_orders, "clock"],
+    ["Processing", metrics.processing_orders, "refresh"],
+    ["Fulfilled", metrics.fulfilled_orders, "cart"],
+    ["Unfulfilled", metrics.unfulfilled_orders, "warning"],
+    ["Customers", metrics.customers, "users"],
   ];
 
   if (manager) {
@@ -46,21 +47,26 @@ export function SalesMetrics({
       [
         "Monthly Revenue",
         formatMoney(metrics.monthly_revenue),
+        "money",
       ],
       [
         "Monthly Fulfilled",
         metrics.monthly_fulfilled,
+        "chart",
       ],
     );
   }
 
   return (
     <div className="sales-role-metrics">
-      {cards.map(([label, value]) => (
+      {cards.map(([label, value, icon]) => (
         <article
           className="sales-role-metric"
           key={label}
         >
+          <span className="sales-role-metric-icon" aria-hidden="true">
+            <Icon name={icon} size={17} />
+          </span>
           <span>{label}</span>
           <strong>
             {typeof value === "number"

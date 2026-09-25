@@ -7,6 +7,7 @@ export default function RoleDashboardHeader({
   previewMode,
   theme,
   onToggleTheme,
+  onRefresh,
   userName,
 }) {
   const title =
@@ -30,6 +31,7 @@ export default function RoleDashboardHeader({
       <RoleDashboardUserCard
         theme={theme}
         onToggleTheme={onToggleTheme}
+        onRefresh={onRefresh}
         userName={userName}
         roleLabel={
           previewMode

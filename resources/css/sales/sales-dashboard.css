@@ -20,6 +20,17 @@
   border-radius: 14px;
 }
 
+.sales-role-metric .sales-role-metric-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: var(--role-accent);
+}
+
 .sales-role-metric span {
   display: block;
   color: #64748b;
@@ -435,15 +446,11 @@
 }
 
 .sales-role-metric::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .sales-role-metric strong {
-  color: var(--role-accent);
+  color: var(--role-text);
 }
 
 .sales-role-metric:hover {
@@ -464,19 +471,12 @@
 }
 
 .sales-role-head::before {
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .sales-role-head h2,
 .sales-role-head p {
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .sales-role-primary {
