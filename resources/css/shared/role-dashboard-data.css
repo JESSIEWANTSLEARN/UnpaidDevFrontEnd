@@ -695,7 +695,8 @@
 }
 /* === WBO FINAL SHARED DATA UI END === */
 
-/* Separate table headings from body rows without doubling the panel border. */
+/* Enclose table headings when filters or controls sit above the table. */
 .role-live-table thead th {
+  border-top: 1px solid var(--role-border);
   border-bottom: 1px solid var(--role-border);
 }

@@ -631,7 +631,8 @@
 }
 /* === WBO FINAL SALES UI ALIGNMENT END === */
 
-/* Separate Sales table headings without doubling the panel border. */
+/* Enclose Sales table headings when controls sit above the table. */
 .sales-role-table thead th {
+  border-top: 1px solid var(--role-border);
   border-bottom: 1px solid var(--role-border);
 }

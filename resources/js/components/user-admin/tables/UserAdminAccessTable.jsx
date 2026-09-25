@@ -13,7 +13,7 @@ export default function UserAdminAccessTable({ rows }) {
 
   return (
     <div className="user-admin-table-wrap">
-      <table className="user-admin-table">
+      <table className="user-admin-table user-admin-access-table">
         <thead>
           <tr>
             <th>Date</th>

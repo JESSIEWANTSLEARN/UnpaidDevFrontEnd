@@ -620,7 +620,14 @@
 }
 /* === WBO FINAL USER ADMIN UI ALIGNMENT END === */
 
-/* Match Access Activity's single separator below the table heading. */
+/* Standard User Admin tables keep the separator above and below the heading. */
 .user-admin-table thead th {
+  border-top: 1px solid var(--role-border);
   border-bottom: 1px solid var(--role-border);
+}
+
+/* Access Activity already touches a bordered panel header, so another top
+   line would look doubled there. */
+.user-admin-access-table thead th {
+  border-top: 0;
 }
