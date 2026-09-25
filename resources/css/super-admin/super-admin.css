@@ -639,9 +639,9 @@
 .user-activity-range {
   display: inline-flex;
   padding: 3px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--activity-border);
   border-radius: 10px;
-  background: var(--muted-soft);
+  background: var(--activity-surface);
 }
 
 .user-activity-range button {
@@ -674,9 +674,9 @@
   padding: 16px;
   display: grid;
   gap: 5px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--activity-border);
   border-radius: 14px;
-  background: var(--muted-soft);
+  background: var(--activity-surface);
 }
 
 .user-activity-kpi > span {
@@ -707,11 +707,12 @@
 }
 
 .user-activity-chart-card {
+  position: relative;
   min-width: 0;
   padding: 15px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--activity-border);
   border-radius: 14px;
-  background: transparent;
+  background: var(--panel-strong);
 }
 
 .user-activity-chart-title {
@@ -747,6 +748,100 @@
   min-width: 520px;
   height: 180px;
   display: block;
+}
+
+/* Persistent chart readout: clicking a point updates this summary. */
+.user-activity-selection {
+  position: static;
+  width: 100%;
+  min-height: 50px;
+  margin-bottom: 8px;
+  padding: 9px 12px;
+  display: grid;
+  grid-template-columns: auto minmax(90px, 1fr) auto auto;
+  align-items: center;
+  gap: 5px 9px;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  background: var(--activity-selected);
+  animation: user-activity-notice 3s var(--ease) both;
+}
+
+.user-activity-selection > span,
+.user-activity-selection > small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.user-activity-selection > strong {
+  color: var(--ink-strong);
+  font-size: 11px;
+}
+
+.user-activity-selection > b {
+  color: var(--primary);
+  font-size: 22px;
+  line-height: 1;
+}
+
+@keyframes user-activity-notice {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  8%,
+  86% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* Large invisible hit area makes every SVG point easy to click or tap. */
+.user-activity-point {
+  cursor: pointer;
+  outline: none;
+}
+
+.user-activity-point-hit {
+  fill: transparent;
+}
+
+.user-activity-point-ring {
+  fill: var(--activity-selected);
+  stroke: var(--primary);
+  stroke-width: 2;
+  opacity: 0;
+  transition: opacity .16s ease;
+}
+
+.user-activity-point-dot {
+  fill: var(--primary);
+  stroke: var(--panel-strong);
+  stroke-width: 2;
+}
+
+.user-activity-point.is-selected .user-activity-point-ring,
+.user-activity-point:focus-visible .user-activity-point-ring {
+  opacity: 1;
+}
+
+.user-activity-point:focus-visible .user-activity-point-ring {
+  stroke-width: 3;
+}
+
+.user-activity-point-value {
+  fill: var(--ink-strong);
+  font-size: 10px;
+  font-weight: 800;
+  text-anchor: middle;
+  pointer-events: none;
 }
 
 .user-activity-date-labels {
@@ -792,7 +887,7 @@
   display: flex;
   align-items: flex-end;
   border-radius: 7px 7px 3px 3px;
-  background: var(--muted-soft);
+  background: var(--activity-track);
   overflow: hidden;
 }
 
@@ -860,6 +955,14 @@
     padding: 12px;
   }
 
+  .user-activity-selection {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .user-activity-selection > small {
+    grid-column: 3;
+  }
+
   .user-activity-bars {
     overflow-x: auto;
     grid-template-columns: repeat(12, minmax(28px, 1fr));
@@ -877,8 +980,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .user-activity-bar {
+  .user-activity-bar,
+  .user-activity-point-ring {
     transition: none !important;
+  }
+
+  .user-activity-selection {
+    animation: none !important;
   }
 }
 
