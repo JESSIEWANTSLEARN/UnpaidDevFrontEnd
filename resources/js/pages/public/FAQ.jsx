@@ -2,8 +2,10 @@ import { backendUrl } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/public/faq.css";
+import usePublicTheme from "../../hooks/usePublicTheme.js";
 
 function FAQ() {
+  const { theme, toggleTheme } = usePublicTheme();
   const [content, setContent] = useState({
     about: null,
     faqs: [],
@@ -126,7 +128,10 @@ function FAQ() {
   }, [content.faqs, query, category]);
 
   return (
-    <div className="faq-page faq-page-enter">
+    <div
+      className="faq-page faq-page-enter"
+      data-theme={theme}
+    >
       <header className="faq-header">
         <div className="faq-shell faq-header-inner">
           <Link
@@ -164,12 +169,30 @@ function FAQ() {
             </a>
           </nav>
 
-          <Link
-            to="/"
-            className="faq-home-button"
-          >
-            Back to Home
-          </Link>
+          <div className="faq-header-actions">
+            <button
+              type="button"
+              className="faq-theme-toggle"
+              onClick={toggleTheme}
+              aria-label={`Switch to ${
+                theme === "dark" ? "light" : "dark"
+              } mode`}
+              title={`Switch to ${
+                theme === "dark" ? "light" : "dark"
+              } mode`}
+            >
+              <span aria-hidden="true">
+                {theme === "dark" ? "\u2600" : "\u263E"}
+              </span>
+            </button>
+
+            <Link
+              to="/"
+              className="faq-home-button"
+            >
+              Back to Home
+            </Link>
+          </div>
         </div>
 
         <div className="faq-shell faq-search-row">

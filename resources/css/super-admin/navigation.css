@@ -1,9 +1,11 @@
 .ops-portal .ops-sidebar {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  bottom: 0;
+  align-self: flex-start;
+  flex: 0 0 var(--sidebar-w);
   width: var(--sidebar-w);
+  height: 100dvh;
+  max-height: 100dvh;
   background: var(--panel-strong);
   border-right: 1px solid var(--border);
   display: flex;
@@ -137,7 +139,7 @@
 .ops-portal .ops-content {
   flex: 1;
   min-width: 0;
-  margin-left: var(--sidebar-w);
+  margin-left: 0;
   display: flex;
   flex-direction: column;
 }

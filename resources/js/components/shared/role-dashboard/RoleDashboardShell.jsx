@@ -83,21 +83,22 @@ export default function RoleDashboardShell({
       />
 
       <main className="role-dashboard-main">
-        {previewMode && (
-          <RolePreviewBanner
-            title={config.title}
-            onExit={exitPreview}
-          />
-        )}
-
         <RoleDashboardHeader
           config={config}
           activeModule={activeModule}
           previewMode={previewMode}
           theme={theme}
           onToggleTheme={toggleTheme}
+          onRefresh={refresh}
           userName={session?.name || config.title}
         />
+
+        {previewMode && (
+          <RolePreviewBanner
+            title={config.title}
+            onExit={exitPreview}
+          />
+        )}
 
         <RoleDashboardMessages
           notice={notice}

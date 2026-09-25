@@ -82,6 +82,20 @@ function Dashboard({ data, setActiveMenu }) {
 
 function UserActivityPanel({ activity = {} }) {
   const [range, setRange] = React.useState(7);
+  const [selectedDate, setSelectedDate] = React.useState("");
+  const [selectionNoticeVisible, setSelectionNoticeVisible] =
+    React.useState(false);
+  const [selectionNoticeKey, setSelectionNoticeKey] =
+    React.useState(0);
+  const selectionNoticeTimer = React.useRef(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (selectionNoticeTimer.current) {
+        clearTimeout(selectionNoticeTimer.current);
+      }
+    };
+  }, []);
 
   const activityMetrics = activity.metrics ?? {};
   const daily =
@@ -142,6 +156,32 @@ function UserActivityPanel({ activity = {} }) {
 
   const formatMetric = (value) =>
     Number(value || 0).toLocaleString();
+
+  // Only a point explicitly selected by the user displays its value.
+  const selectedDaily =
+    daily.find((item) => item.date === selectedDate) ??
+    null;
+
+  const selectDailyPoint = (item) => {
+    if (selectionNoticeTimer.current) {
+      clearTimeout(selectionNoticeTimer.current);
+    }
+
+    setSelectedDate(item.date);
+    setSelectionNoticeVisible(true);
+    setSelectionNoticeKey((current) => current + 1);
+
+    selectionNoticeTimer.current = setTimeout(() => {
+      setSelectionNoticeVisible(false);
+    }, 3000);
+  };
+
+  const handleDailyPointKeyDown = (event, item) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectDailyPoint(item);
+    }
+  };
 
   return (
     <section className="ops-panel padded user-activity-panel">
@@ -242,6 +282,22 @@ function UserActivityPanel({ activity = {} }) {
             <EmptyState text="No session activity yet." />
           ) : (
             <>
+              {selectionNoticeVisible && selectedDaily && (
+                <div
+                  key={selectionNoticeKey}
+                  className="user-activity-selection"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span>Selected day</span>
+                  <strong>{selectedDaily.label}</strong>
+                  <b>
+                    {formatMetric(selectedDaily.active_users)}
+                  </b>
+                  <small>active user(s)</small>
+                </div>
+              )}
+
               <div className="user-activity-line-scroll">
                 <svg
                   viewBox={`0 0 ${lineWidth} ${lineHeight}`}
@@ -267,25 +323,62 @@ function UserActivityPanel({ activity = {} }) {
                     strokeLinecap="round"
                   />
 
-                  {points.map(
-                    ([x, y], index) => (
+                  {points.map(([x, y], index) => {
+                    const item = daily[index];
+                    const isSelected =
+                      item.date === selectedDaily?.date;
+                    const showValue = isSelected;
+                    const valueY = y < 30 ? y + 24 : y - 13;
+
+                    return (
                       <g
-                        key={`${daily[index]?.date}-${index}`}
+                        key={`${item.date}-${index}`}
+                        className={`user-activity-point ${
+                          isSelected ? "is-selected" : ""
+                        }`}
+                        role="button"
+                        tabIndex={0}
+                        focusable="true"
+                        aria-pressed={isSelected}
+                        aria-label={`${item.label}: ${formatMetric(
+                          item.active_users
+                        )} active user(s). Select this day.`}
+                        onClick={() => selectDailyPoint(item)}
+                        onKeyDown={(event) =>
+                          handleDailyPointKeyDown(event, item)
+                        }
                       >
                         <circle
+                          className="user-activity-point-hit"
                           cx={x}
                           cy={y}
-                          r="4"
-                          fill="var(--primary)"
+                          r="14"
                         />
+                        <circle
+                          className="user-activity-point-ring"
+                          cx={x}
+                          cy={y}
+                          r="10"
+                        />
+                        <circle
+                          className="user-activity-point-dot"
+                          cx={x}
+                          cy={y}
+                          r={isSelected ? "5" : "4"}
+                        />
+                        {showValue && (
+                          <text
+                            className="user-activity-point-value"
+                            x={x}
+                            y={valueY}
+                          >
+                            {formatMetric(item.active_users)}
+                          </text>
+                        )}
 
-                        <title>
-                          {daily[index]?.label}:{" "}
-                          {daily[index]?.active_users} active user(s)
-                        </title>
                       </g>
-                    )
-                  )}
+                    );
+                  })}
                 </svg>
               </div>
 

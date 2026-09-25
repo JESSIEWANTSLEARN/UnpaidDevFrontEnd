@@ -7,6 +7,7 @@ export default function RoleDashboardHeader({
   previewMode,
   theme,
   onToggleTheme,
+  onRefresh,
   userName,
 }) {
   const title =
@@ -16,19 +17,21 @@ export default function RoleDashboardHeader({
 
   return (
     <header className="role-dashboard-header">
-      <div>
-        <span>
+      <div className="role-dashboard-header-copy">
+        <span className="role-dashboard-header-eyebrow">
           {previewMode
             ? "Role Preview"
             : "Role Workspace"}
         </span>
-        <h1>{title}</h1>
-        <p>{config.subtitle}</p>
+        <h1 className="role-dashboard-header-title">
+          {title}
+        </h1>
       </div>
 
       <RoleDashboardUserCard
         theme={theme}
         onToggleTheme={onToggleTheme}
+        onRefresh={onRefresh}
         userName={userName}
         roleLabel={
           previewMode

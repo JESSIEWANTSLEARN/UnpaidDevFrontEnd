@@ -2,6 +2,7 @@ import { backendUrl } from "../../config/api.js";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/public/landing-page.css";
+import usePublicTheme from "../../hooks/usePublicTheme.js";
 import {
   cartItemCount,
   readGuestCart,
@@ -126,6 +127,7 @@ function formatPeso(value) {
 
 function LandingPage() {
   const pageRef = useRef(null);
+  const { theme, toggleTheme } = usePublicTheme();
   const [cart, setCart] = useState(() => readGuestCart());
   const [products, setProducts] = useState(fallbackProducts);
   const [productsAreLive, setProductsAreLive] = useState(false);
@@ -337,7 +339,11 @@ function LandingPage() {
   };
 
   return (
-    <div ref={pageRef} className="page-shell wbo-landing">
+    <div
+      ref={pageRef}
+      className="page-shell wbo-landing"
+      data-theme={theme}
+    >
       <header className="site-header">
         <div className="max-width-container header-top">
           <div className="header-brand">
@@ -357,6 +363,22 @@ function LandingPage() {
           </div>
 
           <div className="nav-actions">
+            <button
+              type="button"
+              className="public-theme-toggle"
+              onClick={toggleTheme}
+              aria-label={`Switch to ${
+                theme === "dark" ? "light" : "dark"
+              } mode`}
+              title={`Switch to ${
+                theme === "dark" ? "light" : "dark"
+              } mode`}
+            >
+              <span aria-hidden="true">
+                {theme === "dark" ? "\u2600" : "\u263E"}
+              </span>
+            </button>
+
             {activeDashboardPath ? (
               <Link to={activeDashboardPath} className="nav-button primary-nav-button">
                 {activeDashboardLabel}

@@ -178,6 +178,11 @@ export default function Icon({ name, size = 17 }) {
         <path d="M17.9 15a7 7 0 0 1-11.7 2L4 15" />
       </>
     ),
+    activity: (
+      <>
+        <path d="M3 12h4l2-6 4 12 2-6h6" />
+      </>
+    ),
   };
 
   return <svg {...common}>{paths[name] || null}</svg>;

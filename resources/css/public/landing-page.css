@@ -84,6 +84,9 @@ img {
     --public-blue-hover: #60a5fa;
     --public-blue-soft: rgba(37, 99, 235, 0.18);
     --public-focus-ring: rgba(37, 99, 235, 0.14);
+    --public-newsletter-bg: #020817;
+    --public-newsletter-border: #243247;
+    color-scheme: dark;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -94,6 +97,23 @@ img {
     height: auto;
     background: var(--public-bg);
     color: var(--public-text);
+}
+
+/* Light mode keeps the blue brand accent while restoring the prototype's
+   warm, paper-like public surfaces. Dark remains the first-visit default. */
+.page-shell[data-theme="light"] {
+    --public-bg: #f6f4f1;
+    --public-surface: #ffffff;
+    --public-surface-soft: #f1efec;
+    --public-text: #171717;
+    --public-muted: #5f6470;
+    --public-border: #d8d3cc;
+    --public-navy: #fbfaf8;
+    --public-blue: #2563eb;
+    --public-blue-hover: #1d4ed8;
+    --public-blue-soft: rgba(37, 99, 235, 0.1);
+    --public-focus-ring: rgba(37, 99, 235, 0.18);
+    color-scheme: light;
 }
 
 .site-header,
@@ -161,6 +181,40 @@ img {
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+/* Shared public theme control; the preference is persisted by React. */
+.public-theme-toggle {
+    width: 38px;
+    height: 38px;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 38px;
+    padding: 0;
+    border: 1px solid var(--public-border);
+    border-radius: 50%;
+    color: var(--public-text);
+    background: var(--public-surface-soft);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.public-theme-toggle:hover {
+    border-color: var(--public-blue-hover);
+    color: var(--public-blue-hover);
+    transform: translateY(-2px);
+}
+
+.public-theme-toggle > span {
+    display: grid;
+    place-items: center;
+    line-height: 1;
 }
 
 .nav-button,
@@ -647,8 +701,8 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    background: var(--public-navy);
-    border: 1px solid var(--public-border);
+    background: var(--public-newsletter-bg);
+    border: 1px solid var(--public-newsletter-border);
     color: #fff;
     border-radius: 22px;
     padding: 22px 24px;
@@ -761,7 +815,7 @@ img {
 .footer-bottom {
     margin-top: 26px;
     padding-top: 16px;
-    border-top: 1px solid rgba(17, 17, 17, 0.08);
+    border-top: 1px solid var(--public-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -803,7 +857,8 @@ img {
     height: 42px;
     border-radius: 999px;
     border: 0;
-    background: rgba(0, 0, 0, 0.06);
+    color: var(--public-text);
+    background: var(--public-surface-soft);
     cursor: pointer;
     font-size: 1rem;
     padding: 0;
@@ -860,7 +915,13 @@ img {
     }
 
     .nav-actions {
-        gap: 8px;
+        gap: 6px;
+    }
+
+    .public-theme-toggle {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
     }
 
     .nav-button,
@@ -1008,6 +1069,7 @@ img {
 .page-shell .section-toggle:focus-visible,
 .page-shell .newsletter-form button:focus-visible,
 .page-shell .newsletter-form input:focus-visible,
+.page-shell .public-theme-toggle:focus-visible,
 .page-shell .main-nav a:focus-visible,
 .page-shell .footer-column a:focus-visible,
 .page-shell .social-links a:focus-visible {
@@ -1060,6 +1122,10 @@ img {
     .cart-button,
     .primary-link,
     .secondary-link {
+        transition: none !important;
+    }
+
+    .public-theme-toggle {
         transition: none !important;
     }
 

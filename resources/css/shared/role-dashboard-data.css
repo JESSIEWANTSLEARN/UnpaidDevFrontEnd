@@ -19,6 +19,17 @@
   border-radius: 14px;
 }
 
+.role-live-metric .role-live-metric-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: var(--role-accent);
+}
+
 .role-live-metric span {
   display: block;
   color: #64748b;
@@ -509,11 +520,7 @@
 }
 
 .role-live-metric::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .role-live-metric:hover {
@@ -526,7 +533,7 @@
 }
 
 .role-live-metric strong {
-  color: var(--role-accent);
+  color: var(--role-text);
 }
 
 .role-live-panel {
@@ -539,19 +546,12 @@
 }
 
 .role-live-section-head::before {
-  position: absolute;
-  left: 0;
-  top: 16px;
-  bottom: 16px;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .role-live-section-head h2,
 .role-live-section-head p {
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .role-live-primary {
@@ -617,4 +617,86 @@
   .role-live-primary:hover:not(:disabled) {
     transform: none;
   }
+}
+
+/* === WBO FINAL SHARED DATA UI START ===
+   Consistent cards, tables, controls, and states for Operations,
+   Purchasing, Warehouse, and Inventory workspaces. */
+.role-live-metric,
+.role-live-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+  box-shadow: var(--role-panel-shadow);
+}
+
+.role-live-metric {
+  border-radius: 15px;
+}
+
+.role-live-metric span,
+.role-live-section-head p,
+.role-live-alert p,
+.role-live-form-help,
+.role-live-muted {
+  color: var(--role-muted);
+}
+
+.role-live-section-head {
+  background: var(--role-panel-bg);
+  border-bottom-color: var(--role-border);
+}
+
+.role-live-alert {
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+  border-top-color: var(--role-border);
+  border-right-color: var(--role-border);
+  border-bottom-color: var(--role-border);
+}
+
+.role-live-table th {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+}
+
+.role-live-table th,
+.role-live-table td {
+  border-bottom-color: var(--role-border);
+}
+
+.role-live-table tbody tr:hover {
+  background: var(--role-row-hover);
+}
+
+.role-live-empty,
+.role-live-readonly {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+  border-color: var(--role-border);
+}
+
+.role-live-form label {
+  color: var(--role-text);
+}
+
+.role-live-form input,
+.role-live-form select,
+.role-live-form textarea,
+.role-live-secondary,
+.role-live-table-action {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.role-live-primary {
+  background: var(--role-accent);
+}
+/* === WBO FINAL SHARED DATA UI END === */
+
+/* Enclose table headings when filters or controls sit above the table. */
+.role-live-table thead th {
+  border-top: 1px solid var(--role-border);
+  border-bottom: 1px solid var(--role-border);
 }

@@ -7,7 +7,7 @@
 .user-admin-metrics {
   display: grid;
   grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+    repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
   margin-bottom: 18px;
 }
@@ -19,7 +19,7 @@
 }
 
 .user-admin-metric {
-  min-height: 100px;
+  min-height: 108px;
   padding: 16px;
   border-radius: 14px;
 }
@@ -31,9 +31,20 @@
   font-weight: 800;
 }
 
+.user-admin-metric .user-admin-metric-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: var(--role-accent);
+}
+
 .user-admin-metric strong {
   display: block;
-  margin-top: 10px;
+  margin-top: 7px;
   font-size: 1.4rem;
 }
 
@@ -396,15 +407,11 @@
 }
 
 .user-admin-metric::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .user-admin-metric strong {
-  color: var(--role-accent);
+  color: var(--role-text);
 }
 
 .user-admin-metric:hover {
@@ -421,19 +428,12 @@
 }
 
 .user-admin-panel-head::before {
-  position: absolute;
-  left: 0;
-  top: 16px;
-  bottom: 16px;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--role-accent);
-  content: "";
+  display: none;
 }
 
 .user-admin-panel-head h2,
 .user-admin-panel-head p {
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .user-admin-primary {
@@ -549,4 +549,85 @@
   .user-admin-password-toggle {
     transition: none;
   }
+}
+
+/* === WBO FINAL USER ADMIN UI ALIGNMENT START ===
+   User administration uses the shared staff palette while preserving its
+   forms, session controls, status colors, and rose role accent. */
+.user-admin-metric,
+.user-admin-panel {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+  box-shadow: var(--role-panel-shadow);
+}
+
+.user-admin-metric {
+  border-radius: 15px;
+}
+
+.user-admin-metric span,
+.user-admin-panel-head p,
+.user-admin-table td small,
+.user-admin-session-card span,
+.user-admin-session-card dt {
+  color: var(--role-muted);
+}
+
+.user-admin-panel-head,
+.user-admin-session-toolbar {
+  background: var(--role-panel-bg);
+  border-bottom-color: var(--role-border);
+}
+
+.user-admin-table th {
+  color: var(--role-muted);
+  background: var(--role-panel-soft);
+}
+
+.user-admin-table th,
+.user-admin-table td {
+  border-bottom-color: var(--role-border);
+}
+
+.user-admin-table tbody tr:hover {
+  background: var(--role-row-hover);
+}
+
+.user-admin-filters input,
+.user-admin-filters select,
+.user-admin-form input,
+.user-admin-form select,
+.user-admin-actions button,
+.user-admin-session-toolbar button,
+.user-admin-error button {
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border-color: var(--role-border);
+}
+
+.user-admin-form label,
+.user-admin-password-control > label {
+  color: var(--role-text);
+}
+
+.user-admin-session-card,
+.user-admin-empty,
+.user-admin-readonly {
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+  border-color: var(--role-border);
+}
+/* === WBO FINAL USER ADMIN UI ALIGNMENT END === */
+
+/* Standard User Admin tables keep the separator above and below the heading. */
+.user-admin-table thead th {
+  border-top: 1px solid var(--role-border);
+  border-bottom: 1px solid var(--role-border);
+}
+
+/* Access Activity already touches a bordered panel header, so another top
+   line would look doubled there. */
+.user-admin-access-table thead th {
+  border-top: 0;
 }
