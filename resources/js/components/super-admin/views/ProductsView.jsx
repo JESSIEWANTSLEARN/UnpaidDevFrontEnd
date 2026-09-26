@@ -1,5 +1,5 @@
 import { backendUrl } from "../../../config/api.js";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { money, number } from "../../../utils/super-admin/superAdminUtils.js";
 import { apiRequest, toFormData } from "../../../services/super-admin/superAdminApi.js";
 import { EmptyTable, ProductName } from "../common/AdminCommon.jsx";
@@ -22,10 +22,33 @@ const emptyEditForm = {
 
 function Products({ data, openModal }) {
   const products = data.products || [];
+  const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(null);
   const [editForm, setEditForm] = useState(emptyEditForm);
   const [editBusy, setEditBusy] = useState(false);
   const [editError, setEditError] = useState("");
+
+  const filteredProducts = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+
+    if (!needle) {
+      return products;
+    }
+
+    return products.filter((product) =>
+      [
+        product.product_id,
+        product.name,
+        product.sku,
+        product.category,
+        product.abc_class,
+      ].some((value) =>
+        String(value ?? "")
+          .toLowerCase()
+          .includes(needle)
+      )
+    );
+  }, [products, search]);
 
   const openEditor = (product) => {
     const categoryId =
@@ -93,7 +116,6 @@ function Products({ data, openModal }) {
         }
       );
 
-      // Laravel receives the intended update method through method spoofing.
       window.location.reload();
     } catch (error) {
       setEditError(error.message || "Unable to update the product.");
@@ -127,6 +149,29 @@ function Products({ data, openModal }) {
         </div>
       </div>
 
+      <div className="ops-panel user-filter-panel">
+        <div className="user-search-wrap">
+          <input
+            className="user-search-input"
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search products, SKU, category, ABC..."
+            aria-label="Search products"
+          />
+
+          {search && (
+            <button
+              className="user-search-clear"
+              type="button"
+              onClick={() => setSearch("")}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="ops-panel">
         <div className="table-wrap">
           <table className="ops-table">
@@ -145,10 +190,10 @@ function Products({ data, openModal }) {
               </tr>
             </thead>
             <tbody>
-              {products.length === 0 ? (
-                <EmptyTable colSpan={10} text="No products found." />
+              {filteredProducts.length === 0 ? (
+                <EmptyTable colSpan={10} text="No products match your search." />
               ) : (
-                products.map((product) => (
+                filteredProducts.map((product) => (
                   <tr key={product.product_id}>
                     <td><ProductName product={product} /></td>
                     <td>{product.sku}</td>
