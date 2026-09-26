@@ -700,3 +700,90 @@
   border-top: 1px solid var(--role-border);
   border-bottom: 1px solid var(--role-border);
 }
+
+/* WBO_ROLE_TABLE_FILTERS_V1 */
+
+.role-live-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.role-live-search-wrap {
+  position: relative;
+  flex: 1 1 300px;
+  min-width: 220px;
+}
+
+.role-live-search-input,
+.role-live-filter-select {
+  min-height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.role-live-search-input {
+  width: 100%;
+  padding: 8px 62px 8px 11px;
+}
+
+.role-live-filter-select {
+  min-width: 180px;
+  padding: 8px 34px 8px 11px;
+  cursor: pointer;
+}
+
+.role-live-search-input:focus,
+.role-live-filter-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 12%);
+}
+
+.role-live-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-filter-bar {
+  border-color: var(--role-border);
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-search-input,
+.role-dashboard-layout[data-theme="dark"] .role-live-filter-select {
+  color: #f8fafc;
+  background: #0c1726;
+  border-color: #33465f;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.role-dashboard-layout[data-theme="dark"] .role-live-search-clear {
+  color: #93c5fd;
+}
+
+@media (max-width: 560px) {
+  .role-live-search-wrap,
+  .role-live-filter-select {
+    width: 100%;
+    min-width: 100%;
+  }
+}
