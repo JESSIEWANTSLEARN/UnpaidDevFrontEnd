@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/public/landing-page.css";
 import usePublicTheme from "../../hooks/usePublicTheme.js";
+import PublicThemeSwitch from "../../components/shared/PublicThemeSwitch.jsx";
 import {
   cartItemCount,
   readGuestCart,
@@ -363,21 +364,10 @@ function LandingPage() {
           </div>
 
           <div className="nav-actions">
-            <button
-              type="button"
-              className="public-theme-toggle"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${
-                theme === "dark" ? "light" : "dark"
-              } mode`}
-              title={`Switch to ${
-                theme === "dark" ? "light" : "dark"
-              } mode`}
-            >
-              <span aria-hidden="true">
-                {theme === "dark" ? "\u2600" : "\u263E"}
-              </span>
-            </button>
+            <PublicThemeSwitch
+              theme={theme}
+              onToggle={toggleTheme}
+            />
 
             {activeDashboardPath ? (
               <Link to={activeDashboardPath} className="nav-button primary-nav-button">
