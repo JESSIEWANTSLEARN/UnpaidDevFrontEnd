@@ -19,6 +19,7 @@ export default function RoleDashboardContent({
   onCreateSupplier,
   onUpdateSupplier,
   onCreatePurchaseOrder,
+  onReceivePurchaseOrder,
   onPurchaseOrderStatus,
   onSalesOrderStatus,
   theme,
@@ -74,6 +75,7 @@ export default function RoleDashboardContent({
         previewMode={previewMode}
         busy={busy}
         onStockIn={onStockIn}
+        onReceivePurchaseOrder={onReceivePurchaseOrder}
       />
     );
   }
