@@ -31,6 +31,7 @@ export default function RoleDashboardShell({
     handleCreateSupplier,
     handleUpdateSupplier,
     handleCreatePurchaseOrder,
+    handleReceivePurchaseOrder,
     handlePurchaseOrderStatus,
     handleSalesOrderStatus,
     logout,
@@ -119,6 +120,9 @@ export default function RoleDashboardShell({
             onUpdateSupplier={handleUpdateSupplier}
             onCreatePurchaseOrder={
               handleCreatePurchaseOrder
+            }
+            onReceivePurchaseOrder={
+              handleReceivePurchaseOrder
             }
             onPurchaseOrderStatus={
               handlePurchaseOrderStatus

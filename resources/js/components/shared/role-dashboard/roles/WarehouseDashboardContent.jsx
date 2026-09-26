@@ -1,5 +1,8 @@
 import React from "react";
-import { StockInForm } from "../../../inventory/InventoryActions.jsx";
+import {
+  PurchaseOrderReceivingForm,
+  StockInForm,
+} from "../../../inventory/InventoryActions.jsx";
 import {
   Alerts,
   BatchesTable,
@@ -16,6 +19,7 @@ export default function WarehouseDashboardContent({
   previewMode,
   busy,
   onStockIn,
+  onReceivePurchaseOrder,
 }) {
   const roleKey = "Warehouse_Admin";
 
@@ -35,8 +39,20 @@ export default function WarehouseDashboardContent({
     return (
       <>
         <Section
-          title="Receive Stock"
-          description="Create a batch and preserve the receiving movement in WBO_Transactions."
+          title="Receive Purchase Order"
+          description="Receive ordered supplier deliveries. Inventory, transaction history, and PO receiving status update together."
+        >
+          <PurchaseOrderReceivingForm
+            purchaseOrders={data.purchase_orders || []}
+            previewMode={previewMode}
+            busy={busy}
+            onSubmit={onReceivePurchaseOrder}
+          />
+        </Section>
+
+        <Section
+          title="Manual Stock In"
+          description="Use this only for stock that is not being received from a purchase order."
         >
           <StockInForm
             products={data.products}
@@ -48,13 +64,12 @@ export default function WarehouseDashboardContent({
 
         <Section
           title="Open Purchase Orders"
-          description="Orders that may require receiving follow-up."
+          description="Ordered and partially received purchase orders remain available for warehouse follow-up."
         >
           <PurchaseOrdersTable
             purchaseOrders={(data.purchase_orders || []).filter(
               (po) =>
                 [
-                  "APPROVED",
                   "ORDERED",
                   "PARTIALLY_RECEIVED",
                 ].includes(po.status),

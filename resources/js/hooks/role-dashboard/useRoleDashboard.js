@@ -8,6 +8,7 @@ import {
   loadRoleDashboard,
   roleAdjustStock,
   roleCreatePurchaseOrder,
+  roleReceivePurchaseOrder,
   roleCreateSupplier,
   roleStockIn,
   roleUpdatePurchaseOrderStatus,
@@ -217,6 +218,12 @@ export default function useRoleDashboard({
       "Purchase order created.",
     );
 
+
+  const handleReceivePurchaseOrder = (poId, form) =>
+    runAction(
+      () => roleReceivePurchaseOrder(poId, form),
+      "Purchase-order delivery received.",
+    );
   const handlePurchaseOrderStatus = (poId, action) =>
     runAction(
       () => roleUpdatePurchaseOrderStatus(poId, action),
@@ -269,6 +276,7 @@ export default function useRoleDashboard({
     handleCreateSupplier,
     handleUpdateSupplier,
     handleCreatePurchaseOrder,
+    handleReceivePurchaseOrder,
     handlePurchaseOrderStatus,
     handleSalesOrderStatus,
     logout,

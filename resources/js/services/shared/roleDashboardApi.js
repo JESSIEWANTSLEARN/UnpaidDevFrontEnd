@@ -128,6 +128,18 @@ export const roleCreatePurchaseOrder = (
     },
   );
 
+
+export const roleReceivePurchaseOrder = (
+  poId,
+  form,
+) =>
+  request(
+    `/api/role-dashboard/purchase-orders/${poId}/receive`,
+    {
+      method: "POST",
+      body: form,
+    },
+  );
 export const roleUpdatePurchaseOrderStatus = (
   poId,
   action,
