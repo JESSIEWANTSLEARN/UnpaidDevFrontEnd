@@ -2,6 +2,8 @@ import { backendUrl } from "../../config/api.js";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../../css/auth/signup.css";
+import usePublicTheme from "../../hooks/usePublicTheme.js";
+import "../../../css/auth/public-theme.css";
 
 import { authFetch } from "../../services/auth/authRequest.js";
 const Logo = backendUrl("/storage/site/Logo.png");
@@ -34,6 +36,7 @@ function saveOtpPolicy(policy) {
 
 function Signup() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = usePublicTheme();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -148,7 +151,7 @@ function Signup() {
   };
 
   return (
-    <div className="signup-page">
+    <div className="signup-page" data-theme={theme}>
       <header className="signup-header">
         <div className="signup-header-inner">
           <Link to="/" className="signup-brand">
@@ -164,12 +167,29 @@ function Signup() {
               <strong>WALANG BROWN OUT</strong>
             </div>
           </Link>
-        </div>
+
+          <button
+            type="button"
+            className="auth-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={
+              theme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
+            title={
+              theme === "dark"
+                ? "Light mode"
+                : "Dark mode"
+            }
+          >
+            {theme === "dark" ? "Light mode" : "Dark mode"}
+          </button>        </div>
       </header>
 
       <main className="signup-container">
         <Link to="/" className="back-button">
-          ← Back to Home
+          â† Back to Home
         </Link>
 
         <div className="signup-title">
@@ -233,7 +253,7 @@ function Signup() {
                 required
                 minLength="6"
                 autoComplete="new-password"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}
@@ -263,7 +283,7 @@ function Signup() {
                 required
                 minLength="6"
                 autoComplete="new-password"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 disabled={loading}
@@ -306,7 +326,7 @@ function Signup() {
       </main>
 
       <footer className="signup-footer">
-        <strong>© 2026 WalangBrownOut.</strong> All rights reserved.
+        <strong>Â© 2026 WalangBrownOut.</strong> All rights reserved.
       </footer>
     </div>
   );

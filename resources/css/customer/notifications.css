@@ -34,10 +34,10 @@
 }
 
 .customer-notification-panel {
-  position: absolute;
-  top: calc(100% + 13px);
-  right: 0;
-  z-index: 180;
+  position: fixed;
+  top: 74px;
+  right: 20px;
+  z-index: 1000;
   width: min(390px, calc(100vw - 28px));
   overflow: hidden;
   border: 1px solid var(--customer-border);

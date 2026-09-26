@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/login.css";
 import "../../../css/auth/password-reset.css";
+import usePublicTheme from "../../hooks/usePublicTheme.js";
+import "../../../css/auth/public-theme.css";
 
 import { authFetch } from "../../services/auth/authRequest.js";
 const Logo = backendUrl("/storage/site/Logo.png");
@@ -33,6 +35,7 @@ function saveOtpPolicy(key, policy) {
 
 function LogIn() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = usePublicTheme();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -136,7 +139,7 @@ function LogIn() {
   };
 
   return (
-    <div className="login-page">
+    <div className="login-page" data-theme={theme}>
       <header className="login-header">
         <div className="login-header-inner">
           <Link to="/" className="login-brand">
@@ -152,12 +155,29 @@ function LogIn() {
               <strong>WALANG BROWN OUT</strong>
             </div>
           </Link>
-        </div>
+
+          <button
+            type="button"
+            className="auth-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={
+              theme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
+            title={
+              theme === "dark"
+                ? "Light mode"
+                : "Dark mode"
+            }
+          >
+            {theme === "dark" ? "Light mode" : "Dark mode"}
+          </button>        </div>
       </header>
 
       <main className="login-container">
         <Link to="/" className="back-button">
-          ← Back to Home
+          â† Back to Home
         </Link>
 
         <div className="login-title">
@@ -191,7 +211,7 @@ function LogIn() {
                 id="login-password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 disabled={loading}
@@ -245,7 +265,7 @@ function LogIn() {
       </main>
 
       <footer className="login-footer">
-        <strong>© 2026 WalangBrownOut.</strong> All rights reserved.
+        <strong>Â© 2026 WalangBrownOut.</strong> All rights reserved.
       </footer>
     </div>
   );

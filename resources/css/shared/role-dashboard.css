@@ -1100,10 +1100,10 @@
 }
 
 .role-dashboard-header-popover {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  z-index: 50;
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  z-index: 1000;
   width: min(290px, calc(100vw - 32px));
   padding: 14px;
   border: 1px solid var(--role-border);
@@ -1339,3 +1339,13 @@
   }
 }
 /* === WBO SUPER ADMIN HEADER SYNC END === */
+
+/* WBO viewport popup consistency */
+@media (max-width: 700px) {
+  .role-dashboard-header-popover {
+    top: 68px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+  }
+}
