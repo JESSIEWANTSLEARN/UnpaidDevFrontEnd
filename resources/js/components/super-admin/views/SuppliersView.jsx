@@ -92,8 +92,8 @@ function Suppliers({ data, openModal }) {
           {filteredSuppliers.length === 0
             ? <EmptyTable colSpan={7} text="No suppliers match your search." />
             : filteredSuppliers.map((supplier) => <tr key={supplier.supplier_id}>
-                <td>{supplier.name}</td><td>{supplier.supplier_status}</td><td>{supplier.contact_number || "â€”"}</td>
-                <td>{supplier.email || "â€”"}</td><td>{number(supplier.lead_time_days)} day(s)</td>
+                <td>{supplier.name}</td><td>{supplier.supplier_status}</td><td>{supplier.contact_number || "-"}</td>
+                <td>{supplier.email || "-"}</td><td>{number(supplier.lead_time_days)} day(s)</td>
                 <td>{number(supplier.product_count)}</td>
                 <td><button className="row-action row-action-wide" type="button" onClick={() => openEditor(supplier)}>Edit</button></td>
               </tr>)}
