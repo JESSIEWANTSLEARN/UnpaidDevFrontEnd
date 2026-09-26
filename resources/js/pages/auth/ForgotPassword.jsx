@@ -2,6 +2,8 @@ import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/password-reset.css";
+import usePublicTheme from "../../hooks/usePublicTheme.js";
+import "../../../css/auth/public-theme.css";
 
 const Logo = backendUrl("/storage/site/Logo.png");
 
@@ -47,6 +49,7 @@ async function postJson(url, body) {
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = usePublicTheme();
 
   const [stage, setStage] = useState(
     () => sessionStorage.getItem("wbo_password_reset_stage") || "request",
@@ -313,7 +316,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="password-reset-page">
+    <div className="password-reset-page" data-theme={theme}>
       <header className="password-reset-header">
         <Link to="/" className="password-reset-brand">
           <img src={Logo} alt="Walang Brown Out Logo" />
@@ -322,6 +325,24 @@ export default function ForgotPassword() {
             <strong>WALANG BROWN OUT</strong>
           </span>
         </Link>
+
+        <button
+          type="button"
+          className="auth-theme-toggle"
+          onClick={toggleTheme}
+          aria-label={
+            theme === "dark"
+              ? "Switch to light mode"
+              : "Switch to dark mode"
+          }
+          title={
+            theme === "dark"
+              ? "Light mode"
+              : "Dark mode"
+          }
+        >
+          {theme === "dark" ? "Light mode" : "Dark mode"}
+        </button>
       </header>
 
       <main className="password-reset-main">

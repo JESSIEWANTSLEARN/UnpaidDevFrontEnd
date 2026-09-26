@@ -2,6 +2,8 @@ import { backendUrl } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/otp.css";
+import usePublicTheme from "../../hooks/usePublicTheme.js";
+import "../../../css/auth/public-theme.css";
 
 import { authFetch } from "../../services/auth/authRequest.js";
 const Logo = backendUrl("/storage/site/Logo.png");
@@ -72,6 +74,7 @@ function initialCooldown(policy) {
 
 function LoginOtp() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = usePublicTheme();
 
   const initialPolicy = useMemo(() => readPolicy(), []);
 
@@ -267,7 +270,7 @@ function LoginOtp() {
   };
 
   return (
-    <div className="otp-page">
+    <div className="otp-page" data-theme={theme}>
       <header className="otp-header">
         <div className="otp-header-inner">
           <Link to="/" className="otp-brand">
@@ -281,12 +284,29 @@ function LoginOtp() {
               <strong>WALANG BROWN OUT</strong>
             </div>
           </Link>
-        </div>
+
+          <button
+            type="button"
+            className="auth-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={
+              theme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
+            title={
+              theme === "dark"
+                ? "Light mode"
+                : "Dark mode"
+            }
+          >
+            {theme === "dark" ? "Light mode" : "Dark mode"}
+          </button>        </div>
       </header>
 
       <main className="otp-container">
         <Link to="/login" className="otp-back">
-          ← Back to Login
+          â† Back to Login
         </Link>
 
         <div className="otp-title">
@@ -374,7 +394,7 @@ function LoginOtp() {
       </main>
 
       <footer className="otp-footer">
-        <strong>© 2026 WalangBrownOut.</strong> All rights reserved.
+        <strong>Â© 2026 WalangBrownOut.</strong> All rights reserved.
       </footer>
     </div>
   );

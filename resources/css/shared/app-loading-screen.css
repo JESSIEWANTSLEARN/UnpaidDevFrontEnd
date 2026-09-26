@@ -60,7 +60,12 @@
 }
 
 .app-page-enter {
-  animation: app-page-enter 180ms ease-out both;
+  /*
+   * Do not retain the final transform after the entry animation.
+   * A retained transform becomes the containing block for position: fixed
+   * descendants, which can make dialogs follow the document scroll.
+   */
+  animation: app-page-enter 180ms ease-out;
 }
 
 @keyframes app-loader-spin {
