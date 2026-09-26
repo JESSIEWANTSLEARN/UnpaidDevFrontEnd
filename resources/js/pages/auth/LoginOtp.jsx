@@ -306,7 +306,7 @@ function LoginOtp() {
 
       <main className="otp-container">
         <Link to="/login" className="otp-back">
-          â† Back to Login
+          &larr; Back to Login
         </Link>
 
         <div className="otp-title">
@@ -394,7 +394,7 @@ function LoginOtp() {
       </main>
 
       <footer className="otp-footer">
-        <strong>Â© 2026 WalangBrownOut.</strong> All rights reserved.
+        <strong>&copy; 2026 WalangBrownOut.</strong> All rights reserved.
       </footer>
     </div>
   );

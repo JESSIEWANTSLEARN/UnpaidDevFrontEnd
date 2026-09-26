@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/login.css";
 import "../../../css/auth/password-reset.css";
 import usePublicTheme from "../../hooks/usePublicTheme.js";
+import PublicThemeSwitch from "../../components/shared/PublicThemeSwitch.jsx";
 import "../../../css/auth/public-theme.css";
 
 import { authFetch } from "../../services/auth/authRequest.js";
@@ -156,28 +157,16 @@ function LogIn() {
             </div>
           </Link>
 
-          <button
-            type="button"
-            className="auth-theme-toggle"
-            onClick={toggleTheme}
-            aria-label={
-              theme === "dark"
-                ? "Switch to light mode"
-                : "Switch to dark mode"
-            }
-            title={
-              theme === "dark"
-                ? "Light mode"
-                : "Dark mode"
-            }
-          >
-            {theme === "dark" ? "Light mode" : "Dark mode"}
-          </button>        </div>
+
+          <PublicThemeSwitch
+            theme={theme}
+            onToggle={toggleTheme}
+          />        </div>
       </header>
 
       <main className="login-container">
         <Link to="/" className="back-button">
-          â† Back to Home
+          &larr; Back to Home
         </Link>
 
         <div className="login-title">
@@ -211,7 +200,7 @@ function LogIn() {
                 id="login-password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder="********"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 disabled={loading}
@@ -265,7 +254,7 @@ function LogIn() {
       </main>
 
       <footer className="login-footer">
-        <strong>Â© 2026 WalangBrownOut.</strong> All rights reserved.
+        <strong>&copy; 2026 WalangBrownOut.</strong> All rights reserved.
       </footer>
     </div>
   );
