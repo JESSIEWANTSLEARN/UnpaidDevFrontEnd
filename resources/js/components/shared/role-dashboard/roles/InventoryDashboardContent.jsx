@@ -96,7 +96,7 @@ export default function InventoryDashboardContent({
     return (
       <Section
         title="Low Stock"
-        description={`Products with 1-${data.low_stock_threshold} units available.`}
+        description="Products at or below their configured reorder point."
       >
         <ProductsTable
           products={data.low_stock_products}

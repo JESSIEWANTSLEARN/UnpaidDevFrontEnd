@@ -65,6 +65,8 @@ export default function ProductsTable({
                 <th>Category</th>
                 <th>Supplier</th>
                 <th>Available</th>
+                <th>Reorder Point</th>
+                <th>Suggested PO Qty</th>
               </tr>
             </thead>
             <tbody>
@@ -75,6 +77,12 @@ export default function ProductsTable({
                   <td>{product.category}</td>
                   <td>{product.supplier_name || "-"}</td>
                   <td>{number(product.available_stock)}</td>
+                  <td>{number(product.reorder_point)}</td>
+                  <td>
+                    {number(
+                      product.recommended_reorder_quantity,
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

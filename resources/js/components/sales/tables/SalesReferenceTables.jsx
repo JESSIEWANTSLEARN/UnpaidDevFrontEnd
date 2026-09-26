@@ -86,7 +86,6 @@ export function SalesProductPerformanceTable({ rows }) {
 
 export function SalesAvailabilityTable({
   products,
-  threshold,
 }) {
   if (!products.length) {
     return <SalesEmpty text="No products found." />;
@@ -110,11 +109,14 @@ export function SalesAvailabilityTable({
             const stock = Number(
               product.available_stock || 0,
             );
+            const reorderPoint = Number(
+              product.reorder_point ?? 10,
+            );
 
             const condition =
               stock <= 0
                 ? "OUT"
-                : stock <= threshold
+                : stock <= reorderPoint
                   ? "LOW"
                   : "OK";
 

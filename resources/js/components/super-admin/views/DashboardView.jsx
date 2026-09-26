@@ -5,7 +5,7 @@ import { EmptyState, StatCard, ProductName, EmptyTable } from "../common/AdminCo
 
 function Dashboard({ data, setActiveMenu }) {
   const { metrics = {}, products = [], categories = [], notifications = [], audit_logs: auditLogs = [], stock_trend: stockTrend = [] } = data;
-  const lowStockThreshold = Number(data.low_stock_threshold || 10);
+  // Each product now has its own reorder point.
   const maxStock = Math.max(1, ...products.map((product) => Number(product.available_stock || 0)));
   const recentProducts = products.slice(0, 8);
   const recentAudit = auditLogs.slice(0, 5);
@@ -44,7 +44,10 @@ function Dashboard({ data, setActiveMenu }) {
               {recentProducts.length === 0 ? (
                 <EmptyTable colSpan={6} text="No products found." />
               ) : recentProducts.map((product) => {
-                const status = stockState(product.available_stock, lowStockThreshold);
+                const status = stockState(
+                  product.available_stock,
+                  Number(product.reorder_point ?? 10),
+                );
                 const width = `${Math.max(3, (Number(product.available_stock || 0) / maxStock) * 100)}%`;
                 return (
                   <tr key={product.product_id}>

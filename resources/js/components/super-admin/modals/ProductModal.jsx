@@ -60,6 +60,16 @@ export default function ProductModal({
         <div className="admin-form-row"><label>Unit Cost</label><input type="number" min="0" step="0.01" value={productForm.unit_cost} required onChange={update("unit_cost")} /></div>
         <div className="admin-form-row"><label>Unit Price</label><input type="number" min="0" step="0.01" value={productForm.unit_price} required onChange={update("unit_price")} /></div>
       </div>
+      <div className="admin-form-row">
+        <label>Reorder Point</label>
+        <input
+          type="number"
+          min="1"
+          value={productForm.reorder_point}
+          required
+          onChange={update("reorder_point")}
+        />
+      </div>
       <div className="admin-form-checks">
         <label><input type="checkbox" checked={productForm.is_seasonal} onChange={toggle("is_seasonal")} /> Seasonal</label>
         <label><input type="checkbox" checked={productForm.is_visible} onChange={toggle("is_visible")} /> Visible</label>

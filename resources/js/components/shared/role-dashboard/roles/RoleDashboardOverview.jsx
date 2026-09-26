@@ -65,7 +65,7 @@ export default function RoleDashboardOverview({
       {roleKey === "Inventory_Controller" && (
         <Section
           title="Inventory Health"
-          description={`Products at or below ${data.low_stock_threshold} units require attention.`}
+          description="Products at or below their configured reorder point require attention."
         >
           <ProductsTable
             products={data.low_stock_products}
@@ -78,7 +78,7 @@ export default function RoleDashboardOverview({
         <>
           <Section
             title="Reorder Needs"
-            description={`Products at or below ${data.low_stock_threshold} available units.`}
+            description="Products at or below their configured reorder point, with a suggested replenishment quantity."
           >
             <ProductsTable products={data.reorder_needs} />
           </Section>

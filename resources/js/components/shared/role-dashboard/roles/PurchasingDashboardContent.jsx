@@ -122,7 +122,7 @@ export default function PurchasingDashboardContent({
     return (
       <Section
         title={activeModule}
-        description={`These are live stock conditions, not fake request records. Products at or below ${data.low_stock_threshold} units can be turned into a purchase order from the Purchase Orders page.`}
+        description="Products at or below their configured reorder point. Suggested PO quantity targets roughly twice the reorder point; Purchasing still reviews and creates the PO."
       >
         <ProductsTable products={data.reorder_needs} />
       </Section>

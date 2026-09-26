@@ -17,6 +17,7 @@ const emptyEditForm = {
   is_featured: false,
   unit_cost: "",
   unit_price: "",
+  reorder_point: "10",
   image: null,
 };
 
@@ -71,6 +72,7 @@ function Products({ data, openModal }) {
       is_featured: Boolean(product.is_featured),
       unit_cost: product.unit_cost ?? "",
       unit_price: product.unit_price ?? "",
+      reorder_point: product.reorder_point ?? 10,
       image: null,
     });
   };
@@ -184,6 +186,7 @@ function Products({ data, openModal }) {
                 <th>Cost</th>
                 <th>Price</th>
                 <th>Stock</th>
+                <th>Reorder Point</th>
                 <th>Visible</th>
                 <th>Featured</th>
                 <th>Actions</th>
@@ -191,7 +194,7 @@ function Products({ data, openModal }) {
             </thead>
             <tbody>
               {filteredProducts.length === 0 ? (
-                <EmptyTable colSpan={10} text="No products match your search." />
+                <EmptyTable colSpan={11} text="No products match your search." />
               ) : (
                 filteredProducts.map((product) => (
                   <tr key={product.product_id}>
@@ -202,6 +205,7 @@ function Products({ data, openModal }) {
                     <td>{money(product.unit_cost)}</td>
                     <td>{money(product.unit_price)}</td>
                     <td>{number(product.available_stock)}</td>
+                    <td>{number(product.reorder_point)}</td>
                     <td>{product.is_visible ? "Yes" : "No"}</td>
                     <td>{product.is_featured ? "Yes" : "No"}</td>
                     <td>
@@ -384,6 +388,17 @@ function Products({ data, openModal }) {
                     onChange={update("unit_price")}
                   />
                 </div>
+              </div>
+
+              <div className="admin-form-row">
+                <label>Reorder Point</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={editForm.reorder_point}
+                  required
+                  onChange={update("reorder_point")}
+                />
               </div>
 
               <div className="admin-form-checks">

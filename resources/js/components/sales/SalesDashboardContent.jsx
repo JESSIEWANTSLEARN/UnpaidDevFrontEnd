@@ -136,7 +136,6 @@ export default function SalesDashboardContent({
       >
         <SalesAvailabilityTable
           products={data.products || []}
-          threshold={data.low_stock_threshold || 10}
         />
       </SalesSection>
     );
