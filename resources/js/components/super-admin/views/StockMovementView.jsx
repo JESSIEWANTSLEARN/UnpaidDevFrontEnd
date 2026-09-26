@@ -36,7 +36,7 @@ function StockMovement({ data }) {
             placeholder="Search transaction, product, batch, user..." aria-label="Search stock movement" />
           {search && <button className="user-search-clear" type="button" onClick={() => setSearch("")}>Clear</button>}
         </div>
-        <select value={type} onChange={(event) => setType(event.target.value)}>
+        <select className="user-filter-select" value={type} onChange={(event) => setType(event.target.value)}>
           <option value="all">All Movement Types</option>
           {types.map((movementType) => <option key={movementType} value={movementType}>{movementType}</option>)}
         </select>
@@ -52,7 +52,7 @@ function StockMovement({ data }) {
                 <td className={Number(item.quantity_change) < 0 ? "qty-negative" : "qty-positive"}>
                   {Number(item.quantity_change) > 0 ? "+" : ""}{number(item.quantity_change)}
                 </td>
-                <td>{item.order_id ? `#${item.order_id}` : "â€”"}</td>
+                <td>{item.order_id ? `#${item.order_id}` : "-"}</td>
                 <td>{item.performed_by || `User #${item.performed_by_user_id}`}</td><td>{formatDate(item.timestamp)}</td>
               </tr>)}
         </tbody>

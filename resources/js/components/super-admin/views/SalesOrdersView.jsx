@@ -35,7 +35,7 @@ function SalesOrders({ data }) {
             placeholder="Search order, customer, user ID..." aria-label="Search sales orders" />
           {search && <button className="user-search-clear" type="button" onClick={() => setSearch("")}>Clear</button>}
         </div>
-        <select value={status} onChange={(event) => setStatus(event.target.value)}>
+        <select className="user-filter-select" value={status} onChange={(event) => setStatus(event.target.value)}>
           <option value="all">All Statuses</option>
           {statuses.map((orderStatus) => <option key={orderStatus} value={orderStatus}>{orderStatus}</option>)}
         </select>

@@ -38,7 +38,7 @@ function PurchaseOrders({ data, openModal }) {
             placeholder="Search PO, supplier, product, creator..." aria-label="Search purchase orders" />
           {search && <button className="user-search-clear" type="button" onClick={() => setSearch("")}>Clear</button>}
         </div>
-        <select value={status} onChange={(event) => setStatus(event.target.value)}>
+        <select className="user-filter-select" value={status} onChange={(event) => setStatus(event.target.value)}>
           <option value="all">All Statuses</option>
           {statuses.map((poStatus) => <option key={poStatus} value={poStatus}>{poStatus}</option>)}
         </select>

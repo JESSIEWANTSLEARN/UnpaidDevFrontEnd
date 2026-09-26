@@ -46,7 +46,7 @@ function Inventory({ data, openModal }) {
             : filteredBatches.map((batch) => <tr key={batch.batch_id}>
                 <td>{batch.batch_number}</td><td>{batch.product_name}</td><td>{batch.sku}</td>
                 <td>{number(batch.quantity_received)}</td><td>{number(batch.current_quantity)}</td>
-                <td>{formatDate(batch.received_date)}</td><td>{batch.expiry_date || "â€”"}</td>
+                <td>{formatDate(batch.received_date)}</td><td>{batch.expiry_date || "-"}</td>
               </tr>)}
         </tbody>
       </table></div></div>
