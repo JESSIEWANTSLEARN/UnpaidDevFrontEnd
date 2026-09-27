@@ -1,0 +1,178 @@
+.wbo-support-layout {
+  display: grid;
+  grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.wbo-support-list,
+.wbo-support-chat {
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--customer-surface, #fff);
+}
+
+.wbo-support-list-head,
+.wbo-support-chat > header,
+.wbo-support-actions,
+.wbo-support-composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wbo-support-list-head,
+.wbo-support-chat > header {
+  justify-content: space-between;
+  padding: 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.wbo-support-ticket {
+  width: 100%;
+  display: block;
+  padding: 13px 14px;
+  border: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wbo-support-ticket.is-active {
+  background: rgba(37, 99, 235, 0.09);
+}
+
+.wbo-support-ticket strong,
+.wbo-support-ticket span,
+.wbo-support-ticket small {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.wbo-support-new {
+  padding: 14px;
+}
+
+.wbo-support-new label,
+.wbo-support-new span {
+  display: block;
+}
+
+.wbo-support-new input,
+.wbo-support-composer textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+  background: transparent;
+  color: inherit;
+}
+
+.wbo-support-new input {
+  margin: 7px 0 10px;
+}
+
+.wbo-support-new button,
+.wbo-support-list-head button,
+.wbo-support-actions button,
+.wbo-support-composer button {
+  border: 0;
+  border-radius: 9px;
+  padding: 9px 12px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+}
+
+.wbo-support-actions .is-danger {
+  background: #b91c1c;
+}
+
+.wbo-support-chat > header h2 {
+  margin: 4px 0;
+}
+
+.wbo-support-chat > header > div:first-child > span {
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.wbo-support-messages {
+  min-height: 360px;
+  max-height: 540px;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.wbo-support-message {
+  max-width: 80%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.13);
+}
+
+.wbo-support-message.sender-customer {
+  align-self: flex-end;
+  background: rgba(37, 99, 235, 0.13);
+}
+
+.wbo-support-message.sender-bot,
+.wbo-support-message.sender-staff {
+  align-self: flex-start;
+}
+
+.wbo-support-message.sender-system {
+  align-self: center;
+  text-align: center;
+}
+
+.wbo-support-message > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.74rem;
+}
+
+.wbo-support-message p {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+}
+
+.wbo-support-composer {
+  align-items: flex-end;
+  padding: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.wbo-support-composer textarea {
+  flex: 1;
+  resize: vertical;
+}
+
+.wbo-support-closed,
+.wbo-support-error {
+  padding: 14px;
+}
+
+.wbo-support-error {
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: rgba(185, 28, 28, 0.1);
+}
+
+@media (max-width: 850px) {
+  .wbo-support-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .wbo-support-message {
+    max-width: 92%;
+  }
+}

@@ -7,6 +7,7 @@ import {
   SalesSection,
 } from "./common/SalesDashboardPrimitives.jsx";
 import SalesOrdersTable from "./tables/SalesOrdersTable.jsx";
+import SalesSupportPanel from "./support/SalesSupportPanel.jsx";
 import {
   SalesAvailabilityTable,
   SalesCustomersTable,
@@ -85,6 +86,9 @@ export default function SalesDashboardContent({
     );
   }
 
+  if (activeModule === "Customer Support") {
+    return <SalesSupportPanel previewMode={previewMode} />;
+  }
   if (activeModule === "Customers") {
     return (
       <SalesSection

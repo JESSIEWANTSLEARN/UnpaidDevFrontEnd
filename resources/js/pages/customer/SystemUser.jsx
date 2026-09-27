@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { EmptyState, Icon, ProfileAvatar, StatusBadge } from "../../components/customer/CustomerUi.jsx";
 import CustomerCartDrawer from "../../components/customer/cart/CustomerCartDrawer.jsx";
 import CustomerCheckoutModal from "../../components/customer/checkout/CustomerCheckoutModal.jsx";
+import CustomerSupportPanel from "../../components/customer/support/CustomerSupportPanel.jsx";
 import {
   money,
   normalizeProduct,
@@ -864,6 +865,7 @@ export default function SystemUser({ previewMode = false }) {
     ["shop", "Products", "products"],
     ["orders", "Orders", "orders"],
     ["reviews", "Reviews", "products"],
+    ["support", "Support", "chat"],
     ["account", "Account", "user"],
   ];
 
@@ -1529,6 +1531,9 @@ export default function SystemUser({ previewMode = false }) {
         )}
         {tab === "reviews" && (
           <CustomerReviewsPanel previewMode={previewMode} />
+        )}
+        {tab === "support" && (
+          <CustomerSupportPanel previewMode={previewMode} />
         )}
         {tab === "account" && (
           <section className="customer-page-section">

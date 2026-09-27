@@ -35,6 +35,7 @@ export function Icon({ name, size = 20 }) {
     search: (<> <circle cx="11" cy="11" r="6.5" /> <path d="m16 16 4 4" /> </>),
     cart: (<> <path d="M3 4h2l2.2 10.2h10.6L20 7H6" /> <circle cx="9" cy="19" r="1.3" /> <circle cx="17" cy="19" r="1.3" /> </>),
     bell: (<> <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /> <path d="M10 21h4" /> </>),
+    chat: (<> <path d="M4 5h16v11H9l-5 4V5Z" /> <path d="M8 9h8M8 12h5" /> </>),
     moon: (<path d="M20 15.2A8.5 8.5 0 0 1 8.8 4 8.6 8.6 0 1 0 20 15.2Z" />),
     sun: (<> <circle cx="12" cy="12" r="3.5" /> <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /> </>),
     menu: (<><path d="M4 7h16M4 12h16M4 17h16" /></>),
