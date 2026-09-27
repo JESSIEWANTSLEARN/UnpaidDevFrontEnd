@@ -22,6 +22,13 @@ const INITIAL_ADJUSTMENT = {
   reference_note: "",
 };
 
+const INITIAL_WRITE_OFF = {
+  batch_id: "",
+  quantity: "",
+  reason: "DAMAGED",
+  reference_note: "",
+};
+
 export function StockInForm({
   products,
   previewMode,
@@ -485,6 +492,184 @@ export function AdjustmentForm({
         disabled={busy}
       >
         {busy ? "Saving..." : "Save Adjustment"}
+      </button>
+    </form>
+  );
+}
+export function WriteOffForm({
+  batches,
+  previewMode,
+  busy,
+  onSubmit,
+}) {
+  const [form, setForm] =
+    useState(INITIAL_WRITE_OFF);
+  const [error, setError] = useState("");
+
+  const availableBatches = useMemo(
+    () =>
+      batches.filter(
+        (batch) => Number(batch.current_quantity) > 0,
+      ),
+    [batches],
+  );
+
+  const selectedBatch = useMemo(
+    () =>
+      availableBatches.find(
+        (batch) =>
+          String(batch.batch_id) ===
+          String(form.batch_id),
+      ) || null,
+    [availableBatches, form.batch_id],
+  );
+
+  const update = (field) => (event) => {
+    setForm((current) => ({
+      ...current,
+      [field]: event.target.value,
+    }));
+  };
+
+  const submit = async (event) => {
+    event.preventDefault();
+
+    if (previewMode || busy) {
+      return;
+    }
+
+    setError("");
+
+    try {
+      await onSubmit({
+        batch_id: Number(form.batch_id),
+        quantity: Number(form.quantity),
+        reason: form.reason,
+        reference_note:
+          form.reference_note.trim(),
+      });
+
+      setForm(INITIAL_WRITE_OFF);
+    } catch (requestError) {
+      setError(
+        requestError.message ||
+          "Unable to record the write-off.",
+      );
+    }
+  };
+
+  if (previewMode) {
+    return (
+      <div className="role-live-readonly">
+        Inventory write-offs are disabled in
+        Super Admin preview mode.
+      </div>
+    );
+  }
+
+  return (
+    <form
+      className="role-live-form"
+      onSubmit={submit}
+    >
+      <div className="role-live-form-grid">
+        <label>
+          Batch
+          <select
+            value={form.batch_id}
+            onChange={update("batch_id")}
+            required
+          >
+            <option value="">Select batch</option>
+            {availableBatches.map((batch) => (
+              <option
+                key={batch.batch_id}
+                value={batch.batch_id}
+              >
+                {batch.batch_number} -{" "}
+                {batch.product_name} (
+                {batch.current_quantity} available)
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Reason
+          <select
+            value={form.reason}
+            onChange={update("reason")}
+            required
+          >
+            <option value="DAMAGED">
+              Damaged
+            </option>
+            <option value="MISSING">
+              Missing
+            </option>
+            <option value="EXPIRED">
+              Expired
+            </option>
+          </select>
+        </label>
+
+        <label>
+          Quantity to write off
+          <input
+            type="number"
+            min="1"
+            max={
+              selectedBatch
+                ? selectedBatch.current_quantity
+                : undefined
+            }
+            value={form.quantity}
+            onChange={update("quantity")}
+            required
+          />
+        </label>
+
+        <label className="role-live-form-wide">
+          Reason details
+          <input
+            value={form.reference_note}
+            onChange={update("reference_note")}
+            maxLength={200}
+            placeholder="Example: damaged during handling"
+            required
+          />
+        </label>
+      </div>
+
+      <p className="role-live-form-help">
+        Write-offs permanently reduce batch stock and
+        create a WRITE_OFF transaction. Use Adjustments
+        for inventory corrections instead.
+      </p>
+
+      {form.reason === "EXPIRED" &&
+        selectedBatch && (
+          <p className="role-live-form-help">
+            Batch expiry:{" "}
+            {selectedBatch.expiry_date || "No expiry date"}
+          </p>
+        )}
+
+      {error && (
+        <p
+          className="role-live-form-error"
+          role="alert"
+        >
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className="role-live-primary"
+        disabled={busy || !selectedBatch}
+      >
+        {busy ? "Recording..." : "Record Write Off"}
       </button>
     </form>
   );

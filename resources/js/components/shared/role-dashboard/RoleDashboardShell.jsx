@@ -28,6 +28,7 @@ export default function RoleDashboardShell({
     refresh,
     handleStockIn,
     handleAdjustment,
+    handleWriteOff,
     handleCreateSupplier,
     handleUpdateSupplier,
     handleCreatePurchaseOrder,
@@ -116,6 +117,7 @@ export default function RoleDashboardShell({
             busy={actionBusy}
             onStockIn={handleStockIn}
             onAdjustment={handleAdjustment}
+            onWriteOff={handleWriteOff}
             onCreateSupplier={handleCreateSupplier}
             onUpdateSupplier={handleUpdateSupplier}
             onCreatePurchaseOrder={

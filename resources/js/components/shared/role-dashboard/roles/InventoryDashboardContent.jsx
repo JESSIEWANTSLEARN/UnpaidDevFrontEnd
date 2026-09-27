@@ -2,6 +2,7 @@ import React from "react";
 import {
   AdjustmentForm,
   StockInForm,
+  WriteOffForm,
 } from "../../../inventory/InventoryActions.jsx";
 import {
   ProductsTable,
@@ -18,6 +19,7 @@ export default function InventoryDashboardContent({
   busy,
   onStockIn,
   onAdjustment,
+  onWriteOff,
 }) {
   const roleKey = "Inventory_Controller";
 
@@ -85,6 +87,36 @@ export default function InventoryDashboardContent({
             transactions={(data.transactions || []).filter(
               (transaction) =>
                 transaction.transaction_type === "ADJUSTMENT",
+            )}
+          />
+        </Section>
+      </>
+    );
+  }
+
+  if (activeModule === "Write Offs") {
+    return (
+      <>
+        <Section
+          title="Inventory Write Off"
+          description="Record damaged, missing, or expired stock without deleting its transaction history."
+        >
+          <WriteOffForm
+            batches={data.batches}
+            previewMode={previewMode}
+            busy={busy}
+            onSubmit={onWriteOff}
+          />
+        </Section>
+
+        <Section
+          title="Recent Write Offs"
+          description="Latest permanent stock reductions."
+        >
+          <TransactionsTable
+            transactions={(data.transactions || []).filter(
+              (transaction) =>
+                transaction.transaction_type === "WRITE_OFF",
             )}
           />
         </Section>

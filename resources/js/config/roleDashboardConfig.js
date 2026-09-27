@@ -85,6 +85,7 @@ export const ROLE_DASHBOARDS = {
       "Stock Movement",
       "Stock In",
       "Adjustments",
+      "Write Offs",
       "Low Stock",
     ],
   },

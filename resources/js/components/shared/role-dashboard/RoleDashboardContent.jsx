@@ -16,6 +16,7 @@ export default function RoleDashboardContent({
   busy,
   onStockIn,
   onAdjustment,
+  onWriteOff,
   onCreateSupplier,
   onUpdateSupplier,
   onCreatePurchaseOrder,
@@ -89,6 +90,7 @@ export default function RoleDashboardContent({
         busy={busy}
         onStockIn={onStockIn}
         onAdjustment={onAdjustment}
+        onWriteOff={onWriteOff}
       />
     );
   }

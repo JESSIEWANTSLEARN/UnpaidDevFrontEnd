@@ -96,6 +96,15 @@ export const roleAdjustStock = (form) =>
     },
   );
 
+export const roleWriteOffStock = (form) =>
+  request(
+    "/api/role-dashboard/write-off",
+    {
+      method: "POST",
+      body: form,
+    },
+  );
+
 export const roleCreateSupplier = (form) =>
   request(
     "/api/role-dashboard/suppliers",

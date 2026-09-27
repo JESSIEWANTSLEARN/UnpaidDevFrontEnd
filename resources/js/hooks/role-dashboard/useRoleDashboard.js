@@ -11,6 +11,7 @@ import {
   roleReceivePurchaseOrder,
   roleCreateSupplier,
   roleStockIn,
+  roleWriteOffStock,
   roleUpdatePurchaseOrderStatus,
   roleUpdateSalesOrderStatus,
   roleUpdateSupplier,
@@ -200,6 +201,12 @@ export default function useRoleDashboard({
       "Inventory adjustment saved.",
     );
 
+  const handleWriteOff = (form) =>
+    runAction(
+      () => roleWriteOffStock(form),
+      "Inventory write-off recorded.",
+    );
+
   const handleCreateSupplier = (form) =>
     runAction(
       () => roleCreateSupplier(form),
@@ -273,6 +280,7 @@ export default function useRoleDashboard({
     refresh,
     handleStockIn,
     handleAdjustment,
+    handleWriteOff,
     handleCreateSupplier,
     handleUpdateSupplier,
     handleCreatePurchaseOrder,
