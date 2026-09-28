@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import { EmptyState } from "../CustomerUi.jsx";
 import SupportQuickReplies from "./SupportQuickReplies.jsx";
@@ -22,6 +22,7 @@ export default function CustomerSupportPanel({
   const [picker, setPicker] = useState(null);
   const [context, setContext] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const messagesRef = useRef(null);
 
   const api = async (url, options = {}) => {
     const method = String(options.method || "GET").toUpperCase();
@@ -118,6 +119,32 @@ export default function CustomerSupportPanel({
   }, [
     previewMode,
     conversation?.conversation_id,
+  ]);
+
+  useEffect(() => {
+    if (!conversation || !messagesRef.current) {
+      return undefined;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      const node = messagesRef.current;
+
+      if (node) {
+        node.scrollTo({
+          top: node.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    });
+
+    return () =>
+      window.cancelAnimationFrame(frame);
+  }, [
+    conversation?.conversation_id,
+    conversation?.messages?.length,
+    context?.type,
+    context?.value?.product_id,
+    context?.value?.order_id,
   ]);
 
   useEffect(() => {
@@ -455,7 +482,7 @@ export default function CustomerSupportPanel({
                 </div>
               </header>
 
-              <div className="wbo-support-messages">
+              <div className="wbo-support-messages" ref={messagesRef}>
                 {(conversation.messages || []).map(
                   (item) => (
                     <article
@@ -490,32 +517,37 @@ export default function CustomerSupportPanel({
                     </article>
                   ),
                 )}
+
+                {conversation.status !== "CLOSED" &&
+                  context && (
+                    <div className="wbo-support-context-message">
+                      <SupportContextCard
+                        context={context}
+                        onClear={() =>
+                          setContext(null)
+                        }
+                        onOpen={() => {
+                          if (
+                            context?.type === "product" &&
+                            onOpenProduct
+                          ) {
+                            onOpenProduct(context.value);
+                          }
+
+                          if (
+                            context?.type === "order" &&
+                            onOpenOrder
+                          ) {
+                            onOpenOrder(context.value);
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
               </div>
 
               {conversation.status !== "CLOSED" ? (
                 <>
-                  <SupportContextCard
-                    context={context}
-                    onClear={() =>
-                      setContext(null)
-                    }
-                    onOpen={() => {
-                      if (
-                        context?.type === "product" &&
-                        onOpenProduct
-                      ) {
-                        onOpenProduct(context.value);
-                      }
-
-                      if (
-                        context?.type === "order" &&
-                        onOpenOrder
-                      ) {
-                        onOpenOrder(context.value);
-                      }
-                    }}
-                  />
-
                   {conversation.status === "BOT" && (
                     <SupportQuickReplies
                       context={context}

@@ -562,3 +562,86 @@
   font-weight: 800;
   cursor: pointer;
 }
+/* STAGE5 CHAT ATTACHMENT AND AUTO-SCROLL UI */
+.wbo-support-context-message {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 3px;
+}
+
+.wbo-support-context-message .wbo-support-context-card {
+  width: min(520px, 86%);
+  margin: 0;
+  padding: 10px;
+  gap: 9px;
+  border-color: rgba(77, 141, 255, 0.45);
+  background: rgba(37, 99, 235, 0.11);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.wbo-support-context-message .wbo-support-context-main {
+  align-items: stretch;
+}
+
+.wbo-support-context-media,
+.wbo-support-context-icon {
+  width: 76px;
+  min-width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wbo-support-context-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wbo-support-context-media span,
+.wbo-support-context-icon {
+  color: #8db4ff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.wbo-support-context-copy {
+  align-content: center;
+}
+
+.wbo-support-context-copy b {
+  color: #8db4ff;
+  font-size: 1rem;
+}
+
+.wbo-support-context-message .wbo-support-context-copy em {
+  margin-top: 2px;
+}
+
+.wbo-support-context-message .wbo-support-context-change {
+  align-self: flex-start;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.wbo-support-context-message .wbo-support-context-change:hover {
+  background: rgba(77, 141, 255, 0.12);
+}
+
+@media (max-width: 720px) {
+  .wbo-support-context-message .wbo-support-context-card {
+    width: 94%;
+  }
+
+  .wbo-support-context-media,
+  .wbo-support-context-icon {
+    width: 62px;
+    min-width: 62px;
+    height: 62px;
+  }
+}
