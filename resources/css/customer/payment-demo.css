@@ -1,0 +1,169 @@
+.customer-payment-demo-badge {
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #60a5fa;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+}
+
+.customer-demo-payment {
+  margin-top: 15px;
+  border: 1px solid var(--customer-border);
+  border-radius: 18px;
+  padding: 18px;
+  background: var(--customer-surface-soft);
+}
+
+.customer-demo-payment-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.customer-demo-payment-head div span,
+.customer-demo-payment-head div strong {
+  display: block;
+}
+
+.customer-demo-payment-head div span {
+  color: var(--customer-blue);
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+}
+
+.customer-demo-payment-head div strong {
+  margin-top: 4px;
+  color: var(--customer-text);
+  font-size: 16px;
+}
+
+.customer-demo-payment-head em {
+  color: var(--customer-muted);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.customer-demo-gcash-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.customer-demo-qr {
+  width: 150px;
+  aspect-ratio: 1;
+  border: 10px solid #fff;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(90deg, #111 12%, transparent 12% 24%, #111 24% 36%, transparent 36% 48%, #111 48% 60%, transparent 60% 72%, #111 72% 84%, transparent 84%),
+    linear-gradient(#111 12%, transparent 12% 24%, #111 24% 36%, transparent 36% 48%, #111 48% 60%, transparent 60% 72%, #111 72% 84%, transparent 84%),
+    #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+}
+
+.customer-demo-qr span {
+  border-radius: 8px;
+  padding: 7px 9px;
+  background: #fff;
+  color: #111827;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+}
+
+.customer-demo-payment-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.customer-demo-payment-copy p {
+  margin: 0;
+  color: var(--customer-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.customer-demo-payment-copy label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--customer-muted);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.customer-demo-payment-copy input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--customer-border);
+  border-radius: 12px;
+  padding: 0 12px;
+  background: var(--customer-surface);
+  color: var(--customer-text);
+}
+
+.customer-demo-payment-copy button {
+  width: fit-content;
+  min-height: 38px;
+  border: 0;
+  border-radius: 11px;
+  padding: 0 13px;
+  background: var(--customer-blue);
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.customer-demo-bank-details {
+  margin: 15px 0;
+  display: grid;
+  gap: 8px;
+}
+
+.customer-demo-bank-details div {
+  border: 1px solid var(--customer-border);
+  border-radius: 12px;
+  padding: 11px 12px;
+  background: var(--customer-surface);
+}
+
+.customer-demo-bank-details span,
+.customer-demo-bank-details strong {
+  display: block;
+}
+
+.customer-demo-bank-details span {
+  color: var(--customer-muted);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.customer-demo-bank-details strong {
+  margin-top: 3px;
+  color: var(--customer-text);
+  font-size: 12px;
+}
+
+@media (max-width: 620px) {
+  .customer-demo-payment-head {
+    display: grid;
+  }
+
+  .customer-demo-gcash-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-demo-qr {
+    width: 132px;
+  }
+}

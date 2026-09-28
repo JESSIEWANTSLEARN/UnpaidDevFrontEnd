@@ -7,23 +7,45 @@ import {
 } from "../utils/salesFormatters.js";
 
 function actionList(order) {
+  const actions = [];
+  const prepaid =
+    order.payment_method &&
+    order.payment_method !== "CASH_ON_DELIVERY";
+  const paymentReady =
+    !prepaid || order.payment_status === "PAID";
+
+  if (
+    prepaid &&
+    order.payment_status === "AWAITING_VERIFICATION"
+  ) {
+    actions.push([
+      "verify_payment",
+      "Verify Payment",
+    ]);
+  }
+
   if (order.status === "PENDING") {
-    return [
-      ["process", "Process"],
+    if (paymentReady) {
+      actions.push(["process", "Process"]);
+    }
+
+    actions.push(
       ["unfulfill", "Mark Unfulfilled"],
       ["cancel", "Cancel"],
-    ];
+    );
+
+    return actions;
   }
 
   if (order.status === "PROCESSING") {
-    return [
+    actions.push(
       ["fulfill", "Fulfill"],
       ["unfulfill", "Mark Unfulfilled"],
       ["cancel", "Cancel"],
-    ];
+    );
   }
 
-  return [];
+  return actions;
 }
 
 export default function SalesOrdersTable({
@@ -48,6 +70,7 @@ export default function SalesOrdersTable({
             <th>Date</th>
             <th>Units</th>
             <th>Total</th>
+            <th>Payment</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -70,6 +93,24 @@ export default function SalesOrdersTable({
                   {formatNumber(order.total_quantity)}
                 </td>
                 <td>{formatMoney(order.total_amount)}</td>
+                <td>
+                  <strong>
+                    {String(
+                      order.payment_method ||
+                        "CASH_ON_DELIVERY",
+                    ).replaceAll("_", " ")}
+                  </strong>
+                  <small>
+                    {String(
+                      order.payment_status || "PENDING",
+                    ).replaceAll("_", " ")}
+                  </small>
+                  {order.payment_reference_number && (
+                    <small>
+                      Ref: {order.payment_reference_number}
+                    </small>
+                  )}
+                </td>
                 <td>
                   <span
                     className={`sales-status status-${String(
@@ -132,7 +173,7 @@ export default function SalesOrdersTable({
 
               {expanded === order.order_id && (
                 <tr className="sales-role-items-row">
-                  <td colSpan="7">
+                  <td colSpan="8">
                     <div className="sales-role-items">
                       {(order.items || []).length ? (
                         order.items.map((item) => (

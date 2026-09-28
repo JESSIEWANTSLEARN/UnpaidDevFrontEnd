@@ -1,6 +1,9 @@
 import React from "react";
 import { Icon } from "../CustomerUi.jsx";
 import { money } from "../../../utils/customer/customerStoreUtils.js";
+import CustomerPaymentOptions, {
+  paymentLabel,
+} from "./CustomerPaymentOptions.jsx";
 
 /** Checkout dialog kept separate from the customer page state/orchestration. */
 export default function CustomerCheckoutModal({
@@ -17,6 +20,8 @@ export default function CustomerCheckoutModal({
   setCartOpen,
   paymentMethod,
   setPaymentMethod,
+  paymentReference,
+  setPaymentReference,
   reviewPayment,
   cartItems,
   cartTotal,
@@ -250,41 +255,12 @@ export default function CustomerCheckoutModal({
             )}
 
             {checkoutStep === "payment" && (
-              <div className="customer-checkout-review">
-                <div className="customer-payment-options">
-                  <button
-                    type="button"
-                    className={`customer-payment-option ${
-                      paymentMethod === "CASH_ON_DELIVERY" ? "is-selected" : ""
-                    }`}
-                    onClick={() => setPaymentMethod("CASH_ON_DELIVERY")}
-                  >
-                    <span className="customer-payment-radio" />
-                    <div>
-                      <strong>Cash on Delivery</strong>
-                      <small>Pay when your order is delivered.</small>
-                    </div>
-                    <span className="customer-payment-available">AVAILABLE</span>
-                  </button>
-
-                  <button type="button" className="customer-payment-option" disabled>
-                    <span className="customer-payment-radio" />
-                    <div>
-                      <strong>GCash</strong>
-                      <small>Online payment integration will be added later.</small>
-                    </div>
-                    <span>COMING SOON</span>
-                  </button>
-
-                  <button type="button" className="customer-payment-option" disabled>
-                    <span className="customer-payment-radio" />
-                    <div>
-                      <strong>Bank Transfer</strong>
-                      <small>Payment verification will be added later.</small>
-                    </div>
-                    <span>COMING SOON</span>
-                  </button>
-                </div>
+              <div className="customer-checkout-review">                <CustomerPaymentOptions
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                  paymentReference={paymentReference}
+                  setPaymentReference={setPaymentReference}
+                />
 
                 <div className="customer-checkout-actions">
                   <button type="button" className="customer-secondary" onClick={() => setCheckoutStep("details")}>
@@ -320,8 +296,15 @@ export default function CustomerCheckoutModal({
 
                   <section className="customer-checkout-review-card">
                     <span className="customer-kicker">PAYMENT</span>
-                    <h3>Cash on Delivery</h3>
-                    <p>Payment status will remain pending until the order is completed.</p>
+                    <h3>{paymentLabel(paymentMethod)}</h3>
+                    <p>
+                      {paymentMethod === "CASH_ON_DELIVERY"
+                        ? "Payment stays pending until the order is fulfilled."
+                        : "This demo payment waits for Sales verification before processing."}
+                    </p>
+                    {paymentReference && (
+                      <small>Reference: {paymentReference}</small>
+                    )}
                     <button type="button" className="customer-text-link" onClick={() => setCheckoutStep("payment")}>
                       Change payment method
                     </button>
@@ -382,12 +365,25 @@ export default function CustomerCheckoutModal({
                 <div className="customer-checkout-success-summary">
                   <div>
                     <span>Payment method</span>
-                    <strong>Cash on Delivery</strong>
+                    <strong>
+                      {paymentLabel(
+                        placedOrder?.payment_method ||
+                          paymentMethod,
+                      )}
+                    </strong>
                   </div>
                   <div>
                     <span>Payment status</span>
                     <strong>{placedOrder?.payment_status ?? "PENDING"}</strong>
                   </div>
+                  {placedOrder?.payment_reference_number && (
+                    <div>
+                      <span>Reference</span>
+                      <strong>
+                        {placedOrder.payment_reference_number}
+                      </strong>
+                    </div>
+                  )}
                   <div>
                     <span>Total</span>
                     <strong>{money(placedOrder?.total_amount ?? 0)}</strong>
