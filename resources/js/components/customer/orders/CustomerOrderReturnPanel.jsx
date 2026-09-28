@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+﻿import React, { useMemo, useState } from "react";
 import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import { money } from "../../../utils/customer/customerStoreUtils.js";
 import "../../../../css/customer/order-returns.css";
@@ -207,7 +207,9 @@ export default function CustomerOrderReturnPanel({
                         setSelected((current) => ({
                           ...current,
                           [item.order_detail_id]:
-                            event.target.checked ? 1 : 0,
+                            event.target.checked
+                              ? Number(item.quantity) || 1
+                              : 0,
                         }))
                       }
                     />

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Shared staff-role dashboard configuration.
  * Role keys must match WBO_Users.role exactly.
  * This config controls presentation only; Laravel still enforces authorization.
@@ -16,6 +16,7 @@ export const ROLE_DASHBOARDS = {
     modules: [
       "Operational Overview",
       "Inventory Health",
+      "Data Imports",
       "Purchase Activity",
       "Sales Activity",
       "Operational Alerts",
@@ -33,6 +34,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       "Purchasing Overview",
       "Suppliers",
+      "Data Imports",
+      "Supplier Returns",
       "Purchase Orders",
       "Reorder Needs",
       "Approvals",
@@ -50,6 +53,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       "Purchasing Tasks",
       "Suppliers",
+      "Data Imports",
+      "Supplier Returns",
       "Purchase Orders",
       "Reorder Requests",
     ],
@@ -66,6 +71,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       "Warehouse Overview",
       "Receiving",
+      "Returned Items",
+      "Data Imports",
       "Batch Tracking",
       "Stock Movement",
       "Warehouse Issues",
@@ -83,6 +90,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       "Inventory Overview",
       "Stock Movement",
+      "Return Inspection",
+      "Data Imports",
       "Stock In",
       "Adjustments",
       "Write Offs",
