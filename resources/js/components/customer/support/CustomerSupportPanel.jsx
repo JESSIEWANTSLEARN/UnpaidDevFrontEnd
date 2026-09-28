@@ -727,6 +727,16 @@ export default function CustomerSupportPanel({
                       onChange={(event) =>
                         setMessage(event.target.value)
                       }
+                      onKeyDown={(event) => {
+                        if (
+                          event.key === "Enter" &&
+                          !event.shiftKey &&
+                          !event.nativeEvent?.isComposing
+                        ) {
+                          event.preventDefault();
+                          event.currentTarget.form?.requestSubmit();
+                        }
+                      }}
                       placeholder={
                         conversation.status === "BOT"
                           ? "Ask a question or choose a quick option..."

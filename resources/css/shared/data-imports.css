@@ -1,4 +1,4 @@
-﻿.data-import-page {
+.data-import-page {
   display: grid;
   gap: 20px;
 }
@@ -479,3 +479,49 @@
     width: 100%;
   }
 }
+/* === WBO STAGE 5 FINAL THEME HOTFIX === */
+[data-theme="dark"] .data-import-page {
+  --ops-text: #e5e9f0;
+  --ops-muted: rgba(229, 233, 240, 0.68);
+  --ops-border: rgba(229, 233, 240, 0.18);
+  --ops-card: #111827;
+  --ops-soft: #172033;
+}
+
+[data-theme="dark"] .data-import-card,
+[data-theme="dark"] .data-import-history-card,
+[data-theme="dark"] .data-import-history-card header {
+  color: #e5e9f0;
+  border-color: rgba(229, 233, 240, 0.18);
+}
+
+[data-theme="dark"] .data-import-file {
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(96, 165, 250, 0.08);
+}
+
+[data-theme="dark"] .data-import-type-grid button.is-active {
+  border-color: rgba(96, 165, 250, 0.6);
+  background: rgba(96, 165, 250, 0.14);
+  box-shadow: inset 3px 0 #60a5fa;
+}
+
+[data-theme="dark"] .data-import-required code,
+[data-theme="dark"] .data-import-row-data span,
+[data-theme="dark"] .data-import-stats div,
+[data-theme="dark"] .data-import-history-counts span {
+  color: #e5e9f0;
+  border-color: rgba(229, 233, 240, 0.16);
+  background: #172033;
+}
+
+[data-theme="dark"] .data-import-table th {
+  background: #172033;
+}
+
+[data-theme="dark"] .data-import-secondary {
+  background: #111827;
+  border-color: rgba(229, 233, 240, 0.18);
+  color: #e5e9f0;
+}
+/* === WBO STAGE 5 FINAL THEME HOTFIX END === */

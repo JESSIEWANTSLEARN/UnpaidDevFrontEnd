@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { backendUrl } from "../../../config/api.js";
 import { Icon } from "../CustomerUi.jsx";
 
@@ -32,6 +32,19 @@ export default function CustomerHeader({ ctx }) {
     error,
     setError,
   } = ctx;
+
+  const openNotification = async (item) => {
+    await readNotification(item.notification_id);
+    setNotificationOpen(false);
+
+    if (item.related_product_id) {
+      sessionStorage.setItem(
+        "wbo_notification_product_id",
+        String(item.related_product_id),
+      );
+      changeTab("product");
+    }
+  };
 
   return (
     <>
@@ -163,9 +176,7 @@ export default function CustomerHeader({ ctx }) {
                                 : ""
                             }`}
                             onClick={() =>
-                              readNotification(
-                                item.notification_id
-                              )
+                              openNotification(item)
                             }
                           >
                             <span
