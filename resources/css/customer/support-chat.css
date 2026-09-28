@@ -176,3 +176,329 @@
     max-width: 92%;
   }
 }
+/* STAGE5 GUIDED SUPPORT */
+.wbo-support-welcome {
+  min-height: 500px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 30px;
+  text-align: center;
+}
+
+.wbo-support-welcome h2,
+.wbo-support-welcome p {
+  margin: 0;
+}
+
+.wbo-support-welcome p {
+  max-width: 520px;
+  color: #8fa0b8;
+}
+
+.wbo-support-welcome > button {
+  margin-top: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #2e6cff;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wbo-support-bot-circle {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #82adff;
+  background: rgba(46, 108, 255, 0.15);
+  font-weight: 900;
+}
+
+.wbo-support-context-card {
+  margin: 0 16px 12px;
+  padding: 13px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(73, 132, 255, 0.35);
+  border-radius: 13px;
+  background: rgba(46, 108, 255, 0.08);
+}
+
+.wbo-support-context-card img {
+  width: 58px;
+  height: 58px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.wbo-support-context-card > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 10px;
+}
+
+.wbo-support-context-card > div > span:first-child {
+  width: 100%;
+  color: #74a5ff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.wbo-support-context-card strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wbo-support-context-card small {
+  color: #9aa9bd;
+}
+
+.wbo-support-context-card > button {
+  border: 0;
+  background: transparent;
+  color: #74a5ff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wbo-support-quick {
+  padding: 0 16px 13px;
+}
+
+.wbo-support-quick > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #91a0b5;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.wbo-support-quick > div {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.wbo-support-quick button {
+  flex: 0 0 auto;
+  max-width: 310px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid rgba(125, 155, 194, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: inherit;
+  cursor: pointer;
+}
+
+.wbo-support-quick button:hover {
+  border-color: #4d8dff;
+  background: rgba(46, 108, 255, 0.1);
+}
+
+.wbo-support-picker {
+  margin: 0 16px 13px;
+  overflow: hidden;
+  border: 1px solid rgba(125, 155, 194, 0.26);
+  border-radius: 14px;
+  background: #0a1727;
+}
+
+.wbo-support-picker-head {
+  padding: 13px 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(125, 155, 194, 0.17);
+}
+
+.wbo-support-picker-head > div {
+  display: grid;
+  gap: 3px;
+}
+
+.wbo-support-picker-head small {
+  color: #91a0b5;
+}
+
+.wbo-support-picker-head > button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.wbo-support-order-picker {
+  max-height: 330px;
+  overflow-y: auto;
+}
+
+.wbo-support-order-picker > button {
+  width: 100%;
+  padding: 14px 15px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  border: 0;
+  border-bottom: 1px solid rgba(125, 155, 194, 0.12);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wbo-support-order-picker > button:hover {
+  background: rgba(46, 108, 255, 0.08);
+}
+
+.wbo-support-order-picker-copy,
+.wbo-support-order-picker-meta {
+  display: grid;
+  gap: 4px;
+}
+
+.wbo-support-order-picker-copy small,
+.wbo-support-order-picker-copy span {
+  color: #91a0b5;
+}
+
+.wbo-support-order-picker-meta {
+  justify-items: end;
+}
+
+.wbo-support-product-picker {
+  max-height: 350px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+}
+
+.wbo-support-product-picker > button {
+  min-width: 0;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(125, 155, 194, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wbo-support-product-picker > button:hover {
+  border-color: #4d8dff;
+}
+
+.wbo-support-product-picker-image {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.wbo-support-product-picker-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wbo-support-product-picker > button > strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wbo-support-product-picker > button > small {
+  color: #74a5ff;
+  font-weight: 800;
+}
+
+.wbo-support-product-picker > button > span {
+  color: #91a0b5;
+  font-size: 11px;
+}
+
+.wbo-support-picker-empty {
+  padding: 24px;
+  color: #91a0b5;
+  text-align: center;
+}
+
+.wbo-support-guided-composer {
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+}
+
+.wbo-support-plus-wrap {
+  position: relative;
+}
+
+.wbo-support-plus-button {
+  width: 45px;
+  height: 45px;
+  padding: 0 !important;
+  border: 1px solid #4d8dff !important;
+  border-radius: 50% !important;
+  background: rgba(46, 108, 255, 0.1) !important;
+  color: #74a5ff !important;
+  font-size: 28px;
+  font-weight: 400 !important;
+}
+
+.wbo-support-plus-menu {
+  position: absolute;
+  left: 0;
+  bottom: 53px;
+  z-index: 20;
+  width: 170px;
+  padding: 7px;
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(125, 155, 194, 0.25);
+  border-radius: 12px;
+  background: #0b1829;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+}
+
+.wbo-support-plus-menu button {
+  min-height: 39px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wbo-support-plus-menu button:hover {
+  background: rgba(46, 108, 255, 0.11);
+}
+
+@media (max-width: 720px) {
+  .wbo-support-product-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wbo-support-context-card {
+    align-items: flex-start;
+  }
+}

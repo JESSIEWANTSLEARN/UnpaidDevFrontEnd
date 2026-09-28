@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { backendUrl } from "../../../config/api.js";
 import { Icon } from "../CustomerUi.jsx";
 import { money } from "../../../utils/customer/customerStoreUtils.js";
@@ -99,9 +99,7 @@ export default function CustomerProductDetails({
   if (!product) {
     return (
       <section className="customer-page-section">
-        <button type="button" className="wbo-product-back" onClick={onBack}>
-          â† Back to products
-        </button>
+        <button type="button" className="wbo-product-back" onClick={onBack}>Back to products</button>
       </section>
     );
   }
@@ -174,7 +172,7 @@ export default function CustomerProductDetails({
           <div className="wbo-product-facts">
             <div>
               <span>SKU</span>
-              <strong>{product.sku || "â€”"}</strong>
+              <strong>{product.sku || "N/A"}</strong>
             </div>
 
             <div>
@@ -267,7 +265,7 @@ export default function CustomerProductDetails({
             </div>
             <div>
               <dt>SKU</dt>
-              <dd>{product.sku || "â€”"}</dd>
+              <dd>{product.sku || "N/A"}</dd>
             </div>
             <div>
               <dt>Category</dt>

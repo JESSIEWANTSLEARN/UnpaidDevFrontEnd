@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import { EmptyState } from "../CustomerUi.jsx";
+import SupportQuickReplies from "./SupportQuickReplies.jsx";
+import SupportContextCard from "./SupportContextCard.jsx";
+import SupportContextPicker from "./SupportContextPicker.jsx";
 import "../../../../css/customer/support-chat.css";
 
-export default function CustomerSupportPanel({ previewMode = false }) {
+export default function CustomerSupportPanel({
+  previewMode = false,
+  products = [],
+  orders = [],
+}) {
   const [rows, setRows] = useState([]);
   const [conversation, setConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("Customer support");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [picker, setPicker] = useState(null);
+  const [context, setContext] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const api = async (url, options = {}) => {
     const method = String(options.method || "GET").toUpperCase();
@@ -23,15 +33,20 @@ export default function CustomerSupportPanel({ previewMode = false }) {
       ...options,
       headers: {
         Accept: "application/json",
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.body
+          ? { "Content-Type": "application/json" }
+          : {}),
         ...(token ? { "X-CSRF-TOKEN": token } : {}),
         ...(options.headers || {}),
       },
     });
 
     const data = await response.json().catch(() => ({}));
+
     if (!response.ok || data.success === false) {
-      throw new Error(data.message || "Support request failed.");
+      throw new Error(
+        data.message || "Support request failed.",
+      );
     }
 
     return data;
@@ -39,7 +54,11 @@ export default function CustomerSupportPanel({ previewMode = false }) {
 
   const openConversation = async (id) => {
     if (!id || previewMode) return;
-    const data = await api(`/api/user/support/conversations/${id}`);
+
+    const data = await api(
+      `/api/user/support/conversations/${id}`,
+    );
+
     setConversation(data.conversation || null);
   };
 
@@ -48,13 +67,19 @@ export default function CustomerSupportPanel({ previewMode = false }) {
 
     try {
       setError("");
-      const data = await api("/api/user/support/conversations");
+
+      const data = await api(
+        "/api/user/support/conversations",
+      );
+
       const list = data.conversations || [];
       setRows(list);
 
       const preferred =
         conversation?.conversation_id ||
-        list.find((item) => item.status !== "CLOSED")?.conversation_id ||
+        list.find(
+          (item) => item.status !== "CLOSED",
+        )?.conversation_id ||
         list[0]?.conversation_id;
 
       if (preferred) {
@@ -62,8 +87,8 @@ export default function CustomerSupportPanel({ previewMode = false }) {
       } else {
         setConversation(null);
       }
-    } catch (e) {
-      setError(e.message);
+    } catch (requestError) {
+      setError(requestError.message);
     }
   };
 
@@ -72,38 +97,93 @@ export default function CustomerSupportPanel({ previewMode = false }) {
   }, [previewMode]);
 
   useEffect(() => {
-    if (previewMode || !conversation?.conversation_id) return undefined;
+    if (
+      previewMode ||
+      !conversation?.conversation_id
+    ) {
+      return undefined;
+    }
 
     const timer = window.setInterval(
-      () => openConversation(conversation.conversation_id).catch(() => {}),
+      () =>
+        openConversation(
+          conversation.conversation_id,
+        ).catch(() => {}),
       8000,
     );
 
     return () => window.clearInterval(timer);
-  }, [previewMode, conversation?.conversation_id]);
+  }, [
+    previewMode,
+    conversation?.conversation_id,
+  ]);
+
+  useEffect(() => {
+    if (previewMode) return;
+
+    try {
+      const raw = sessionStorage.getItem(
+        "wbo_support_context",
+      );
+
+      if (!raw) return;
+
+      const saved = JSON.parse(raw);
+
+      if (saved.type === "product") {
+        const product = products.find(
+          (item) =>
+            Number(item.product_id) ===
+            Number(saved.product_id),
+        );
+
+        if (product) {
+          setContext({
+            type: "product",
+            value: product,
+          });
+        }
+      }
+
+      sessionStorage.removeItem(
+        "wbo_support_context",
+      );
+    } catch {
+      sessionStorage.removeItem(
+        "wbo_support_context",
+      );
+    }
+  }, [previewMode, products]);
 
   const start = async () => {
     try {
       setBusy(true);
       setError("");
 
-      const data = await api("/api/user/support/conversations", {
-        method: "POST",
-        body: JSON.stringify({ subject }),
-      });
+      const data = await api(
+        "/api/user/support/conversations",
+        {
+          method: "POST",
+          body: JSON.stringify({ subject }),
+        },
+      );
 
-      setConversation(data.conversation || null);
+      setConversation(
+        data.conversation || null,
+      );
+
       await load();
-    } catch (e) {
-      setError(e.message);
+    } catch (requestError) {
+      setError(requestError.message);
     } finally {
       setBusy(false);
     }
   };
 
-  const send = async (event) => {
-    event.preventDefault();
-    if (!conversation || !message.trim()) return;
+  const sendText = async (text) => {
+    const clean = String(text || "").trim();
+
+    if (!conversation || !clean) return;
 
     try {
       setBusy(true);
@@ -113,18 +193,46 @@ export default function CustomerSupportPanel({ previewMode = false }) {
         `/api/user/support/conversations/${conversation.conversation_id}/messages`,
         {
           method: "POST",
-          body: JSON.stringify({ message: message.trim() }),
+          body: JSON.stringify({
+            message: clean,
+          }),
         },
       );
 
       setMessage("");
-      setConversation(data.conversation || conversation);
+      setConversation(
+        data.conversation || conversation,
+      );
+
       await load();
-    } catch (e) {
-      setError(e.message);
+    } catch (requestError) {
+      setError(requestError.message);
     } finally {
       setBusy(false);
     }
+  };
+
+  const send = async (event) => {
+    event.preventDefault();
+    await sendText(message);
+  };
+
+  const sendQuickReply = async (question) => {
+    let prefix = "";
+
+    if (context?.type === "order") {
+      prefix =
+        `[Order #${context.value.order_id} - ` +
+        `${context.value.status}] `;
+    }
+
+    if (context?.type === "product") {
+      prefix =
+        `[Product #${context.value.product_id} - ` +
+        `${context.value.name}] `;
+    }
+
+    await sendText(prefix + question);
   };
 
   const action = async (name) => {
@@ -136,16 +244,28 @@ export default function CustomerSupportPanel({ previewMode = false }) {
 
       const data = await api(
         `/api/user/support/conversations/${conversation.conversation_id}/${name}`,
-        { method: "POST", body: "{}" },
+        {
+          method: "POST",
+          body: "{}",
+        },
       );
 
-      setConversation(data.conversation || conversation);
+      setConversation(
+        data.conversation || conversation,
+      );
+
       await load();
-    } catch (e) {
-      setError(e.message);
+    } catch (requestError) {
+      setError(requestError.message);
     } finally {
       setBusy(false);
     }
+  };
+
+  const chooseContext = (nextContext) => {
+    setContext(nextContext);
+    setPicker(null);
+    setMenuOpen(false);
   };
 
   if (previewMode) {
@@ -153,14 +273,20 @@ export default function CustomerSupportPanel({ previewMode = false }) {
       <section className="customer-page-section">
         <div className="customer-page-title">
           <div>
-            <span className="customer-kicker">CUSTOMER SUPPORT</span>
-            <h1>Support and FAQ chat</h1>
-            <p>Customer support conversations stay private in Super Admin preview.</p>
+            <span className="customer-kicker">
+              CUSTOMER SUPPORT
+            </span>
+            <h1>Support assistant</h1>
+            <p>
+              Customer support conversations stay private
+              in Super Admin preview.
+            </p>
           </div>
         </div>
+
         <EmptyState
           title="Private support conversations protected"
-          text="Log in as a System User to use the support chat."
+          text="Log in as a System User to use the support assistant."
         />
       </section>
     );
@@ -170,19 +296,35 @@ export default function CustomerSupportPanel({ previewMode = false }) {
     <section className="customer-page-section">
       <div className="customer-page-title">
         <div>
-          <span className="customer-kicker">CUSTOMER SUPPORT</span>
-          <h1>Support and FAQ chat</h1>
-          <p>Ask the FAQ bot first, then transfer the conversation to Sales Support when needed.</p>
+          <span className="customer-kicker">
+            CUSTOMER SUPPORT
+          </span>
+          <h1>Walang Brownout Assistant</h1>
+          <p>
+            Choose a quick concern, attach an order or
+            product, or transfer to Sales Support.
+          </p>
         </div>
       </div>
 
-      {error && <div className="wbo-support-error">{error}</div>}
+      {error && (
+        <div className="wbo-support-error">
+          {error}
+        </div>
+      )}
 
       <div className="wbo-support-layout">
         <aside className="wbo-support-list">
           <div className="wbo-support-list-head">
             <strong>Conversations</strong>
-            <button type="button" onClick={load} disabled={busy}>Refresh</button>
+
+            <button
+              type="button"
+              onClick={load}
+              disabled={busy}
+            >
+              Refresh
+            </button>
           </div>
 
           {rows.map((item) => (
@@ -190,29 +332,50 @@ export default function CustomerSupportPanel({ previewMode = false }) {
               type="button"
               key={item.conversation_id}
               className={
-                conversation?.conversation_id === item.conversation_id
+                conversation?.conversation_id ===
+                item.conversation_id
                   ? "wbo-support-ticket is-active"
                   : "wbo-support-ticket"
               }
-              onClick={() => openConversation(item.conversation_id)}
+              onClick={() =>
+                openConversation(
+                  item.conversation_id,
+                )
+              }
             >
-              <strong>#{item.conversation_id} {item.subject || "Support"}</strong>
+              <strong>
+                #{item.conversation_id}{" "}
+                {item.subject || "Support"}
+              </strong>
               <span>{item.status}</span>
-              <small>{item.last_message || "No messages yet."}</small>
+              <small>
+                {item.last_message ||
+                  "No messages yet."}
+              </small>
             </button>
           ))}
 
-          {!rows.some((item) => item.status !== "CLOSED") && (
+          {!rows.some(
+            (item) => item.status !== "CLOSED",
+          ) && (
             <div className="wbo-support-new">
               <label>
                 <span>Topic</span>
+
                 <input
                   maxLength={150}
                   value={subject}
-                  onChange={(event) => setSubject(event.target.value)}
+                  onChange={(event) =>
+                    setSubject(event.target.value)
+                  }
                 />
               </label>
-              <button type="button" onClick={start} disabled={busy}>
+
+              <button
+                type="button"
+                onClick={start}
+                disabled={busy}
+              >
                 Start support chat
               </button>
             </div>
@@ -221,34 +384,67 @@ export default function CustomerSupportPanel({ previewMode = false }) {
 
         <div className="wbo-support-chat">
           {!conversation ? (
-            <EmptyState
-              title="Start a support conversation"
-              text="The FAQ bot answers common questions and can transfer you to staff."
-            />
+            <div className="wbo-support-welcome">
+              <div className="wbo-support-bot-circle">
+                WB
+              </div>
+
+              <h2>How can we help?</h2>
+
+              <p>
+                Start a chat to use guided FAQ questions,
+                order help, product help, and Sales Support.
+              </p>
+
+              <button
+                type="button"
+                onClick={start}
+                disabled={busy}
+              >
+                Start support chat
+              </button>
+            </div>
           ) : (
             <>
               <header>
                 <div>
                   <span>{conversation.status}</span>
-                  <h2>{conversation.subject || `Conversation #${conversation.conversation_id}`}</h2>
+
+                  <h2>
+                    {conversation.subject ||
+                      `Conversation #${conversation.conversation_id}`}
+                  </h2>
+
                   <small>
                     {conversation.assigned_staff
                       ? `Assigned to ${conversation.assigned_staff.name}`
-                      : "Not assigned to staff"}
+                      : conversation.status === "BOT"
+                        ? "FAQ Bot is assisting you"
+                        : "Waiting for Sales Support"}
                   </small>
                 </div>
 
                 <div className="wbo-support-actions">
                   {conversation.status === "BOT" && (
-                    <button type="button" onClick={() => action("escalate")} disabled={busy}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        action("escalate")
+                      }
+                      disabled={busy}
+                    >
                       Talk to staff
                     </button>
                   )}
-                  {conversation.status !== "CLOSED" && (
+
+                  {conversation.status !==
+                    "CLOSED" && (
                     <button
                       type="button"
                       className="is-danger"
-                      onClick={() => action("close")}
+                      onClick={() =>
+                        action("close")
+                      }
                       disabled={busy}
                     >
                       Close
@@ -258,48 +454,140 @@ export default function CustomerSupportPanel({ previewMode = false }) {
               </header>
 
               <div className="wbo-support-messages">
-                {(conversation.messages || []).map((item) => (
-                  <article
-                    key={item.message_id}
-                    className={`wbo-support-message sender-${String(item.sender_type).toLowerCase()}`}
-                  >
-                    <div>
-                      <strong>
-                        {item.sender_type === "CUSTOMER"
-                          ? "You"
-                          : item.sender_type === "BOT"
-                            ? "FAQ Bot"
-                            : item.sender_type === "SYSTEM"
-                              ? "System"
-                              : item.sender_name || "Sales Support"}
-                      </strong>
-                      <time>{new Date(item.created_at).toLocaleString()}</time>
-                    </div>
-                    <p>{item.message}</p>
-                  </article>
-                ))}
+                {(conversation.messages || []).map(
+                  (item) => (
+                    <article
+                      key={item.message_id}
+                      className={`wbo-support-message sender-${String(
+                        item.sender_type,
+                      ).toLowerCase()}`}
+                    >
+                      <div>
+                        <strong>
+                          {item.sender_type ===
+                          "CUSTOMER"
+                            ? "You"
+                            : item.sender_type ===
+                                "BOT"
+                              ? "FAQ Bot"
+                              : item.sender_type ===
+                                  "SYSTEM"
+                                ? "System"
+                                : item.sender_name ||
+                                  "Sales Support"}
+                        </strong>
+
+                        <time>
+                          {new Date(
+                            item.created_at,
+                          ).toLocaleString()}
+                        </time>
+                      </div>
+
+                      <p>{item.message}</p>
+                    </article>
+                  ),
+                )}
               </div>
 
               {conversation.status !== "CLOSED" ? (
-                <form className="wbo-support-composer" onSubmit={send}>
-                  <textarea
-                    rows={3}
-                    maxLength={3000}
-                    value={message}
-                    onChange={(event) => setMessage(event.target.value)}
-                    placeholder={
-                      conversation.status === "BOT"
-                        ? "Ask about products, orders, payment, delivery, or the store..."
-                        : "Write a message to Sales Support..."
+                <>
+                  <SupportContextCard
+                    context={context}
+                    onClear={() =>
+                      setContext(null)
                     }
                   />
-                  <button type="submit" disabled={busy || !message.trim()}>
-                    Send
-                  </button>
-                </form>
+
+                  {conversation.status === "BOT" && (
+                    <SupportQuickReplies
+                      context={context}
+                      busy={busy}
+                      onSelect={sendQuickReply}
+                    />
+                  )}
+
+                  <SupportContextPicker
+                    mode={picker}
+                    orders={orders}
+                    products={products}
+                    onSelect={chooseContext}
+                    onClose={() =>
+                      setPicker(null)
+                    }
+                  />
+
+                  <form
+                    className="wbo-support-composer wbo-support-guided-composer"
+                    onSubmit={send}
+                  >
+                    <div className="wbo-support-plus-wrap">
+                      <button
+                        type="button"
+                        className="wbo-support-plus-button"
+                        onClick={() =>
+                          setMenuOpen(
+                            (open) => !open,
+                          )
+                        }
+                        aria-label="Attach order or product"
+                      >
+                        +
+                      </button>
+
+                      {menuOpen && (
+                        <div className="wbo-support-plus-menu">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPicker("orders");
+                              setMenuOpen(false);
+                            }}
+                          >
+                            Orders
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPicker("products");
+                              setMenuOpen(false);
+                            }}
+                          >
+                            Products
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <textarea
+                      rows={2}
+                      maxLength={3000}
+                      value={message}
+                      onChange={(event) =>
+                        setMessage(event.target.value)
+                      }
+                      placeholder={
+                        conversation.status === "BOT"
+                          ? "Ask a question or choose a quick option..."
+                          : "Write a message to Sales Support..."
+                      }
+                    />
+
+                    <button
+                      type="submit"
+                      disabled={
+                        busy || !message.trim()
+                      }
+                    >
+                      Send
+                    </button>
+                  </form>
+                </>
               ) : (
                 <div className="wbo-support-closed">
-                  Conversation closed. Start a new one if you need more help.
+                  Conversation closed. Start a new one
+                  if you need more help.
                 </div>
               )}
             </>

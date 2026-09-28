@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { backendUrl } from "../../../config/api.js";
 import CustomerReviewsPanel from "../reviews/CustomerReviewsPanel.jsx";
 import CustomerSupportPanel from "../support/CustomerSupportPanel.jsx";
@@ -109,18 +109,14 @@ export default function CustomerMainViews({ ctx }) {
   };
 
   const askAboutProduct = (product) => {
+    sessionStorage.setItem(
+      "wbo_support_context",
+      JSON.stringify({
+        type: "product",
+        product_id: product.product_id,
+      }),
+    );
     changeTab("support");
-    window.setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent("wbo:support-product", {
-          detail: {
-            product_id: product.product_id,
-            name: product.name,
-            sku: product.sku,
-          },
-        }),
-      );
-    }, 0);
   };
   return (
     <>
@@ -592,7 +588,11 @@ export default function CustomerMainViews({ ctx }) {
           <CustomerReviewsPanel previewMode={previewMode} />
         )}
         {tab === "support" && (
-          <CustomerSupportPanel previewMode={previewMode} />
+          <CustomerSupportPanel
+            previewMode={previewMode}
+            products={products}
+            orders={orders}
+          />
         )}
         {tab === "account" && (
           <section className="customer-page-section">
