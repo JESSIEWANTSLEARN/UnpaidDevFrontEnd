@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import "../../../../css/shared/role-dashboard-data.css";
 import SalesDashboardContent from "../../sales/SalesDashboardContent.jsx";
 import UserAdminDashboardContent from "../../user-admin/UserAdminDashboardContent.jsx";
@@ -7,6 +7,8 @@ import InventoryDashboardContent from "./roles/InventoryDashboardContent.jsx";
 import OperationsDashboardContent from "./roles/OperationsDashboardContent.jsx";
 import PurchasingDashboardContent from "./roles/PurchasingDashboardContent.jsx";
 import WarehouseDashboardContent from "./roles/WarehouseDashboardContent.jsx";
+import DataImportsPanel from "../imports/DataImportsPanel.jsx";
+import ReturnWorkflowPanel from "../returns/ReturnWorkflowPanel.jsx";
 
 export default function RoleDashboardContent({
   roleKey,
@@ -23,6 +25,7 @@ export default function RoleDashboardContent({
   onReceivePurchaseOrder,
   onPurchaseOrderStatus,
   onSalesOrderStatus,
+  onDashboardRefresh,
   theme,
 }) {
   if (roleKey === "User_Admin") {
@@ -31,6 +34,32 @@ export default function RoleDashboardContent({
         activeModule={activeModule}
         previewMode={previewMode}
         theme={theme}
+      />
+    );
+  }
+
+  if (activeModule === "Data Imports") {
+    return (
+      <DataImportsPanel
+        roleKey={roleKey}
+        previewMode={previewMode}
+        onDashboardRefresh={onDashboardRefresh}
+      />
+    );
+  }
+
+  if (
+    [
+      "Returns & Refunds",
+      "Returned Items",
+      "Return Inspection",
+      "Supplier Returns",
+    ].includes(activeModule)
+  ) {
+    return (
+      <ReturnWorkflowPanel
+        roleKey={roleKey}
+        previewMode={previewMode}
       />
     );
   }

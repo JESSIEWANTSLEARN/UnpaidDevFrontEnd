@@ -1,4 +1,4 @@
-export const navSections = [
+﻿export const navSections = [
   { label: "Overview", items: [{ name: "Dashboard", icon: "home" }] },
   {
     label: "Catalog",
@@ -16,6 +16,7 @@ export const navSections = [
       { name: "Stock Movement", icon: "chart" },
       { name: "Purchase Orders", icon: "cart" },
       { name: "Sales Orders", icon: "money" },
+      { name: "Data Imports", icon: "reports" },
     ],
   },
   {
