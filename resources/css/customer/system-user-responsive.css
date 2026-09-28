@@ -1,0 +1,139 @@
+﻿
+.customer-avatar-large {
+  width: 92px;
+  height: 92px;
+  font-size: 25px;
+}
+
+.customer-avatar-session {
+  width: 48px;
+  height: 48px;
+  font-size: 14px;
+}
+
+.customer-profile-photo-editor {
+  margin-bottom: 20px;
+  padding: 17px;
+  border: 1px solid var(--customer-border);
+  border-radius: 18px;
+  background: var(--customer-surface-soft);
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.customer-profile-photo-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.customer-profile-photo-copy > strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.customer-profile-photo-copy > p {
+  margin: 4px 0 0;
+  color: var(--customer-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.customer-profile-photo-actions {
+  margin-top: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.customer-photo-button,
+.customer-photo-remove {
+  min-height: 35px;
+  border-radius: 11px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 900;
+  transition: transform .17s ease, box-shadow .17s ease, background .17s ease, border-color .17s ease;
+}
+
+.customer-photo-button {
+  border: 1px solid var(--customer-blue);
+  background: var(--customer-blue);
+  color: #fff;
+}
+
+.customer-photo-button input {
+  display: none;
+}
+
+.customer-photo-button:hover,
+.customer-photo-button:focus-within {
+  transform: translateY(-1px);
+  box-shadow: 0 9px 20px rgba(37,99,235,.2);
+}
+
+.customer-photo-button.is-disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.customer-photo-remove {
+  border: 1px solid rgba(220,38,38,.22);
+  background: rgba(220,38,38,.07);
+  color: #dc2626;
+}
+
+.customer-photo-remove:hover,
+.customer-photo-remove:focus-visible {
+  outline: none;
+  background: #dc2626;
+  color: #fff;
+}
+
+.customer-photo-remove:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.customer-session-user > .customer-avatar {
+  width: 48px;
+  height: 48px;
+}
+
+@media (max-width: 560px) {
+  .customer-profile-photo-editor {
+    align-items: flex-start;
+  }
+
+  .customer-avatar-large {
+    width: 74px;
+    height: 74px;
+    font-size: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-shell *,
+  .customer-shell *::before,
+  .customer-shell *::after,
+  .customer-loading * {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  .customer-hero:hover .customer-hero-visual > img,
+  .customer-product-card:hover,
+  .customer-category-card:hover,
+  .customer-recent-order:hover,
+  .customer-primary:hover,
+  .customer-secondary:hover {
+    transform: none;
+  }
+}
