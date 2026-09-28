@@ -394,6 +394,16 @@ export default function SalesSupportPanel({ previewMode = false }) {
                     maxLength={3000}
                     value={message}
                     onChange={(event) => setMessage(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === "Enter" &&
+                        !event.shiftKey &&
+                        !event.nativeEvent?.isComposing
+                      ) {
+                        event.preventDefault();
+                        event.currentTarget.form?.requestSubmit();
+                      }
+                    }}
                     placeholder="Reply to the customer..."
                   />
                   <button type="submit" disabled={busy || !message.trim()}>

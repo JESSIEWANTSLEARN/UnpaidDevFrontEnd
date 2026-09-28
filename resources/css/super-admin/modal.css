@@ -510,3 +510,23 @@
     flex: 1;
   }
 }
+/* === WBO STAGE 5 FINAL NOTIFICATION NAVIGATION === */
+.admin-notification-list .list-item.is-clickable {
+  cursor: pointer;
+}
+
+.admin-notification-list .list-item.is-clickable:hover,
+.admin-notification-list .list-item.is-clickable:focus-visible {
+  outline: none;
+  box-shadow: inset 3px 0 var(--primary);
+  background: var(--activity-selected);
+}
+
+.notification-open-hint {
+  display: block;
+  margin-top: 5px;
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 800;
+}
+/* === WBO STAGE 5 FINAL NOTIFICATION NAVIGATION END === */

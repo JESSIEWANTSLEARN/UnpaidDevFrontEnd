@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { backendUrl } from "../../../config/api.js";
 import CustomerReviewsPanel from "../reviews/CustomerReviewsPanel.jsx";
 import CustomerSupportPanel from "../support/CustomerSupportPanel.jsx";
@@ -58,6 +58,29 @@ export default function CustomerMainViews({ ctx }) {
   } = ctx;
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  useEffect(() => {
+    if (tab !== "product") return;
+
+    const targetId = sessionStorage.getItem(
+      "wbo_notification_product_id",
+    );
+
+    if (!targetId) return;
+
+    const product = products.find(
+      (item) =>
+        Number(item.product_id) ===
+        Number(targetId),
+    );
+
+    if (product) {
+      setSelectedProduct(product);
+      sessionStorage.removeItem(
+        "wbo_notification_product_id",
+      );
+    }
+  }, [tab, products]);
 
   const openProduct = (product) => {
     if (!product) return;

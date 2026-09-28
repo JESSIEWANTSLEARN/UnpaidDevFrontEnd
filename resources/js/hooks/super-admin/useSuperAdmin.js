@@ -235,6 +235,38 @@ export default function useSuperAdmin() {
     loadUserSessions(selectedUser.user_id, page);
   };
   const handleNotificationStatus = (id, status) => runModalAction(() => apiRequest(`/api/super-admin/notifications/${id}`, { method: "PUT", body: { status } }), true);
+
+  const handleOpenNotification = (item) => {
+    if (!item) return;
+
+    if (item.status === "UNREAD") {
+      apiRequest(
+        `/api/super-admin/notifications/${item.notification_id}`,
+        {
+          method: "PUT",
+          body: { status: "ACKNOWLEDGED" },
+        },
+      )
+        .then(refresh)
+        .catch(() => {});
+    }
+
+    setActiveModal(null);
+    setModalError("");
+
+    if (item.related_product_id) {
+      setActiveMenu("Products");
+      return;
+    }
+
+    if (item.related_batch_id) {
+      setActiveMenu("Stock Movement");
+      return;
+    }
+
+    setActiveMenu("Dashboard");
+  };
+
   const handleCreateBackup = () => runModalAction(() => apiRequest("/api/super-admin/backups", { method: "POST" }), true);
   const handleRestoreBackup = (filename) => {
     if (!window.confirm(`Restore ${filename}? This replaces the current WalangBrownout data with the selected backup. A safety backup will be created first.`)) return;
@@ -273,7 +305,9 @@ export default function useSuperAdmin() {
       onAddPurchaseOrder: handleAddPurchaseOrder, onCompanySave: handleCompanySave, onUpdateUser: handleUpdateUser,
       onRevokeUserSession: handleRevokeUserSession, onRevokeAllUserSessions: handleRevokeAllUserSessions,
       onDeleteUser: handleDeleteUser,
-      onNotificationStatus: handleNotificationStatus, onCreateBackup: handleCreateBackup,
+      onNotificationStatus: handleNotificationStatus,
+      onOpenNotification: handleOpenNotification,
+      onCreateBackup: handleCreateBackup,
       onRestoreBackup: handleRestoreBackup, onDownloadBackup: handleDownloadBackup,
     },
   };
