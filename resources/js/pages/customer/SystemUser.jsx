@@ -1,6 +1,6 @@
-﻿import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
-import AppLoadingScreen from "../../components/shared/AppLoadingScreen.jsx";
+import { CustomerStoreSkeleton } from "../../components/customer/shell/CustomerLoadingSkeletons.jsx";
 import { useNavigate } from "react-router-dom";
 import CustomerCheckoutModal from "../../components/customer/checkout/CustomerCheckoutModal.jsx";
 import CustomerHeader from "../../components/customer/shell/CustomerHeader.jsx";
@@ -869,7 +869,7 @@ export default function SystemUser({ previewMode = false }) {
   ];
 
   if (loading) {
-    return <AppLoadingScreen label="Loading your store..." theme={theme} />;
+    return <CustomerStoreSkeleton theme={theme} />;
   }
 
   return (

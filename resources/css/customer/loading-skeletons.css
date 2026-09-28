@@ -1,0 +1,464 @@
+/*
+ * Customer skeleton loading states.
+ * Performance rule: animate opacity only so the skeleton does not add
+ * layout or main-thread animation cost while slow APIs are still loading.
+ */
+
+.customer-skeleton-screen {
+  --skeleton-bg: #f5f7fb;
+  --skeleton-surface: #ffffff;
+  --skeleton-soft: #e7ecf3;
+  --skeleton-strong: #d7dee9;
+  --skeleton-border: #e0e6ef;
+  --skeleton-header: #111d2d;
+
+  min-height: 100vh;
+  background: var(--skeleton-bg);
+  color: transparent;
+}
+
+.customer-skeleton-screen[data-theme="dark"] {
+  --skeleton-bg: #07101d;
+  --skeleton-surface: #0d1929;
+  --skeleton-soft: #172538;
+  --skeleton-strong: #22334a;
+  --skeleton-border: #1c2d42;
+  --skeleton-header: #091423;
+}
+
+.customer-skeleton-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.wbo-skeleton-block {
+  display: block;
+  border-radius: 9px;
+  background: var(--skeleton-soft);
+  animation: wbo-skeleton-pulse 1.15s ease-in-out infinite alternate;
+}
+
+.customer-skeleton-header {
+  min-height: 78px;
+  padding: 0 max(28px, calc((100vw - 1440px) / 2));
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--skeleton-header);
+}
+
+.customer-skeleton-brand,
+.customer-skeleton-actions,
+.customer-skeleton-buttons,
+.customer-skeleton-stats {
+  display: flex;
+  align-items: center;
+}
+
+.customer-skeleton-brand {
+  gap: 11px;
+  flex: 0 0 205px;
+}
+
+.customer-skeleton-brand > div {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+}
+
+.customer-skeleton-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.customer-skeleton-actions {
+  gap: 10px;
+}
+
+.wbo-skeleton-block.is-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+}
+
+.wbo-skeleton-block.is-brand-small {
+  width: 92px;
+  height: 7px;
+}
+
+.wbo-skeleton-block.is-brand-name {
+  width: 130px;
+  height: 13px;
+}
+
+.wbo-skeleton-block.is-nav {
+  width: 60px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.wbo-skeleton-block.is-search {
+  flex: 1;
+  min-width: 180px;
+  height: 46px;
+  margin-left: auto;
+  border-radius: 14px;
+}
+
+.wbo-skeleton-block.is-round {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+}
+
+.wbo-skeleton-block.is-cart {
+  width: 92px;
+  height: 42px;
+  border-radius: 13px;
+}
+
+.customer-skeleton-body {
+  width: min(1440px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 32px 0 64px;
+}
+
+.customer-skeleton-hero {
+  min-height: 500px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(380px, .95fr);
+  border-radius: 34px;
+  border: 1px solid var(--skeleton-border);
+  background: var(--skeleton-surface);
+}
+
+.customer-skeleton-hero-copy {
+  padding: 66px 64px 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.wbo-skeleton-block.is-eyebrow {
+  width: 175px;
+  height: 11px;
+}
+
+.wbo-skeleton-block.is-title-wide,
+.wbo-skeleton-block.is-title-medium {
+  height: 54px;
+  margin-top: 14px;
+  border-radius: 14px;
+}
+
+.wbo-skeleton-block.is-title-wide {
+  width: min(95%, 520px);
+}
+
+.wbo-skeleton-block.is-title-medium {
+  width: min(74%, 405px);
+}
+
+.wbo-skeleton-block.is-copy-wide,
+.wbo-skeleton-block.is-copy-medium {
+  height: 12px;
+  margin-top: 20px;
+}
+
+.wbo-skeleton-block.is-copy-wide {
+  width: min(88%, 560px);
+}
+
+.wbo-skeleton-block.is-copy-medium {
+  width: min(67%, 430px);
+  margin-top: 9px;
+}
+
+.customer-skeleton-buttons {
+  gap: 11px;
+  margin-top: 30px;
+}
+
+.wbo-skeleton-block.is-button {
+  width: 154px;
+  height: 46px;
+  border-radius: 14px;
+}
+
+.wbo-skeleton-block.is-button.secondary {
+  width: 138px;
+}
+
+.customer-skeleton-stats {
+  gap: 24px;
+  margin-top: 38px;
+}
+
+.customer-skeleton-stats > div {
+  width: 115px;
+  display: grid;
+  gap: 8px;
+}
+
+.wbo-skeleton-block.is-stat-number {
+  width: 40px;
+  height: 24px;
+}
+
+.wbo-skeleton-block.is-stat-label {
+  width: 85px;
+  height: 9px;
+}
+
+.customer-skeleton-hero-media {
+  position: relative;
+  min-height: 500px;
+  background: var(--skeleton-soft);
+}
+
+.wbo-skeleton-block.is-hero-image {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  border-radius: 0;
+}
+
+.customer-skeleton-live-card {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  width: 250px;
+  padding: 18px;
+  display: grid;
+  gap: 9px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--skeleton-surface) 88%, transparent);
+}
+
+.wbo-skeleton-block.is-live-label {
+  width: 95px;
+  height: 8px;
+}
+
+.wbo-skeleton-block.is-live-number {
+  width: 120px;
+  height: 24px;
+}
+
+.wbo-skeleton-block.is-live-copy {
+  width: 150px;
+  height: 9px;
+}
+
+.customer-skeleton-section {
+  margin-top: 56px;
+}
+
+.wbo-skeleton-block.is-section-kicker {
+  width: 135px;
+  height: 9px;
+}
+
+.wbo-skeleton-block.is-section-title {
+  width: 260px;
+  height: 32px;
+  margin-top: 10px;
+}
+
+.customer-skeleton-card-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 19px;
+}
+
+.customer-skeleton-card {
+  overflow: hidden;
+  border: 1px solid var(--skeleton-border);
+  border-radius: 24px;
+  background: var(--skeleton-surface);
+}
+
+.wbo-skeleton-block.is-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 0;
+}
+
+.customer-skeleton-card-copy {
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.wbo-skeleton-block.is-card-kicker {
+  width: 80px;
+  height: 8px;
+}
+
+.wbo-skeleton-block.is-card-title {
+  width: 72%;
+  height: 19px;
+}
+
+.wbo-skeleton-block.is-card-line {
+  width: 100%;
+  height: 10px;
+}
+
+.wbo-skeleton-block.is-card-line.short {
+  width: 65%;
+}
+
+.customer-review-skeleton-title {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.wbo-skeleton-block.is-review-kicker {
+  width: 205px;
+  height: 9px;
+}
+
+.wbo-skeleton-block.is-review-title {
+  width: min(310px, 70%);
+  height: 40px;
+}
+
+.wbo-skeleton-block.is-review-copy {
+  width: min(510px, 90%);
+  height: 12px;
+}
+
+.customer-review-skeleton-section {
+  margin-top: 26px;
+}
+
+.wbo-skeleton-block.is-review-heading {
+  width: 190px;
+  height: 25px;
+  margin-bottom: 16px;
+}
+
+.customer-review-skeleton-panel {
+  min-height: 118px;
+  padding: 24px;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  border: 1px solid var(--skeleton-border, var(--customer-border));
+  border-radius: 20px;
+  background: var(--skeleton-surface, var(--customer-surface));
+}
+
+.customer-review-skeleton .wbo-skeleton-block {
+  background: var(--customer-surface-soft);
+}
+
+.wbo-skeleton-block.is-review-card-title {
+  width: 42%;
+  height: 15px;
+}
+
+.wbo-skeleton-block.is-review-card-line {
+  width: 72%;
+  height: 10px;
+}
+
+.wbo-skeleton-block.is-review-card-line.short {
+  width: 54%;
+}
+
+@keyframes wbo-skeleton-pulse {
+  from { opacity: .56; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 1100px) {
+  .customer-skeleton-nav {
+    display: none;
+  }
+
+  .customer-skeleton-hero {
+    grid-template-columns: 1fr 44%;
+  }
+
+  .customer-skeleton-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .customer-skeleton-header {
+    min-height: 68px;
+    padding: 0 16px;
+  }
+
+  .customer-skeleton-brand {
+    flex-basis: auto;
+  }
+
+  .customer-skeleton-brand > div,
+  .customer-skeleton-header .is-search,
+  .customer-skeleton-actions .is-round:first-child {
+    display: none;
+  }
+
+  .customer-skeleton-actions {
+    margin-left: auto;
+  }
+
+  .customer-skeleton-body {
+    width: min(100% - 28px, 1440px);
+    padding-top: 20px;
+  }
+
+  .customer-skeleton-hero {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .customer-skeleton-hero-copy {
+    padding: 38px 26px;
+  }
+
+  .customer-skeleton-hero-media {
+    min-height: 280px;
+  }
+
+  .wbo-skeleton-block.is-hero-image {
+    min-height: 280px;
+  }
+
+  .wbo-skeleton-block.is-title-wide,
+  .wbo-skeleton-block.is-title-medium {
+    height: 38px;
+  }
+
+  .customer-skeleton-stats {
+    gap: 10px;
+  }
+
+  .customer-skeleton-stats > div {
+    width: 90px;
+  }
+
+  .customer-skeleton-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wbo-skeleton-block {
+    animation: none;
+  }
+}
