@@ -592,6 +592,11 @@ export default function CustomerMainViews({ ctx }) {
             previewMode={previewMode}
             products={products}
             orders={orders}
+            onOpenProduct={openProduct}
+            onOpenOrder={() => {
+              setOrderFilter("ALL");
+              changeTab("orders");
+            }}
           />
         )}
         {tab === "account" && (

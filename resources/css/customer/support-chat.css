@@ -502,3 +502,63 @@
     align-items: flex-start;
   }
 }
+
+/* STAGE5 CLICKABLE SUPPORT CONTEXT */
+.wbo-support-context-main {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wbo-support-context-main:hover strong,
+.wbo-support-context-main:hover em {
+  color: #8db4ff;
+}
+
+.wbo-support-context-copy {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 10px;
+}
+
+.wbo-support-context-copy > span:first-child {
+  width: 100%;
+  color: #74a5ff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.wbo-support-context-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wbo-support-context-copy small {
+  color: #9aa9bd;
+}
+
+.wbo-support-context-copy em {
+  width: 100%;
+  color: #74a5ff;
+  font-size: 11px;
+  font-style: normal;
+}
+
+.wbo-support-context-change {
+  border: 0;
+  background: transparent;
+  color: #74a5ff;
+  font-weight: 800;
+  cursor: pointer;
+}

@@ -10,6 +10,8 @@ export default function CustomerSupportPanel({
   previewMode = false,
   products = [],
   orders = [],
+  onOpenProduct,
+  onOpenOrder,
 }) {
   const [rows, setRows] = useState([]);
   const [conversation, setConversation] = useState(null);
@@ -497,6 +499,21 @@ export default function CustomerSupportPanel({
                     onClear={() =>
                       setContext(null)
                     }
+                    onOpen={() => {
+                      if (
+                        context?.type === "product" &&
+                        onOpenProduct
+                      ) {
+                        onOpenProduct(context.value);
+                      }
+
+                      if (
+                        context?.type === "order" &&
+                        onOpenOrder
+                      ) {
+                        onOpenOrder(context.value);
+                      }
+                    }}
                   />
 
                   {conversation.status === "BOT" && (
