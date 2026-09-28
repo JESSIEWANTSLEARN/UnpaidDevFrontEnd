@@ -1,0 +1,218 @@
+.sales-returns {
+  display: grid;
+  gap: 16px;
+}
+
+.sales-returns-empty,
+.sales-returns-error {
+  border: 1px solid var(--role-border);
+  border-radius: 16px;
+  padding: 22px;
+  background: var(--role-card);
+  color: var(--role-muted);
+  font-size: 13px;
+}
+
+.sales-returns-error {
+  border-color: rgba(220, 38, 38, 0.32);
+  color: #dc2626;
+}
+
+.sales-return-card {
+  overflow: hidden;
+  border: 1px solid var(--role-border);
+  border-radius: 18px;
+  background: var(--role-card);
+}
+
+.sales-return-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--role-border);
+}
+
+.sales-return-card header span,
+.sales-return-card header h3,
+.sales-return-card header small {
+  display: block;
+}
+
+.sales-return-card header span {
+  color: var(--role-accent);
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+}
+
+.sales-return-card header h3 {
+  margin: 4px 0 0;
+  color: var(--role-text);
+  font-size: 16px;
+}
+
+.sales-return-card header small {
+  margin-top: 4px;
+  color: var(--role-muted);
+  font-size: 10px;
+}
+
+.sales-return-status {
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: rgba(var(--role-accent-rgb), 0.11);
+  color: var(--role-accent);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.sales-return-reason,
+.sales-return-refund,
+.sales-return-inspection-summary,
+.sales-return-inspection-form {
+  margin: 16px 20px 0;
+}
+
+.sales-return-reason span,
+.sales-return-refund span,
+.sales-return-inspection-form label > span {
+  display: block;
+  color: var(--role-muted);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.sales-return-reason p {
+  margin: 5px 0 0;
+  color: var(--role-text);
+  font-size: 12px;
+}
+
+.sales-return-items {
+  margin: 14px 20px 0;
+  display: grid;
+  gap: 7px;
+}
+
+.sales-return-items div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--role-border);
+  border-radius: 11px;
+  padding: 9px 11px;
+}
+
+.sales-return-items strong {
+  color: var(--role-text);
+  font-size: 11px;
+}
+
+.sales-return-items span {
+  color: var(--role-muted);
+  font-size: 10px;
+}
+
+.sales-return-refund {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--role-border);
+  padding-top: 12px;
+}
+
+.sales-return-refund strong {
+  color: var(--role-text);
+  font-size: 13px;
+}
+
+.sales-return-inspection-summary {
+  display: grid;
+  gap: 4px;
+  border-radius: 12px;
+  padding: 11px 12px;
+  background: rgba(var(--role-accent-rgb), 0.08);
+}
+
+.sales-return-inspection-summary strong {
+  color: var(--role-accent);
+  font-size: 11px;
+}
+
+.sales-return-inspection-summary span {
+  color: var(--role-muted);
+  font-size: 10px;
+}
+
+.sales-return-inspection-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.4fr) 1fr;
+  gap: 12px;
+}
+
+.sales-return-inspection-form label {
+  display: block;
+}
+
+.sales-return-inspection-form select,
+.sales-return-inspection-form textarea {
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid var(--role-border);
+  border-radius: 10px;
+  padding: 9px 10px;
+  background: var(--role-card);
+  color: var(--role-text);
+}
+
+.sales-return-card footer {
+  margin-top: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--role-border);
+}
+
+.sales-return-card footer button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: var(--role-accent);
+  color: #fff;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.sales-return-card footer button.is-danger {
+  background: #dc2626;
+}
+
+.sales-return-card footer button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sales-return-card footer > span {
+  color: var(--role-muted);
+  font-size: 10px;
+}
+
+@media (max-width: 720px) {
+  .sales-return-card header {
+    display: grid;
+  }
+
+  .sales-return-inspection-form {
+    grid-template-columns: 1fr;
+  }
+
+  .sales-return-items div {
+    display: grid;
+  }
+}

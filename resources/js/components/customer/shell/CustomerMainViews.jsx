@@ -3,6 +3,7 @@ import { backendUrl } from "../../../config/api.js";
 import CustomerReviewsPanel from "../reviews/CustomerReviewsPanel.jsx";
 import CustomerSupportPanel from "../support/CustomerSupportPanel.jsx";
 import CustomerProductDetails from "../products/CustomerProductDetails.jsx";
+import CustomerOrderReturnPanel from "../orders/CustomerOrderReturnPanel.jsx";
 import { EmptyState, Icon, ProfileAvatar, StatusBadge } from "../CustomerUi.jsx";
 import {
   money,
@@ -558,6 +559,11 @@ export default function CustomerMainViews({ ctx }) {
                         </div>
                       ))}
                     </div>
+
+                    <CustomerOrderReturnPanel
+                      order={order}
+                      previewMode={previewMode}
+                    />
                   </article>
                 ))}
               </div>

@@ -8,6 +8,7 @@ import {
 } from "./common/SalesDashboardPrimitives.jsx";
 import SalesOrdersTable from "./tables/SalesOrdersTable.jsx";
 import SalesSupportPanel from "./support/SalesSupportPanel.jsx";
+import SalesReturnsPanel from "./returns/SalesReturnsPanel.jsx";
 import {
   SalesAvailabilityTable,
   SalesCustomersTable,
@@ -82,6 +83,17 @@ export default function SalesDashboardContent({
           busy={busy}
           onStatus={onOrderStatus}
         />
+      </SalesSection>
+    );
+  }
+
+  if (activeModule === "Returns & Refunds") {
+    return (
+      <SalesSection
+        title="Returns & Refunds"
+        description="Review customer return requests, inspect returned items, decide inventory disposition, and complete refunds."
+      >
+        <SalesReturnsPanel previewMode={previewMode} />
       </SalesSection>
     );
   }

@@ -74,6 +74,7 @@ export default function SystemUser({ previewMode = false }) {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState("details");
   const [paymentMethod, setPaymentMethod] = useState("CASH_ON_DELIVERY");
+  const [paymentReference, setPaymentReference] = useState("");
   const [placedOrder, setPlacedOrder] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -588,6 +589,7 @@ export default function SystemUser({ previewMode = false }) {
     }));
 
     setPaymentMethod("CASH_ON_DELIVERY");
+    setPaymentReference("");
     setPlacedOrder(null);
     setCheckoutStep("details");
     setError("");
@@ -611,6 +613,10 @@ export default function SystemUser({ previewMode = false }) {
 
   const reviewPayment = () => {
     setError("");
+    if (paymentMethod !== "CASH_ON_DELIVERY" && !paymentReference.trim()) {
+      setError("Generate or enter a demo payment reference before continuing.");
+      return;
+    }
     setCheckoutStep("summary");
   };
 
@@ -650,6 +656,7 @@ export default function SystemUser({ previewMode = false }) {
             delivery_notes: checkoutForm.delivery_notes,
           },
           payment_method: paymentMethod,
+          payment_reference_number: paymentMethod === "CASH_ON_DELIVERY" ? null : paymentReference.trim(),
         }),
       });
 
@@ -667,6 +674,7 @@ export default function SystemUser({ previewMode = false }) {
           data.payment?.payment_method ?? paymentMethod,
         payment_status:
           data.payment?.payment_status ?? "PENDING",
+        payment_reference_number: data.payment?.reference_number ?? paymentReference.trim(),
       });
       setCheckoutStep("success");
       await load();
@@ -879,7 +887,7 @@ export default function SystemUser({ previewMode = false }) {
 
             <CustomerMainViews ctx={{ tab, products, stats, categoryCards, changeTab, chooseCategory, addToCart, setCart, setCartOpen, showCartFeedback, setCartPulse, cartAddedId, cartShakeId, filteredProducts, search, setSearch, handleSearch, categories, category, setCategory, orderFilter, orderStatusCounts, setOrderFilter, filteredOrders, orders, previewMode, saveProfile, user, profile, setProfile, busy, photoBusy, changeProfilePhoto, removeProfilePhoto, password, setPassword, savePassword, deliveryProfile, setDeliveryProfile, saveDeliveryAddress, logout }} />
 
-      <CustomerOverlays ctx={{ notice, cartFeedback, checkoutOpen, checkoutStep, closeCheckout, busy, error, setError, reviewCheckout, checkoutForm, setCheckoutForm, setCheckoutOpen, setCartOpen, paymentMethod, setPaymentMethod, reviewPayment, cartItems, cartTotal, checkout, previewMode, placedOrder, setTab, setNotice, cartOpen, cartCount, setQty, startCheckout }} />
+      <CustomerOverlays ctx={{ notice, cartFeedback, checkoutOpen, checkoutStep, closeCheckout, busy, error, setError, reviewCheckout, checkoutForm, setCheckoutForm, setCheckoutOpen, setCartOpen, paymentMethod, setPaymentMethod, paymentReference, setPaymentReference, reviewPayment, cartItems, cartTotal, checkout, previewMode, placedOrder, setTab, setNotice, cartOpen, cartCount, setQty, startCheckout }} />
     </div>
   );
 }
