@@ -24,7 +24,6 @@ const HUMAN_ACTIVITY_EVENTS = [
     "keydown",
     "scroll",
     "touchstart",
-    "pointermove",
 ];
 
 async function request(url, options = {}) {
@@ -63,13 +62,19 @@ export default function PresenceTracker() {
     const lastHumanActivity = useRef(Date.now());
     const lastServerSync = useRef(0);
     const logoutStarted = useRef(false);
+    const policyReady = useRef(false);
+    const activityInFlight = useRef(false);
+    const heartbeatInFlight = useRef(false);
 
     useEffect(() => {
         if (isPublicPage) {
             setPolicy(null);
             logoutStarted.current = false;
+            policyReady.current = false;
             return undefined;
         }
+
+        policyReady.current = false;
 
         let disposed = false;
 
@@ -89,37 +94,59 @@ export default function PresenceTracker() {
         };
 
         const sendActivity = async (force = false) => {
-            if (disposed || logoutStarted.current) {
+            if (
+                disposed ||
+                logoutStarted.current ||
+                !policyReady.current
+            ) {
                 return false;
             }
+
             const now = Date.now();
 
-            if (!force && now - lastServerSync.current < 10_000) {
+            if (
+                activityInFlight.current ||
+                (!force &&
+                    now -
+                        lastServerSync.current <
+                        30_000)
+            ) {
                 return true;
             }
 
             lastServerSync.current = now;
+            activityInFlight.current = true;
 
-            const { response } = await request("/api/session/activity", {
-                method: "POST",
-                body: JSON.stringify({}),
-            });
+            try {
+                const { response } = await request(
+                    "/api/session/activity",
+                    {
+                        method: "POST",
+                        body: JSON.stringify({}),
+                    },
+                );
 
-            if (response.status === 401) {
-                redirectToLogin();
-                return false;
+                if (response.status === 401) {
+                    redirectToLogin();
+                    return false;
+                }
+
+                return response.ok;
+            } finally {
+                activityInFlight.current = false;
             }
-
-            return response.ok;
         };
 
         const markHumanActivity = () => {
             if (logoutStarted.current) return;
+
             lastHumanActivity.current = Date.now();
 
-            // The local timer resets immediately. Server writes are
-            // deliberately throttled to avoid a request on every mouse move.
-            void sendActivity(false);
+            // Local activity is immediate. The server sync starts only
+            // after the session policy is loaded and is throttled.
+            if (policyReady.current) {
+                void sendActivity(false);
+            }
         };
 
         const loadPolicy = async () => {
@@ -156,6 +183,7 @@ export default function PresenceTracker() {
 
             lastHumanActivity.current = Date.now();
             lastServerSync.current = Date.now();
+            policyReady.current = true;
 
             setPolicy({
                 idleSeconds,
@@ -164,17 +192,37 @@ export default function PresenceTracker() {
         };
 
         const heartbeat = async () => {
-            if (disposed || logoutStarted.current) return;
-            if (document.visibilityState !== "visible") {
+            if (
+                disposed ||
+                logoutStarted.current ||
+                !policyReady.current ||
+                heartbeatInFlight.current
+            ) {
                 return;
             }
 
-            const { response } = await request("/api/presence/heartbeat", {
-                method: "POST",
-            });
+            if (
+                document.visibilityState !==
+                "visible"
+            ) {
+                return;
+            }
 
-            if (response.status === 401) {
-                redirectToLogin();
+            heartbeatInFlight.current = true;
+
+            try {
+                const { response } = await request(
+                    "/api/presence/heartbeat",
+                    {
+                        method: "POST",
+                    },
+                );
+
+                if (response.status === 401) {
+                    redirectToLogin();
+                }
+            } finally {
+                heartbeatInFlight.current = false;
             }
         };
 
@@ -192,7 +240,6 @@ export default function PresenceTracker() {
         };
 
         void loadPolicy();
-        void heartbeat();
 
         HUMAN_ACTIVITY_EVENTS.forEach((eventName) => {
             window.addEventListener(eventName, markHumanActivity, {
@@ -200,9 +247,22 @@ export default function PresenceTracker() {
             });
         });
 
-        const heartbeatId = window.setInterval(heartbeat, 60_000);
+        const firstHeartbeatId =
+            window.setTimeout(
+                heartbeat,
+                15_000,
+            );
 
-        const clockId = window.setInterval(() => setClock(Date.now()), 250);
+        const heartbeatId =
+            window.setInterval(
+                heartbeat,
+                60_000,
+            );
+
+        const clockId = window.setInterval(
+            () => setClock(Date.now()),
+            1000,
+        );
 
         document.addEventListener("visibilitychange", heartbeat);
 
@@ -215,8 +275,13 @@ export default function PresenceTracker() {
                 window.removeEventListener(eventName, markHumanActivity);
             });
 
+            window.clearTimeout(firstHeartbeatId);
             window.clearInterval(heartbeatId);
             window.clearInterval(clockId);
+
+            policyReady.current = false;
+            activityInFlight.current = false;
+            heartbeatInFlight.current = false;
 
             document.removeEventListener("visibilitychange", heartbeat);
 

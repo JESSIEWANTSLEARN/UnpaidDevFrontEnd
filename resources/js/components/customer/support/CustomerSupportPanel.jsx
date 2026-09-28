@@ -23,6 +23,44 @@ export default function CustomerSupportPanel({
   const [context, setContext] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const messagesRef = useRef(null);
+  const listRequestRef = useRef(false);
+  const conversationRequestRef = useRef(false);
+  const mutationRef = useRef(false);
+
+  const syncConversationRow = (nextConversation) => {
+    if (!nextConversation?.conversation_id) return;
+
+    const messages = nextConversation.messages || [];
+    const summary = {
+      conversation_id: nextConversation.conversation_id,
+      subject: nextConversation.subject,
+      status: nextConversation.status,
+      updated_at: nextConversation.updated_at,
+      last_message:
+        messages.length > 0
+          ? messages[messages.length - 1].message
+          : null,
+    };
+
+    setRows((current) => {
+      const exists = current.some(
+        (item) =>
+          Number(item.conversation_id) ===
+          Number(summary.conversation_id),
+      );
+
+      if (!exists) {
+        return [summary, ...current];
+      }
+
+      return current.map((item) =>
+        Number(item.conversation_id) ===
+        Number(summary.conversation_id)
+          ? { ...item, ...summary }
+          : item,
+      );
+    });
+  };
 
   const api = async (url, options = {}) => {
     const method = String(options.method || "GET").toUpperCase();
@@ -56,17 +94,40 @@ export default function CustomerSupportPanel({
   };
 
   const openConversation = async (id) => {
-    if (!id || previewMode) return;
+    if (
+      !id ||
+      previewMode ||
+      mutationRef.current ||
+      conversationRequestRef.current
+    ) {
+      return;
+    }
 
-    const data = await api(
-      `/api/user/support/conversations/${id}`,
-    );
+    conversationRequestRef.current = true;
 
-    setConversation(data.conversation || null);
+    try {
+      const data = await api(
+        `/api/user/support/conversations/${id}`,
+      );
+
+      const next = data.conversation || null;
+      setConversation(next);
+      syncConversationRow(next);
+    } finally {
+      conversationRequestRef.current = false;
+    }
   };
 
   const load = async () => {
-    if (previewMode) return;
+    if (
+      previewMode ||
+      mutationRef.current ||
+      listRequestRef.current
+    ) {
+      return;
+    }
+
+    listRequestRef.current = true;
 
     try {
       setError("");
@@ -92,6 +153,8 @@ export default function CustomerSupportPanel({
       }
     } catch (requestError) {
       setError(requestError.message);
+    } finally {
+      listRequestRef.current = false;
     }
   };
 
@@ -112,7 +175,7 @@ export default function CustomerSupportPanel({
         openConversation(
           conversation.conversation_id,
         ).catch(() => {}),
-      8000,
+      5000,
     );
 
     return () => window.clearInterval(timer);
@@ -186,6 +249,7 @@ export default function CustomerSupportPanel({
 
   const start = async () => {
     try {
+      mutationRef.current = true;
       setBusy(true);
       setError("");
 
@@ -197,14 +261,13 @@ export default function CustomerSupportPanel({
         },
       );
 
-      setConversation(
-        data.conversation || null,
-      );
-
-      await load();
+      const next = data.conversation || null;
+      setConversation(next);
+      syncConversationRow(next);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
+      mutationRef.current = false;
       setBusy(false);
     }
   };
@@ -212,14 +275,44 @@ export default function CustomerSupportPanel({
   const sendText = async (text) => {
     const clean = String(text || "").trim();
 
-    if (!conversation || !clean) return;
+    if (!conversation || !clean || mutationRef.current) {
+      return;
+    }
+
+    const conversationId =
+      conversation.conversation_id;
+    const optimisticId =
+      `pending-customer-${Date.now()}`;
+
+    const optimisticMessage = {
+      message_id: optimisticId,
+      sender_type: "CUSTOMER",
+      sender_name: null,
+      message: clean,
+      created_at: new Date().toISOString(),
+      pending: true,
+    };
+
+    setMessage("");
+    setConversation((current) =>
+      current?.conversation_id === conversationId
+        ? {
+            ...current,
+            messages: [
+              ...(current.messages || []),
+              optimisticMessage,
+            ],
+          }
+        : current,
+    );
 
     try {
+      mutationRef.current = true;
       setBusy(true);
       setError("");
 
       const data = await api(
-        `/api/user/support/conversations/${conversation.conversation_id}/messages`,
+        `/api/user/support/conversations/${conversationId}/messages`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -228,15 +321,26 @@ export default function CustomerSupportPanel({
         },
       );
 
-      setMessage("");
-      setConversation(
-        data.conversation || conversation,
-      );
+      const next =
+        data.conversation || conversation;
 
-      await load();
+      setConversation(next);
+      syncConversationRow(next);
     } catch (requestError) {
+      setConversation((current) =>
+        current?.conversation_id === conversationId
+          ? {
+              ...current,
+              messages: (current.messages || []).filter(
+                (item) =>
+                  item.message_id !== optimisticId,
+              ),
+            }
+          : current,
+      );
       setError(requestError.message);
     } finally {
+      mutationRef.current = false;
       setBusy(false);
     }
   };
@@ -265,9 +369,15 @@ export default function CustomerSupportPanel({
   };
 
   const action = async (name) => {
-    if (!conversation) return;
+    if (
+      !conversation ||
+      mutationRef.current
+    ) {
+      return;
+    }
 
     try {
+      mutationRef.current = true;
       setBusy(true);
       setError("");
 
@@ -279,14 +389,15 @@ export default function CustomerSupportPanel({
         },
       );
 
-      setConversation(
-        data.conversation || conversation,
-      );
+      const next =
+        data.conversation || conversation;
 
-      await load();
+      setConversation(next);
+      syncConversationRow(next);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
+      mutationRef.current = false;
       setBusy(false);
     }
   };

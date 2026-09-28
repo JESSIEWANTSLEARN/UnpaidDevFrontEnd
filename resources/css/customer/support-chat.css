@@ -475,6 +475,7 @@
   border: 1px solid rgba(125, 155, 194, 0.25);
   border-radius: 12px;
   background: #0b1829;
+  color: #e8eef8;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
 }
 
@@ -484,7 +485,7 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: inherit;
+  color: #e8eef8;
   text-align: left;
   cursor: pointer;
 }
