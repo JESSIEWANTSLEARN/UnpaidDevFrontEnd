@@ -1,5 +1,6 @@
 import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import React, { useEffect, useState } from "react";
+import { CustomerReviewsSkeleton } from "../shell/CustomerLoadingSkeletons.jsx";
 import "../../../../css/customer/reviews.css";
 
 async function apiRequest(url, options = {}) {
@@ -150,13 +151,8 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
       )}
     </article>
   );
-
   if (loading) {
-    return (
-      <section className="customer-page-section">
-        <div className="customer-review-empty">Loading reviews...</div>
-      </section>
-    );
+    return <CustomerReviewsSkeleton />;
   }
 
   return (
