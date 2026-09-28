@@ -1,7 +1,8 @@
-﻿import React from "react";
+﻿import React, { useState } from "react";
 import { backendUrl } from "../../../config/api.js";
 import CustomerReviewsPanel from "../reviews/CustomerReviewsPanel.jsx";
 import CustomerSupportPanel from "../support/CustomerSupportPanel.jsx";
+import CustomerProductDetails from "../products/CustomerProductDetails.jsx";
 import { EmptyState, Icon, ProfileAvatar, StatusBadge } from "../CustomerUi.jsx";
 import {
   money,
@@ -19,6 +20,10 @@ export default function CustomerMainViews({ ctx }) {
     changeTab,
     chooseCategory,
     addToCart,
+    setCart,
+    setCartOpen,
+    showCartFeedback,
+    setCartPulse,
     cartAddedId,
     cartShakeId,
     filteredProducts,
@@ -51,6 +56,72 @@ export default function CustomerMainViews({ ctx }) {
     logout,
   } = ctx;
 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const openProduct = (product) => {
+    if (!product) return;
+    setSelectedProduct(product);
+    changeTab("product");
+  };
+
+  const addProductQuantity = (product, quantity, openCartAfter = false) => {
+    const stock = Math.max(0, Number(product.available_stock || 0));
+    const requested = Math.max(1, Number(quantity) || 1);
+
+    if (stock <= 0) {
+      showCartFeedback(
+        "warning",
+        `${product.name} is currently out of stock.`,
+        product.product_id,
+      );
+      return;
+    }
+
+    setCart((current) => {
+      const currentQty = Number(
+        current[product.product_id]?.quantity ?? 0,
+      );
+
+      return {
+        ...current,
+        [product.product_id]: {
+          product_id: product.product_id,
+          quantity: Math.min(
+            currentQty + requested,
+            stock,
+          ),
+        },
+      };
+    });
+
+    showCartFeedback(
+      "success",
+      `${product.name} added to your cart.`,
+      product.product_id,
+    );
+
+    setCartPulse(false);
+    requestAnimationFrame(() => setCartPulse(true));
+
+    if (openCartAfter) {
+      setCartOpen(true);
+    }
+  };
+
+  const askAboutProduct = (product) => {
+    changeTab("support");
+    window.setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent("wbo:support-product", {
+          detail: {
+            product_id: product.product_id,
+            name: product.name,
+            sku: product.sku,
+          },
+        }),
+      );
+    }, 0);
+  };
   return (
     <>
 <main className="customer-main">
@@ -157,7 +228,19 @@ export default function CustomerMainViews({ ctx }) {
               {products.length ? (
                 <div className="customer-product-grid customer-featured-grid">
                   {products.slice(0, 4).map((product) => (
-                    <article className="customer-product-card" key={product.product_id}>
+                    <article
+                      className="customer-product-card"
+                      key={product.product_id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openProduct(product)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          openProduct(product);
+                        }
+                      }}
+                    >
                       <div className="customer-product-media">
                         {product.image_url ? (
                           <img
@@ -192,7 +275,10 @@ export default function CustomerMainViews({ ctx }) {
                                 ? "is-limit"
                                 : ""
                             }`}
-                            onClick={() => addToCart(product)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              addToCart(product);
+                            }}
                             disabled={product.available_stock <= 0}
                           >
                             <Icon
@@ -291,7 +377,19 @@ export default function CustomerMainViews({ ctx }) {
             {filteredProducts.length ? (
               <div className="customer-product-grid">
                 {filteredProducts.map((product) => (
-                  <article className="customer-product-card" key={product.product_id}>
+                  <article
+                      className="customer-product-card"
+                      key={product.product_id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openProduct(product)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          openProduct(product);
+                        }
+                      }}
+                    >
                     <div className="customer-product-media">
                       {product.image_url ? (
                         <img
@@ -329,7 +427,10 @@ export default function CustomerMainViews({ ctx }) {
                               ? "is-limit"
                               : ""
                           }`}
-                          onClick={() => addToCart(product)}
+                          onClick={(event) => {
+                              event.stopPropagation();
+                              addToCart(product);
+                            }}
                           disabled={product.available_stock <= 0}
                         >
                           <Icon
@@ -357,6 +458,22 @@ export default function CustomerMainViews({ ctx }) {
           </section>
         )}
 
+        {tab === "product" && (
+          <CustomerProductDetails
+            product={selectedProduct}
+            products={products}
+            previewMode={previewMode}
+            onBack={() => changeTab("shop")}
+            onSelectProduct={openProduct}
+            onAddQuantity={(product, quantity) =>
+              addProductQuantity(product, quantity, false)
+            }
+            onBuyNow={(product, quantity) =>
+              addProductQuantity(product, quantity, true)
+            }
+            onAskProduct={askAboutProduct}
+          />
+        )}
         {tab === "orders" && (
           <section className="customer-page-section">
             <div className="customer-page-title">
