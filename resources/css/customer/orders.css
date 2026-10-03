@@ -68,3 +68,28 @@
   }
 }
 /* === WBO ORDER STATUS FILTERS END === */
+
+/* Briefly highlight an order opened from a notification. */
+.customer-order-card.is-notification-target {
+  outline: 2px solid #1687ff;
+  outline-offset: 3px;
+  animation: wbo-order-notification-focus 2.2s ease;
+}
+
+@keyframes wbo-order-notification-focus {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+
+  25%,
+  70% {
+    box-shadow: 0 0 0 7px rgba(22, 135, 255, 0.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-order-card.is-notification-target {
+    animation: none;
+  }
+}

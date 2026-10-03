@@ -31,6 +31,7 @@ export function Icon({ name, size = 20 }) {
     home: (<> <path d="M3 11.5 12 4l9 7.5" /> <path d="M5.5 10.5V20h13v-9.5" /> <path d="M9.5 20v-6h5v6" /> </>),
     products: (<> <path d="M4 7.5 12 3l8 4.5-8 4.5-8-4.5Z" /> <path d="M4 7.5V16.5L12 21l8-4.5v-9" /> <path d="M12 12v9" /> </>),
     orders: (<> <path d="M6 3h12v18H6z" /> <path d="M9 7h6M9 11h6M9 15h4" /> </>),
+    wallet: (<> <rect x="3" y="6" width="18" height="14" rx="2" /> <path d="M16 10h5v6h-5a3 3 0 0 1 0-6Z" /> <circle cx="17" cy="13" r=".7" /> </>),
     user: (<> <circle cx="12" cy="8" r="3.5" /> <path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6" /> </>),
     search: (<> <circle cx="11" cy="11" r="6.5" /> <path d="m16 16 4 4" /> </>),
     cart: (<> <path d="M3 4h2l2.2 10.2h10.6L20 7H6" /> <circle cx="9" cy="19" r="1.3" /> <circle cx="17" cy="19" r="1.3" /> </>),

@@ -1,9 +1,10 @@
-import { backendUrl } from "../../config/api.js";
-import { useEffect, useRef, useState } from "react";
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "../../../css/public/landing-page.css";
+import "../../../css/shared/cinematic-customer.css";
 import usePublicTheme from "../../hooks/usePublicTheme.js";
 import PublicThemeSwitch from "../../components/shared/PublicThemeSwitch.jsx";
+import CinematicReveal from "../../components/shared/CinematicReveal.jsx";
 import {
   cartItemCount,
   readGuestCart,
@@ -17,23 +18,27 @@ const mainpic = backendUrl("/storage/site/mainpic.jpg");
 const services = [
   {
     title: "Portable AC Units",
+    label: "COOLING",
+    description: "Flexible room cooling for homes, offices, and compact spaces.",
     image: backendUrl("/storage/products/PortableAcUnits.jpg"),
-    className: "thumb-one",
   },
   {
     title: "Air Purifiers",
+    label: "AIR QUALITY",
+    description: "Cleaner indoor air for more comfortable everyday living.",
     image: backendUrl("/storage/products/AirPurifier.jpg"),
-    className: "thumb-two",
   },
   {
     title: "Replacement Filters",
+    label: "FILTERS",
+    description: "Essential replacement parts that keep air systems performing.",
     image: backendUrl("/storage/products/ReplacementFilter.webp"),
-    className: "thumb-three",
   },
   {
     title: "Smart Thermostats",
+    label: "SMART HOME",
+    description: "Connected temperature control designed around energy awareness.",
     image: backendUrl("/storage/products/SmartThermostat.jpg"),
-    className: "thumb-four",
   },
 ];
 
@@ -98,22 +103,22 @@ function normalizeProduct(product, index) {
     description: product.description ?? "",
     unit_price: Number(
       product.unit_price ??
-      product.price ??
-      product.selling_price ??
-      0
+        product.price ??
+        product.selling_price ??
+        0,
     ),
     available_stock: Number(
       product.available_stock ??
-      product.current_stock ??
-      product.stock ??
-      product.current_quantity ??
-      0
+        product.current_stock ??
+        product.stock ??
+        product.current_quantity ??
+        0,
     ),
     image_url: normalizeImagePath(
       product.image_url ??
-      product.image_path ??
-      product.primary_image ??
-      product.image
+        product.image_path ??
+        product.primary_image ??
+        product.image,
     ),
   };
 }
@@ -127,13 +132,15 @@ function formatPeso(value) {
 }
 
 function LandingPage() {
-  const pageRef = useRef(null);
   const { theme, toggleTheme } = usePublicTheme();
   const [cart, setCart] = useState(() => readGuestCart());
   const [products, setProducts] = useState(fallbackProducts);
   const [productsAreLive, setProductsAreLive] = useState(false);
   const [activeSession, setActiveSession] = useState(null);
   const [websiteContent, setWebsiteContent] = useState(null);
+  const [newsletterBusy, setNewsletterBusy] = useState(false);
+  const [newsletterMessage, setNewsletterMessage] = useState("");
+  const [newsletterError, setNewsletterError] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -152,18 +159,13 @@ function LandingPage() {
         }
       })
       .catch(() => {
-        // Keep the existing landing-page fallback content.
+        // The fallback copy keeps the public page usable if content API is unavailable.
       });
 
     return () => {
       active = false;
     };
   }, []);
-  const [collapsed, setCollapsed] = useState({
-    about: false,
-    services: false,
-    products: false,
-  });
 
   useEffect(() => {
     let cancelled = false;
@@ -218,14 +220,14 @@ function LandingPage() {
           setCart((current) => {
             const reconciled = reconcileCartWithProducts(
               current,
-              normalizedProducts
+              normalizedProducts,
             );
             writeGuestCart(reconciled);
             return reconciled;
           });
         }
       } catch {
-        // Keep the design visible with fallback cards if the API is temporarily unavailable.
+        // Fallback cards keep the visual design available during API downtime.
       }
     }
 
@@ -235,56 +237,6 @@ function LandingPage() {
       active = false;
     };
   }, []);
-
-  useEffect(() => {
-    const revealItems = pageRef.current?.querySelectorAll(".reveal-up") ?? [];
-
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const item = entry.target;
-            item.classList.remove("is-visible");
-            void item.offsetWidth;
-            item.classList.add("is-visible");
-          } else {
-            entry.target.classList.remove("is-visible");
-          }
-        });
-      },
-      {
-        threshold: 0.18,
-        rootMargin: "0px 0px -8% 0px",
-      }
-    );
-
-    revealItems.forEach((item) => revealObserver.observe(item));
-
-    return () => revealObserver.disconnect();
-  }, [products]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth <= 640;
-      setCollapsed({
-        about: mobile,
-        services: mobile,
-        products: mobile,
-      });
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const toggleSection = (section) => {
-    setCollapsed((previous) => ({
-      ...previous,
-      [section]: !previous[section],
-    }));
-  };
 
   const cartCount = cartItemCount(cart);
 
@@ -302,7 +254,10 @@ function LandingPage() {
 
   const addToCart = (product) => {
     const productId = Number(product.product_id);
-    const stock = Math.max(0, Math.floor(Number(product.available_stock) || 0));
+    const stock = Math.max(
+      0,
+      Math.floor(Number(product.available_stock) || 0),
+    );
 
     if (
       !productsAreLive ||
@@ -333,225 +288,291 @@ function LandingPage() {
     });
   };
 
-  const handleNewsletter = (event) => {
+  const handleNewsletter = async (event) => {
     event.preventDefault();
-    alert("Thank you for joining our newsletter!");
-    event.currentTarget.reset();
+
+    const form = event.currentTarget;
+    const email = String(
+      new FormData(form).get("email") || "",
+    ).trim();
+
+    if (!email) return;
+
+    try {
+      setNewsletterBusy(true);
+      setNewsletterMessage("");
+      setNewsletterError(false);
+
+      const token = await loadCsrfToken();
+
+      const response = await fetch(
+        backendUrl("/api/public/newsletter/subscribe"),
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            ...(token
+              ? { "X-CSRF-TOKEN": token }
+              : {}),
+          },
+          body: JSON.stringify({ email }),
+        },
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || data.success === false) {
+        throw new Error(
+          data.message ||
+            "Unable to join email updates.",
+        );
+      }
+
+      setNewsletterMessage(
+        data.message ||
+          "Subscribed. Check your email for confirmation.",
+      );
+      form.reset();
+    } catch (error) {
+      setNewsletterError(true);
+      setNewsletterMessage(
+        error.message ||
+          "Unable to join email updates.",
+      );
+    } finally {
+      setNewsletterBusy(false);
+    }
   };
 
   return (
-    <div
-      ref={pageRef}
-      className="page-shell wbo-landing"
-      data-theme={theme}
-    >
-      <header className="site-header">
-        <div className="max-width-container header-top">
-          <div className="header-brand">
-            <img
-              src={Logo}
-              alt="Walang Brown Out Logo"
-              width="45"
-              height="45"
-            />
+    <div className="wbo-cinematic" data-theme={theme}>
+      <header className="cinematic-header">
+        <Link to="/" className="cinematic-brand">
+          <img src={Logo} alt="Walang Brown Out Logo" width="44" height="44" />
+          <span>
+            <small>HOME COMFORT TECHNOLOGY</small>
+            <strong>WALANG BROWN OUT</strong>
+          </span>
+        </Link>
 
-            <div className="brand-text">
-              <span className="republic-text">
-                Republic of the Philippines
-              </span>
-              <div className="brand-title">WALANG BROWN OUT</div>
-            </div>
-          </div>
-
-          <div className="nav-actions">
-            <PublicThemeSwitch
-              theme={theme}
-              onToggle={toggleTheme}
-            />
-
-            {activeDashboardPath ? (
-              <Link to={activeDashboardPath} className="nav-button primary-nav-button">
-                {activeDashboardLabel}
-              </Link>
-            ) : (
-              <>
-                <Link to="/login" className="nav-button">
-                  Login
-                </Link>
-
-                <Link to="/signup" className="nav-button primary-nav-button">
-                  Create Account
-                </Link>
-              </>
-            )}
-
-            <button className="cart-button" type="button" aria-label={`${cartCount} item${cartCount === 1 ? "" : "s"} in cart`}>
-              Cart (<span aria-live="polite">{cartCount}</span>)
-            </button>
-          </div>
-        </div>
-
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="cinematic-nav" aria-label="Main navigation">
           <a href="#home">Home</a>
-          <a href="#solutions">Solutions</a>
-          <a href="#features">Features</a>
-          <a href="#inventory">Inventory</a>
+          <a href="#solutions">Categories</a>
+          <a href="#inventory">Products</a>
           <a href="#about">About</a>
           <Link to="/faq">FAQ</Link>
         </nav>
-      </header>
 
-      <main className="storefront">
-        <section id="home" className="promo-banner reveal-up">
-          <div className="promo-copy">
-            <span className="promo-tag">Home Comfort Solutions</span>
+        <div className="cinematic-header-actions">
+          <PublicThemeSwitch theme={theme} onToggle={toggleTheme} />
 
-            <h1>Comfort at home, all year round.</h1>
-
-            <p>
-              Walang BrownOut Appliances helps homes and businesses stay cool,
-              clean, and efficient with trusted portable AC units, air
-              purifiers, smart thermostats, and replacement filters.
-            </p>
-
-            <div className="promo-actions">
-              <a href="#solutions" className="primary-link">
-                Explore Solutions
-              </a>
+          {activeDashboardPath ? (
+            <Link
+              to={activeDashboardPath}
+              className="cinematic-header-button is-primary"
+            >
+              {activeDashboardLabel}
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="cinematic-header-button">
+                Sign in
+              </Link>
 
               <Link
-                to={activeDashboardPath || "/login"}
-                className="secondary-link"
+                to="/signup"
+                className="cinematic-header-button is-primary cinematic-header-signup"
               >
-                {activeDashboardPath ? activeDashboardLabel : "View Dashboard"}
+                Create account
               </Link>
+            </>
+          )}
+
+          <span className="cinematic-cart-count" title="Guest cart items">
+            Cart {cartCount}
+          </span>
+        </div>
+      </header>
+
+      <main>
+        <section id="home" className="cinematic-hero">
+          <div className="cinematic-hero-copy">
+            <span className="cinematic-kicker">SMARTER EVERYDAY COMFORT</span>
+
+            <h1>
+              WALANG
+              <br />
+              <em>BROWNOUT.</em>
+            </h1>
+
+            <p>
+              Discover cooling, cleaner air, and connected home-comfort
+              products backed by live warehouse availability.
+            </p>
+
+            <div className="cinematic-hero-actions">
+              <a href="#inventory" className="cinematic-primary-button">
+                Explore products
+                <span aria-hidden="true">→</span>
+              </a>
+
+              <a href="#solutions" className="cinematic-ghost-button">
+                Discover categories
+              </a>
+            </div>
+
+            <div className="cinematic-hero-metrics">
+              <div>
+                <strong>LIVE</strong>
+                <span>Warehouse stock</span>
+              </div>
+              <div>
+                <strong>OTP</strong>
+                <span>Secure accounts</span>
+              </div>
+              <div>
+                <strong>10</strong>
+                <span>Operational roles</span>
+              </div>
             </div>
           </div>
 
-          <div className="promo-visual" aria-label="Appliance display image">
-            <img src={mainpic} alt="Walang BrownOut Appliances" loading="eager" fetchPriority="high" />
+          <div className="cinematic-hero-media">
+            <img
+              src={mainpic}
+              alt="Walang Brownout home comfort appliances"
+              loading="eager"
+              fetchPriority="high"
+            />
+
+            <div className="cinematic-hero-orbit" aria-hidden="true" />
+
+            <div className="cinematic-floating-card">
+              <span>REAL-TIME INVENTORY</span>
+              <strong>Stock that reflects warehouse batches.</strong>
+            </div>
           </div>
+
+          <a href="#about" className="cinematic-scroll-cue">
+            <span>Scroll to discover</span>
+            <i aria-hidden="true">↓</i>
+          </a>
         </section>
 
-        <section
-          id="about"
-          style={websiteContent?.about?.visible === false ? { display: "none" } : undefined}
-          className={`categories-section ${
-            collapsed.about ? "collapsed" : ""
-          }`}
-        >
-          <div className="section-heading">
-            <h2>{websiteContent?.about?.title || "About Walang BrownOut"}</h2>
-            <a href="#about">Learn more</a>
+        {websiteContent?.about?.visible === false ? null : (
+          <CinematicReveal
+            as="section"
+            id="about"
+            className="cinematic-story-section"
+          >
+            <div className="cinematic-section-index">01</div>
 
-            <button
-              className="section-toggle"
-              aria-expanded={!collapsed.about}
-              aria-label="Toggle about section"
-              onClick={() => toggleSection("about")}
-              type="button"
-            >
-              <span className="chev" aria-hidden="true">{"\u25BE"}</span>
-            </button>
-          </div>
+            <div className="cinematic-story-copy">
+              <span className="cinematic-kicker">THE WALANG BROWNOUT EXPERIENCE</span>
+              <h2>
+                {websiteContent?.about?.title ||
+                  "Built for comfort. Powered by real operations."}
+              </h2>
+            </div>
 
-          <div className="about-box reveal-up">
+            <div className="cinematic-story-description">
+              <p>
+                {websiteContent?.about?.description ||
+                  "Walang BrownOut Appliances brings customer shopping together with live inventory, secure accounts, order processing, returns, and warehouse operations in one connected system."}
+              </p>
+
+              <span className="cinematic-story-line" />
+            </div>
+          </CinematicReveal>
+        )}
+
+        <section id="solutions" className="cinematic-section">
+          <CinematicReveal className="cinematic-section-heading">
+            <div>
+              <span className="cinematic-kicker">EXPLORE OUR CATEGORIES</span>
+              <h2>Comfort, designed around your space.</h2>
+            </div>
+
             <p>
-              {websiteContent?.about?.description ||
-                "Walang BrownOut Appliances is a regional distributor of home comfort products dedicated to improving everyday living through dependable cooling, clean air, and smarter energy use. We serve households, offices, and retail partners with efficient solutions built for comfort, health, and performance."}
+              Four focused product families keep discovery clear while the
+              inventory system keeps availability current.
             </p>
-          </div>
-        </section>
+          </CinematicReveal>
 
-        <section
-          id="solutions"
-          className={`categories-section ${
-            collapsed.services ? "collapsed" : ""
-          }`}
-        >
-          <div className="section-heading">
-            <h2>Our services</h2>
-            <a href="#solutions">Explore</a>
-
-            <button
-              className="section-toggle"
-              aria-expanded={!collapsed.services}
-              aria-label="Toggle services section"
-              onClick={() => toggleSection("services")}
-              type="button"
-            >
-              <span className="chev" aria-hidden="true">{"\u25BE"}</span>
-            </button>
-          </div>
-
-          <div className="category-grid">
+          <div className="cinematic-category-grid">
             {services.map((service, index) => (
-              <article
-                className={`category-card reveal-up stagger-${index + 1}`}
+              <CinematicReveal
+                as="article"
+                className="cinematic-category-card"
+                delay={index * 90}
                 key={service.title}
               >
-                <div className={`category-thumb ${service.className}`}>
-                  <img src={service.image} alt={service.title} loading="lazy" decoding="async" />
+                <img src={service.image} alt={service.title} loading="lazy" />
+
+                <div className="cinematic-category-overlay">
+                  <span>{service.label}</span>
+                  <h3>{service.title}</h3>
+                  <p>{service.description}</p>
+                  <a href="#inventory" aria-label={`View ${service.title}`}>
+                    Explore <span aria-hidden="true">↗</span>
+                  </a>
                 </div>
-                <h3>{service.title}</h3>
-              </article>
+              </CinematicReveal>
             ))}
           </div>
         </section>
 
-        <section
-          id="inventory"
-          className={`products-section ${
-            collapsed.products ? "collapsed" : ""
-          }`}
-        >
-          <div className="section-heading">
-            <h2>Featured home comfort essentials</h2>
-            <a href="#inventory">View all</a>
+        <section id="inventory" className="cinematic-section cinematic-products-section">
+          <CinematicReveal className="cinematic-section-heading">
+            <div>
+              <span className="cinematic-kicker">FEATURED PRODUCTS</span>
+              <h2>Products you can actually check against stock.</h2>
+            </div>
 
-            <button
-              className="section-toggle"
-              aria-expanded={!collapsed.products}
-              aria-label="Toggle products section"
-              onClick={() => toggleSection("products")}
-              type="button"
-            >
-              <span className="chev" aria-hidden="true">{"\u25BE"}</span>
-            </button>
-          </div>
+            <p>
+              Availability is loaded from the existing store API. Fallback
+              cards are presentation-only when the backend is unavailable.
+            </p>
+          </CinematicReveal>
 
-          <div className="product-grid">
-            {products.map((product, index) => (
-              <article
-                className={`product-card reveal-up stagger-${
-                  (index % 4) + 1
-                }`}
+          <div className="cinematic-product-grid">
+            {products.slice(0, 8).map((product, index) => (
+              <CinematicReveal
+                as="article"
+                className="cinematic-product-card"
+                delay={(index % 4) * 70}
                 key={product.product_id}
               >
-                <div className="product-image">
+                <div className="cinematic-product-image">
                   {product.image_url ? (
                     <img
-                      src={backendUrl(product.image_url)}
+                      src={product.image_url}
                       alt={product.name}
                       loading="lazy"
                       decoding="async"
                     />
                   ) : null}
-                  <span className={`stock-badge ${product.available_stock > 0 ? "in-stock" : "out-of-stock"}`}>
+
+                  <span
+                    className={`cinematic-stock-badge ${
+                      product.available_stock > 0 ? "is-stocked" : "is-empty"
+                    }`}
+                  >
                     {product.available_stock > 0
                       ? `${product.available_stock} in stock`
                       : "Out of stock"}
                   </span>
                 </div>
 
-                <div className="product-info">
+                <div className="cinematic-product-copy">
+                  <span>HOME COMFORT</span>
                   <h3>{product.name}</h3>
                   <p>{product.description}</p>
 
-                  <div className="product-meta">
-                    <span className="price">
-                      {formatPeso(product.unit_price)}
-                    </span>
+                  <div className="cinematic-product-footer">
+                    <strong>{formatPeso(product.unit_price)}</strong>
 
                     <button
                       type="button"
@@ -561,95 +582,118 @@ function LandingPage() {
                       }
                     >
                       {!productsAreLive
-                        ? "Catalog unavailable"
+                        ? "Preview"
                         : product.available_stock > 0
                           ? "Add to cart"
-                          : "Out of stock"}
+                          : "Unavailable"}
                     </button>
                   </div>
                 </div>
-              </article>
+              </CinematicReveal>
             ))}
           </div>
         </section>
 
-        <section id="features" className="promo-strip reveal-up">
-          <div>
-            <span className="promo-badge">Real-time stock</span>
-            <h3>Inventory from live batches</h3>
+        <CinematicReveal
+          as="section"
+          className="cinematic-feature-story"
+        >
+          <div className="cinematic-feature-number">LIVE</div>
+
+          <div className="cinematic-feature-copy">
+            <span className="cinematic-kicker">MORE THAN A STOREFRONT</span>
+            <h2>
+              What the customer sees is connected to what the business does.
+            </h2>
           </div>
 
-          <div>
-            <span className="promo-badge">Secure accounts</span>
-            <h3>Email OTP verification</h3>
+          <div className="cinematic-feature-list">
+            <article>
+              <span>01</span>
+              <div>
+                <strong>Real-time stock</strong>
+                <p>Availability comes from current warehouse batch quantities.</p>
+              </div>
+            </article>
+
+            <article>
+              <span>02</span>
+              <div>
+                <strong>Secure accounts</strong>
+                <p>Existing OTP and trusted-device security remain unchanged.</p>
+              </div>
+            </article>
+
+            <article>
+              <span>03</span>
+              <div>
+                <strong>Connected workflows</strong>
+                <p>Orders, fulfillment, returns, and inventory stay synchronized.</p>
+              </div>
+            </article>
           </div>
+        </CinematicReveal>
 
+        <CinematicReveal as="section" className="cinematic-newsletter">
           <div>
-            <span className="promo-badge">Role based</span>
-            <h3>Correct dashboard access</h3>
-          </div>
-        </section>
-
-        <section className="newsletter-box reveal-up">
-          <div>
-            <span className="newsletter-tag">Newsletter</span>
-            <h2>Stay updated with WalangBrownOut.</h2>
-          </div>
-
-          <form className="newsletter-form" onSubmit={handleNewsletter}>
-            <input type="email" placeholder="Enter your email" required />
-            <button type="submit">Join now</button>
-          </form>
-        </section>
-      </main>
-
-      <footer className="site-footer reveal-up">
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <div className="brand">Walang BrownOut</div>
-
+            <span className="cinematic-kicker">STAY CONNECTED</span>
+            <h2>Know what is coming next.</h2>
             <p>
-              A secure, role-based warehouse and inventory management platform
-              for the WalangBrownout Appliances workflow.
+              Join our email updates list and receive a confirmation through the existing Walang Brownout email service.
             </p>
           </div>
 
-          <div className="footer-column">
-            <h4>Shop</h4>
-            <a href="#inventory">New arrivals</a>
-            <a href="#inventory">Best sellers</a>
-            <a href="#inventory">Accessories</a>
-            <a href="#inventory">Sale</a>
-          </div>
+          <div className="cinematic-newsletter-form">
+            <form onSubmit={handleNewsletter}>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email address"
+                autoComplete="email"
+                required
+                disabled={newsletterBusy}
+              />
 
-          <div className="footer-column">
-            <h4>Company</h4>
-            <a href="#about">About us</a>
-            <a href="#features">Features</a>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Create Account</Link>
-          </div>
+              <button
+                type="submit"
+                disabled={newsletterBusy}
+              >
+                {newsletterBusy ? "Joining..." : "Join now"}
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
 
-          <div className="footer-column">
-            <h4>Support</h4>
-            <a href="#solutions">Solutions</a>
-            <a href="#inventory">Inventory</a>
-            <Link to="/faq">FAQs</Link>
-            <a href="#about">Privacy</a>
+            {newsletterMessage ? (
+              <p
+                className={`cinematic-newsletter-message ${
+                  newsletterError ? "is-error" : ""
+                }`}
+                role="status"
+              >
+                {newsletterMessage}
+              </p>
+            ) : null}
+          </div>
+        </CinematicReveal>
+      </main>
+
+      <footer className="cinematic-footer">
+        <div className="cinematic-footer-brand">
+          <img src={Logo} alt="" width="42" height="42" />
+          <div>
+            <strong>WALANG BROWN OUT</strong>
+            <span>Smart comfort. Real operations.</span>
           </div>
         </div>
 
-        <div className="footer-bottom">
-          <span>
-            <strong>&copy; 2026 WalangBrownOut.</strong> All rights reserved.
-          </span>
-
-          <div className="social-links">
-            <a href="#">Instagram</a>
-            <a href="#">Facebook</a>
-            <a href="#">X</a>
-          </div>
+        <div className="cinematic-footer-links">
+          <a href="#solutions">Categories</a>
+          <a href="#inventory">Products</a>
+          <Link to="/faq">FAQ</Link>
+          <Link to="/login">Sign in</Link>
         </div>
+
+        <span>© 2026 WalangBrownOut.</span>
       </footer>
     </div>
   );

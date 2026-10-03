@@ -9,6 +9,7 @@ export default function CustomerOverlays({ ctx }) {
     cartFeedback,
     checkoutOpen,
     checkoutStep,
+    setCheckoutStep,
     closeCheckout,
     busy,
     error,
@@ -25,6 +26,7 @@ export default function CustomerOverlays({ ctx }) {
     reviewPayment,
     cartItems,
     cartTotal,
+    walletData,
     checkout,
     previewMode,
     placedOrder,
@@ -60,6 +62,7 @@ export default function CustomerOverlays({ ctx }) {
       <CustomerCheckoutModal
         open={checkoutOpen}
         checkoutStep={checkoutStep}
+        setCheckoutStep={setCheckoutStep}
         closeCheckout={closeCheckout}
         busy={busy}
         error={error}
@@ -76,6 +79,7 @@ export default function CustomerOverlays({ ctx }) {
         reviewPayment={reviewPayment}
         cartItems={cartItems}
         cartTotal={cartTotal}
+        walletData={walletData}
         checkout={checkout}
         previewMode={previewMode}
         placedOrder={placedOrder}

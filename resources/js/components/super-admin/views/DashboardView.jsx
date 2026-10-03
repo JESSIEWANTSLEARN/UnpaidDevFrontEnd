@@ -54,7 +54,22 @@ function Dashboard({ data, setActiveMenu }) {
                     <td><ProductName product={product} /></td>
                     <td>{product.sku}</td>
                     <td>{product.category}</td>
-                    <td><span className="stock-bar" style={{ width }} />{number(product.available_stock)}</td>
+                    <td className="dashboard-stock-level">
+                      <div className="dashboard-stock-level-cell">
+                        <span
+                          className="dashboard-stock-track"
+                          aria-hidden="true"
+                        >
+                          <span
+                            className="stock-bar"
+                            style={{ width }}
+                          />
+                        </span>
+                        <strong>
+                          {number(product.available_stock)}
+                        </strong>
+                      </div>
+                    </td>
                     <td><span className={`status-badge ${status.className}`}>{status.label}</span></td>
                     <td>{formatDate(product.updated_at)}</td>
                   </tr>

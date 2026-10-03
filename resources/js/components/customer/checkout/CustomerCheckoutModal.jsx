@@ -9,6 +9,7 @@ import CustomerPaymentOptions, {
 export default function CustomerCheckoutModal({
   open,
   checkoutStep,
+  setCheckoutStep,
   closeCheckout,
   busy,
   error,
@@ -25,6 +26,7 @@ export default function CustomerCheckoutModal({
   reviewPayment,
   cartItems,
   cartTotal,
+  walletData,
   checkout,
   previewMode,
   placedOrder,
@@ -260,6 +262,8 @@ export default function CustomerCheckoutModal({
                   setPaymentMethod={setPaymentMethod}
                   paymentReference={paymentReference}
                   setPaymentReference={setPaymentReference}
+                  walletBalance={walletData?.wallet?.balance ?? 0}
+                  cartTotal={cartTotal}
                 />
 
                 <div className="customer-checkout-actions">
@@ -300,7 +304,9 @@ export default function CustomerCheckoutModal({
                     <p>
                       {paymentMethod === "CASH_ON_DELIVERY"
                         ? "Payment stays pending until the order is fulfilled."
-                        : "This demo payment waits for Sales verification before processing."}
+                        : paymentMethod === "WALLET"
+                          ? "The order total will be paid instantly from your wallet when you confirm."
+                          : "This demo payment waits for Sales verification before processing."}
                     </p>
                     {paymentReference && (
                       <small>Reference: {paymentReference}</small>
