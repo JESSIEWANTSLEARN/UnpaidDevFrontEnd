@@ -33,6 +33,16 @@ export default function CustomerHeader({ ctx }) {
     setError,
   } = ctx;
 
+  // Product alerts open the product. Order alerts open My Orders.
+  // Order notifications currently do not carry a related_order_id, so
+  // the order number is read from the existing "Order #123" title/message.
+  const orderIdFromNotification = (item) => {
+    const text = `${item.title || ""} ${item.message || ""}`;
+    const match = text.match(/order\s*#(\d+)/i);
+
+    return match ? Number(match[1]) : null;
+  };
+
   const openNotification = async (item) => {
     await readNotification(item.notification_id);
     setNotificationOpen(false);
@@ -43,6 +53,17 @@ export default function CustomerHeader({ ctx }) {
         String(item.related_product_id),
       );
       changeTab("product");
+      return;
+    }
+
+    const orderId = orderIdFromNotification(item);
+
+    if (orderId) {
+      sessionStorage.setItem(
+        "wbo_notification_order_id",
+        String(orderId),
+      );
+      changeTab("orders");
     }
   };
 

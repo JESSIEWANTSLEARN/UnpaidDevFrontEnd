@@ -3,7 +3,11 @@ import { backendUrl } from "../../../config/api.js";
 import CustomerReviewsPanel from "../reviews/CustomerReviewsPanel.jsx";
 import CustomerSupportPanel from "../support/CustomerSupportPanel.jsx";
 import CustomerProductDetails from "../products/CustomerProductDetails.jsx";
+import CustomerWalletPanel from "../wallet/CustomerWalletPanel.jsx";
 import CustomerOrderReturnPanel from "../orders/CustomerOrderReturnPanel.jsx";
+import CustomerOrderCancelPanel from "../orders/CustomerOrderCancelPanel.jsx";
+import "../../../../css/customer/customer-cinematic-store.css";
+import "../../../../css/customer/customer-account-cinematic.css";
 import { EmptyState, Icon, ProfileAvatar, StatusBadge } from "../CustomerUi.jsx";
 import {
   money,
@@ -39,6 +43,10 @@ export default function CustomerMainViews({ ctx }) {
     setOrderFilter,
     filteredOrders,
     orders,
+    walletData,
+    walletBusy,
+    topUpWallet,
+    cancelOrder,
     previewMode,
     saveProfile,
     user,
@@ -81,6 +89,45 @@ export default function CustomerMainViews({ ctx }) {
       );
     }
   }, [tab, products]);
+
+  useEffect(() => {
+    if (tab !== "orders") return undefined;
+
+    const targetId = sessionStorage.getItem(
+      "wbo_notification_order_id",
+    );
+
+    if (!targetId) return undefined;
+
+    const timer = window.setTimeout(() => {
+      const target = document.querySelector(
+        `[data-order-id="${targetId}"]`,
+      );
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        target.classList.add(
+          "is-notification-target",
+        );
+
+        window.setTimeout(() => {
+          target.classList.remove(
+            "is-notification-target",
+          );
+        }, 2200);
+      }
+
+      sessionStorage.removeItem(
+        "wbo_notification_order_id",
+      );
+    }, 80);
+
+    return () => window.clearTimeout(timer);
+  }, [tab, orders]);
 
   const openProduct = (product) => {
     if (!product) return;
@@ -138,6 +185,16 @@ export default function CustomerMainViews({ ctx }) {
       JSON.stringify({
         type: "product",
         product_id: product.product_id,
+      }),
+    );
+    changeTab("support");
+  };
+  const contactSupportForOrder = (order) => {
+    sessionStorage.setItem(
+      "wbo_support_context",
+      JSON.stringify({
+        type: "order",
+        order_id: order.order_id,
       }),
     );
     changeTab("support");
@@ -360,7 +417,7 @@ export default function CustomerMainViews({ ctx }) {
         )}
 
         {tab === "shop" && (
-          <section className="customer-page-section">
+          <section className="customer-page-section wbo-cinematic-catalog">
             <div className="customer-page-title">
               <div>
                 <span className="customer-kicker">PRODUCT CATALOG</span>
@@ -533,7 +590,11 @@ export default function CustomerMainViews({ ctx }) {
             {filteredOrders.length ? (
               <div className="customer-orders-list">
                 {filteredOrders.map((order) => (
-                  <article className="customer-order-card" key={order.order_id}>
+                  <article
+                    className="customer-order-card"
+                    key={order.order_id}
+                    data-order-id={order.order_id}
+                  >
                     <div className="customer-order-head">
                       <div>
                         <span>ORDER</span>
@@ -583,6 +644,14 @@ export default function CustomerMainViews({ ctx }) {
                       ))}
                     </div>
 
+                    <CustomerOrderCancelPanel
+                      order={order}
+                      previewMode={previewMode}
+                      busy={busy}
+                      onCancel={cancelOrder}
+                      onContactSupport={contactSupportForOrder}
+                    />
+
                     <CustomerOrderReturnPanel
                       order={order}
                       previewMode={previewMode}
@@ -628,8 +697,16 @@ export default function CustomerMainViews({ ctx }) {
             }}
           />
         )}
+        {tab === "wallet" && (
+          <CustomerWalletPanel
+            walletData={walletData}
+            busy={walletBusy}
+            previewMode={previewMode}
+            onTopUp={topUpWallet}
+          />
+        )}
         {tab === "account" && (
-          <section className="customer-page-section">
+          <section className="customer-page-section wbo-cinematic-account">
             <div className="customer-page-title">
               <div>
                 <span className="customer-kicker">MY ACCOUNT</span>

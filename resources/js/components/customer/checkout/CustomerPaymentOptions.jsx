@@ -7,6 +7,13 @@ const DEMO_BANK = {
   accountNumber: "0000-0000-0000",
 };
 
+const formatPeso = (value) =>
+  new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 2,
+  }).format(Number(value || 0));
+
 function demoReference(prefix) {
   const tail = String(Date.now()).slice(-8);
   return `${prefix}-DEMO-${tail}`;
@@ -15,6 +22,7 @@ function demoReference(prefix) {
 export function paymentLabel(method) {
   if (method === "GCASH") return "GCash Demo QR";
   if (method === "BANK_TRANSFER") return "Mock Bank Transfer";
+  if (method === "WALLET") return "Walang Brownout Wallet";
   return "Cash on Delivery";
 }
 
@@ -23,11 +31,21 @@ export default function CustomerPaymentOptions({
   setPaymentMethod,
   paymentReference,
   setPaymentReference,
+  walletBalance = 0,
+  cartTotal = 0,
 }) {
+  const walletAmount = Number(walletBalance || 0);
+  const orderAmount = Number(cartTotal || 0);
+  const walletEnough = walletAmount + 0.00001 >= orderAmount;
+  const walletRemaining = walletAmount - orderAmount;
+
   const choose = (method) => {
     setPaymentMethod(method);
 
-    if (method === "CASH_ON_DELIVERY") {
+    if (
+      method === "CASH_ON_DELIVERY" ||
+      method === "WALLET"
+    ) {
       setPaymentReference("");
     }
   };
@@ -50,6 +68,36 @@ export default function CustomerPaymentOptions({
             <small>Pay when your order is delivered.</small>
           </div>
           <span className="customer-payment-available">AVAILABLE</span>
+        </button>
+
+        <button
+          type="button"
+          className={`customer-payment-option customer-payment-wallet-option ${
+            paymentMethod === "WALLET"
+              ? "is-selected"
+              : ""
+          }`}
+          onClick={() => choose("WALLET")}
+        >
+          <span className="customer-payment-radio" />
+          <div>
+            <strong>Walang Brownout Wallet</strong>
+            <small>
+              Balance: {formatPeso(walletAmount)}
+              {walletEnough
+                ? " · Instant payment"
+                : " · Top up required"}
+            </small>
+          </div>
+          <span
+            className={
+              walletEnough
+                ? "customer-payment-available"
+                : "customer-payment-wallet-short"
+            }
+          >
+            {walletEnough ? "AVAILABLE" : "LOW BALANCE"}
+          </span>
         </button>
 
         <button
@@ -86,6 +134,38 @@ export default function CustomerPaymentOptions({
           <span className="customer-payment-demo-badge">DEMO</span>
         </button>
       </div>
+
+      {paymentMethod === "WALLET" && (
+        <section
+          className={`customer-wallet-checkout-card ${
+            walletEnough ? "is-ready" : "is-short"
+          }`}
+        >
+          <div>
+            <span>AVAILABLE WALLET BALANCE</span>
+            <strong>{formatPeso(walletAmount)}</strong>
+          </div>
+          <div>
+            <span>ORDER TOTAL</span>
+            <strong>{formatPeso(orderAmount)}</strong>
+          </div>
+          <div>
+            <span>{walletEnough ? "AFTER PAYMENT" : "AMOUNT NEEDED"}</span>
+            <strong>
+              {formatPeso(
+                walletEnough
+                  ? Math.max(0, walletRemaining)
+                  : Math.abs(walletRemaining),
+              )}
+            </strong>
+          </div>
+          <p>
+            {walletEnough
+              ? "The exact order total will be deducted securely when you confirm the order."
+              : "Your wallet balance is too low for this order. Open Wallet and top up before continuing."}
+          </p>
+        </section>
+      )}
 
       {paymentMethod === "GCASH" && (
         <section className="customer-demo-payment">
