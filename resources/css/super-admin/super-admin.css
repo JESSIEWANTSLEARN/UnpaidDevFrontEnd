@@ -1039,3 +1039,24 @@
     justify-content: space-between;
   }
 }
+
+/* WBO PRODUCT PREVIEW DARK FIX */
+.ops-portal[data-theme="dark"] .product-edit-preview {
+  background: #172033 !important;
+  border-color: #334155 !important;
+  color: #e5e9f0 !important;
+}
+
+.ops-portal[data-theme="dark"] .product-edit-preview span {
+  color: #e5e9f0 !important;
+}
+
+.ops-portal[data-theme="dark"] .product-edit-preview small {
+  color: #94a3b8 !important;
+}
+
+.ops-portal[data-theme="dark"] .product-edit-preview img,
+.ops-portal[data-theme="dark"] .product-edit-image-empty {
+  background: #0f172a !important;
+  border-color: #475569 !important;
+}
