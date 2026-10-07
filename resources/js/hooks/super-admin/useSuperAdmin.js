@@ -7,14 +7,46 @@ import { initials, Logo } from "../../utils/super-admin/superAdminUtils.js";
 export default function useSuperAdmin() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
-  const [activeMenu, setActiveMenu] = useState(() =>
-    sessionStorage.getItem(
+  const [activeMenu, setActiveMenuState] = useState(() =>
+    localStorage.getItem(
       "wbo-super-admin-active-menu"
     ) || "Dashboard"
   );
+
+  const setActiveMenu = (nextMenu) => {
+    setActiveMenuState((current) => {
+      const resolved =
+        typeof nextMenu === "function"
+          ? nextMenu(current)
+          : nextMenu;
+
+      localStorage.setItem(
+        "wbo-super-admin-active-menu",
+        resolved
+      );
+
+      return resolved;
+    });
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+    const saved =
+      localStorage.getItem("wbo-ui-theme");
+
+    if (
+      saved === "dark" ||
+      saved === "light"
+    ) {
+      return saved;
+    }
+
+    return window.matchMedia?.(
+      "(prefers-color-scheme: dark)"
+    ).matches
+      ? "dark"
+      : "light";
+  });
   const [activeModal, setActiveModal] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,11 +73,18 @@ export default function useSuperAdmin() {
   const refresh = () => setReloadToken((v) => v + 1);
 
   useEffect(() => {
-    sessionStorage.setItem(
+    localStorage.setItem(
       "wbo-super-admin-active-menu",
       activeMenu
     );
   }, [activeMenu]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "wbo-ui-theme",
+      theme
+    );
+  }, [theme]);
 
   useEffect(() => {
     let cancelled = false;

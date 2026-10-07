@@ -54,7 +54,7 @@ export default function useRoleDashboard({
   const [activeModule, setActiveModule] =
     useState(() => {
       const savedModule =
-        sessionStorage.getItem(
+        localStorage.getItem(
           roleModuleStorageKey
         );
 
@@ -76,7 +76,7 @@ export default function useRoleDashboard({
   const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
-    sessionStorage.setItem(
+    localStorage.setItem(
       roleModuleStorageKey,
       activeModule
     );
