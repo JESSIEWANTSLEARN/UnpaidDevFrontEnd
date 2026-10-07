@@ -202,13 +202,11 @@ export default function SystemUser({ previewMode = false }) {
         productData,
         orderData,
         notificationData,
-        walletDataResponse,
       ] = await Promise.all([
         api("/api/user/me"),
         api("/api/store/products"),
         api("/api/user/orders"),
         api("/api/user/notifications"),
-        api("/api/user/wallet"),
       ]);
 
       setUser(me.user);
@@ -256,14 +254,24 @@ export default function SystemUser({ previewMode = false }) {
       setNotifications(
         notificationData.notifications ?? []
       );
-      setWalletData({
-        wallet: walletDataResponse.wallet ?? {
-          balance: "0.00",
-          status: "ACTIVE",
-        },
-        transactions:
-          walletDataResponse.transactions ?? [],
-      });
+      try {
+        const walletDataResponse =
+          await api("/api/user/wallet");
+
+        setWalletData({
+          wallet: walletDataResponse.wallet ?? {
+            balance: "0.00",
+            status: "ACTIVE",
+          },
+          transactions:
+            walletDataResponse.transactions ?? [],
+        });
+      } catch (walletError) {
+        console.warn(
+          "Wallet unavailable:",
+          walletError.message
+        );
+      }
 
       if (Number.isInteger(userId) && userId > 0) {
         writeUserCart(userId, mergedCart);
