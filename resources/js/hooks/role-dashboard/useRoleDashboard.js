@@ -47,14 +47,43 @@ export default function useRoleDashboard({
   };
 
   const [session, setSession] = useState(null);
+
+  const roleModuleStorageKey =
+    `wbo-role-active-module:${roleKey}`;
+
   const [activeModule, setActiveModule] =
-    useState("Overview");
+    useState(() => {
+      const savedModule =
+        sessionStorage.getItem(
+          roleModuleStorageKey
+        );
+
+      const allowedModules = [
+        "Overview",
+        ...(config?.modules || []),
+      ];
+
+      return savedModule &&
+        allowedModules.includes(savedModule)
+        ? savedModule
+        : "Overview";
+    });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionBusy, setActionBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [reloadToken, setReloadToken] = useState(0);
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      roleModuleStorageKey,
+      activeModule
+    );
+  }, [
+    activeModule,
+    roleModuleStorageKey,
+  ]);
 
   useEffect(() => {
     let cancelled = false;

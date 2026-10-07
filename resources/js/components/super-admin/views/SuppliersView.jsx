@@ -3,7 +3,11 @@ import { number } from "../../../utils/super-admin/superAdminUtils.js";
 import { apiRequest } from "../../../services/super-admin/superAdminApi.js";
 import { EmptyTable } from "../common/AdminCommon.jsx";
 
-function Suppliers({ data, openModal }) {
+function Suppliers({
+  data,
+  openModal,
+  onDashboardRefresh,
+}) {
   const suppliers = data.suppliers || [];
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(null);
@@ -63,7 +67,9 @@ function Suppliers({ data, openModal }) {
           supplier_status: form.supplier_status,
         },
       });
-      window.location.reload();
+      setEditing(null);
+      setBusy(false);
+      onDashboardRefresh?.();
     } catch (requestError) {
       setError(requestError.message || "Unable to update supplier.");
       setBusy(false);

@@ -7,7 +7,11 @@ import { initials, Logo } from "../../utils/super-admin/superAdminUtils.js";
 export default function useSuperAdmin() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
-  const [activeMenu, setActiveMenu] = useState("Dashboard");
+  const [activeMenu, setActiveMenu] = useState(() =>
+    sessionStorage.getItem(
+      "wbo-super-admin-active-menu"
+    ) || "Dashboard"
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [theme, setTheme] = useState("light");
@@ -35,6 +39,13 @@ export default function useSuperAdmin() {
   }));
   const resetForm = (key) => setForm(key, { ...INITIAL_FORMS[key] });
   const refresh = () => setReloadToken((v) => v + 1);
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      "wbo-super-admin-active-menu",
+      activeMenu
+    );
+  }, [activeMenu]);
 
   useEffect(() => {
     let cancelled = false;
