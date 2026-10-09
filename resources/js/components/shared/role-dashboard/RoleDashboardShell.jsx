@@ -130,6 +130,7 @@ export default function RoleDashboardShell({
               handlePurchaseOrderStatus
             }
             onSalesOrderStatus={handleSalesOrderStatus}
+            onModuleChange={setActiveModule}
             theme={theme}
           />
         )}

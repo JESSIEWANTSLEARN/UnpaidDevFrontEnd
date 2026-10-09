@@ -36,11 +36,7 @@ export default function SalesDashboardContent({
     [data.orders],
   );
 
-  if (
-    activeModule === "Overview" ||
-    activeModule ===
-      (manager ? "Sales Overview" : "Sales Tasks")
-  ) {
+  if (activeModule === "Overview") {
     return (
       <>
         <SalesMetrics

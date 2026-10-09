@@ -23,10 +23,7 @@ export default function InventoryDashboardContent({
 }) {
   const roleKey = "Inventory_Controller";
 
-  if (
-    activeModule === "Overview" ||
-    activeModule === "Inventory Overview"
-  ) {
+  if (activeModule === "Overview") {
     return (
       <RoleDashboardOverview
         roleKey={roleKey}

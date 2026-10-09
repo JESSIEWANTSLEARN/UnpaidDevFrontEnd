@@ -14,5 +14,5 @@ export default function RolePreview() {
     );
   }
 
-  return <RoleDashboardShell roleKey={roleKey} previewMode />;
+  return <RoleDashboardShell key={roleKey} roleKey={roleKey} previewMode />;
 }

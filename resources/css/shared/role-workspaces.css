@@ -1,0 +1,108 @@
+.role-function-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+.role-function-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  text-align: left;
+  color: var(--role-text);
+  background: var(--role-panel-soft);
+  border: 1px solid var(--role-border);
+  border-radius: 12px;
+  font: inherit;
+  cursor: pointer;
+}
+.role-function-card:hover {
+  border-color: var(--role-accent);
+}
+.role-function-card > span,
+.role-function-card small,
+.role-workspace-note {
+  color: var(--role-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.role-function-card small {
+  margin-top: auto;
+  font-weight: 700;
+}
+.role-workspace-note {
+  margin: 14px 18px;
+}
+.role-workspace-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 18px;
+}
+.role-workspace-controls p {
+  margin: 0;
+}
+.role-workspace-controls > span {
+  align-self: center;
+  color: var(--role-muted);
+  font-size: 0.85rem;
+}
+.role-workspace-choice {
+  display: grid;
+  gap: 6px;
+  max-width: 100%;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.role-workspace-choice input,
+.role-workspace-choice select {
+  color-scheme: light;
+  width: 100%;
+  min-width: 180px;
+  min-height: 42px;
+  max-width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--role-text);
+  background: var(--role-panel-bg);
+  border: 1px solid var(--role-border);
+  border-radius: 8px;
+}
+.role-dashboard-layout[data-theme="dark"] .role-workspace-choice input,
+.role-dashboard-layout[data-theme="dark"] .role-workspace-choice select {
+  color-scheme: dark;
+}
+.role-function-card:focus-visible,
+.role-workspace-choice input:focus-visible,
+.role-workspace-choice select:focus-visible {
+  outline: 2px solid var(--role-accent);
+  outline-offset: 3px;
+}
+.role-workspace-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 16px 18px;
+  background: var(--role-panel-soft);
+}
+.role-workspace-summary span {
+  display: grid;
+  gap: 5px;
+  color: var(--role-muted);
+  font-size: 0.8rem;
+}
+.role-workspace-summary strong {
+  color: var(--role-text);
+  font-size: 1.2rem;
+}
+@media (max-width: 560px) {
+  .role-workspace-choice {
+    width: 100%;
+  }
+  .role-workspace-choice input,
+  .role-workspace-choice select {
+    min-width: 0;
+  }
+}

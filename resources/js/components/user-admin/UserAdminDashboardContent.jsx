@@ -1,3 +1,5 @@
+import RoleFunctionDirectory from "../shared/role-dashboard/workspaces/RoleFunctionDirectory.jsx";
+import AccountReview from "../shared/role-dashboard/workspaces/AccountReview.jsx";
 import AppLoadingScreen from "../shared/AppLoadingScreen.jsx";
 import useUserAdminDashboard from "../../hooks/user-admin/useUserAdminDashboard.js";
 import UserAdminFilters from "./filters/UserAdminFilters.jsx";
@@ -17,6 +19,7 @@ import "../../../css/user-admin/user-admin.css";
 export default function UserAdminDashboardContent({
   activeModule,
   previewMode,
+  onModuleChange,
   theme = "light",
 }) {
   const controller = useUserAdminDashboard({
@@ -107,9 +110,9 @@ export default function UserAdminDashboardContent({
         </div>
       )}
 
-      {(activeModule === "Overview" ||
-        activeModule === "User Overview") && (
+      {activeModule === "Overview" && (
         <>
+          <RoleFunctionDirectory roleKey="User_Admin" data={data} onModuleChange={onModuleChange} />
           <UserAdminMetrics metrics={data.metrics} />
 
           <UserAdminSection
@@ -120,6 +123,10 @@ export default function UserAdminDashboardContent({
             {userTable}
           </UserAdminSection>
         </>
+      )}
+
+      {activeModule === "Account Review" && (
+        <AccountReview data={data} previewMode={previewMode} onEdit={setEditingUser} onSessions={openSessions} />
       )}
 
       {activeModule === "User Accounts" && (
