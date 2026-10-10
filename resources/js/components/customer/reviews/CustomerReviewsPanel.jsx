@@ -297,7 +297,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
       {previewMode ? (
         <div className="customer-review-grid">
           {publicReviews.length ? (
-            publicReviews.map(renderReviewCard)
+            publicReviews.map((review) => renderReviewCard(review))
           ) : (
             <div className="customer-review-empty">
               No visible product reviews yet.
@@ -405,7 +405,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
             </p>
             <div className="customer-review-grid">
               {publicReviews.length ? (
-                publicReviews.map(renderReviewCard)
+                publicReviews.map((review) => renderReviewCard(review))
               ) : (
                 <div className="customer-review-empty">
                   No visible product reviews yet.
