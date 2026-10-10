@@ -11,6 +11,8 @@ import InventoryDashboardContent from "./roles/InventoryDashboardContent.jsx";
 import OperationsDashboardContent from "./roles/OperationsDashboardContent.jsx";
 import PurchasingDashboardContent from "./roles/PurchasingDashboardContent.jsx";
 import WarehouseDashboardContent from "./roles/WarehouseDashboardContent.jsx";
+import DataImportsPanel from "../imports/DataImportsPanel.jsx";
+import ReturnWorkflowPanel from "../returns/ReturnWorkflowPanel.jsx";
 
 function RoleModuleContent({
   roleKey,
@@ -27,6 +29,7 @@ function RoleModuleContent({
   onReceivePurchaseOrder,
   onPurchaseOrderStatus,
   onSalesOrderStatus,
+  onDashboardRefresh,
   theme,
   onModuleChange,
 }) {
@@ -37,6 +40,32 @@ function RoleModuleContent({
         previewMode={previewMode}
         theme={theme}
         onModuleChange={onModuleChange}
+      />
+    );
+  }
+
+  if (activeModule === "Data Imports") {
+    return (
+      <DataImportsPanel
+        roleKey={roleKey}
+        previewMode={previewMode}
+        onDashboardRefresh={onDashboardRefresh}
+      />
+    );
+  }
+
+  if (
+    [
+      "Returns & Refunds",
+      "Returned Items",
+      "Return Inspection",
+      "Supplier Returns",
+    ].includes(activeModule)
+  ) {
+    return (
+      <ReturnWorkflowPanel
+        roleKey={roleKey}
+        previewMode={previewMode}
       />
     );
   }

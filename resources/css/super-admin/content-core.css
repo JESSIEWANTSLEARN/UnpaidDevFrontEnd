@@ -494,3 +494,43 @@
   margin-left: auto;
   white-space: nowrap;
 }
+
+/* Keep the dashboard stock bars and values aligned in fixed columns. */
+.ops-portal .dashboard-inventory-panel .ops-table th:nth-child(4) {
+  text-align: right;
+}
+
+.ops-portal .dashboard-stock-level-cell {
+  display: grid;
+  grid-template-columns: 64px 4ch;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+  width: 100%;
+}
+
+.ops-portal .dashboard-stock-track {
+  display: block;
+  width: 64px;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border-soft);
+}
+
+.ops-portal .dashboard-stock-track .stock-bar {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  border-radius: inherit;
+  background: var(--primary);
+}
+
+.ops-portal .dashboard-stock-level-cell strong {
+  min-width: 4ch;
+  color: var(--ink-strong);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}

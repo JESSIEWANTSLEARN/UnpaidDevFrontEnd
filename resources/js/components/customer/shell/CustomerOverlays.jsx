@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Icon } from "../CustomerUi.jsx";
 import CustomerCheckoutModal from "../checkout/CustomerCheckoutModal.jsx";
 import CustomerCartDrawer from "../cart/CustomerCartDrawer.jsx";
@@ -9,6 +9,7 @@ export default function CustomerOverlays({ ctx }) {
     cartFeedback,
     checkoutOpen,
     checkoutStep,
+    setCheckoutStep,
     closeCheckout,
     busy,
     error,
@@ -20,9 +21,12 @@ export default function CustomerOverlays({ ctx }) {
     setCartOpen,
     paymentMethod,
     setPaymentMethod,
+    paymentReference,
+    setPaymentReference,
     reviewPayment,
     cartItems,
     cartTotal,
+    walletData,
     checkout,
     previewMode,
     placedOrder,
@@ -58,6 +62,7 @@ export default function CustomerOverlays({ ctx }) {
       <CustomerCheckoutModal
         open={checkoutOpen}
         checkoutStep={checkoutStep}
+        setCheckoutStep={setCheckoutStep}
         closeCheckout={closeCheckout}
         busy={busy}
         error={error}
@@ -69,9 +74,12 @@ export default function CustomerOverlays({ ctx }) {
         setCartOpen={setCartOpen}
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
+        paymentReference={paymentReference}
+        setPaymentReference={setPaymentReference}
         reviewPayment={reviewPayment}
         cartItems={cartItems}
         cartTotal={cartTotal}
+        walletData={walletData}
         checkout={checkout}
         previewMode={previewMode}
         placedOrder={placedOrder}

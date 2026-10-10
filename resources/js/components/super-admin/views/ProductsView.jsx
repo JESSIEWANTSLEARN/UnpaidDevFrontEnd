@@ -21,7 +21,11 @@ const emptyEditForm = {
   image: null,
 };
 
-function Products({ data, openModal }) {
+function Products({
+  data,
+  openModal,
+  onDashboardRefresh,
+}) {
   const products = data.products || [];
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(null);
@@ -118,7 +122,10 @@ function Products({ data, openModal }) {
         }
       );
 
-      window.location.reload();
+      setEditing(null);
+      setEditForm(emptyEditForm);
+      setEditBusy(false);
+      onDashboardRefresh?.();
     } catch (error) {
       setEditError(error.message || "Unable to update the product.");
       setEditBusy(false);

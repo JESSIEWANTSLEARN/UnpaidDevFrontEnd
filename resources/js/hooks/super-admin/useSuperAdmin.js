@@ -7,10 +7,46 @@ import { initials, Logo } from "../../utils/super-admin/superAdminUtils.js";
 export default function useSuperAdmin() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
-  const [activeMenu, setActiveMenu] = useState("Dashboard");
+  const [activeMenu, setActiveMenuState] = useState(() =>
+    localStorage.getItem(
+      "wbo-super-admin-active-menu"
+    ) || "Dashboard"
+  );
+
+  const setActiveMenu = (nextMenu) => {
+    setActiveMenuState((current) => {
+      const resolved =
+        typeof nextMenu === "function"
+          ? nextMenu(current)
+          : nextMenu;
+
+      localStorage.setItem(
+        "wbo-super-admin-active-menu",
+        resolved
+      );
+
+      return resolved;
+    });
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+    const saved =
+      localStorage.getItem("wbo-ui-theme");
+
+    if (
+      saved === "dark" ||
+      saved === "light"
+    ) {
+      return saved;
+    }
+
+    return window.matchMedia?.(
+      "(prefers-color-scheme: dark)"
+    ).matches
+      ? "dark"
+      : "light";
+  });
   const [activeModal, setActiveModal] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +71,20 @@ export default function useSuperAdmin() {
   }));
   const resetForm = (key) => setForm(key, { ...INITIAL_FORMS[key] });
   const refresh = () => setReloadToken((v) => v + 1);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "wbo-super-admin-active-menu",
+      activeMenu
+    );
+  }, [activeMenu]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "wbo-ui-theme",
+      theme
+    );
+  }, [theme]);
 
   useEffect(() => {
     let cancelled = false;
@@ -235,6 +285,38 @@ export default function useSuperAdmin() {
     loadUserSessions(selectedUser.user_id, page);
   };
   const handleNotificationStatus = (id, status) => runModalAction(() => apiRequest(`/api/super-admin/notifications/${id}`, { method: "PUT", body: { status } }), true);
+
+  const handleOpenNotification = (item) => {
+    if (!item) return;
+
+    if (item.status === "UNREAD") {
+      apiRequest(
+        `/api/super-admin/notifications/${item.notification_id}`,
+        {
+          method: "PUT",
+          body: { status: "ACKNOWLEDGED" },
+        },
+      )
+        .then(refresh)
+        .catch(() => {});
+    }
+
+    setActiveModal(null);
+    setModalError("");
+
+    if (item.related_product_id) {
+      setActiveMenu("Products");
+      return;
+    }
+
+    if (item.related_batch_id) {
+      setActiveMenu("Stock Movement");
+      return;
+    }
+
+    setActiveMenu("Dashboard");
+  };
+
   const handleCreateBackup = () => runModalAction(() => apiRequest("/api/super-admin/backups", { method: "POST" }), true);
   const handleRestoreBackup = (filename) => {
     if (!window.confirm(`Restore ${filename}? This replaces the current WalangBrownout data with the selected backup. A safety backup will be created first.`)) return;
@@ -273,7 +355,9 @@ export default function useSuperAdmin() {
       onAddPurchaseOrder: handleAddPurchaseOrder, onCompanySave: handleCompanySave, onUpdateUser: handleUpdateUser,
       onRevokeUserSession: handleRevokeUserSession, onRevokeAllUserSessions: handleRevokeAllUserSessions,
       onDeleteUser: handleDeleteUser,
-      onNotificationStatus: handleNotificationStatus, onCreateBackup: handleCreateBackup,
+      onNotificationStatus: handleNotificationStatus,
+      onOpenNotification: handleOpenNotification,
+      onCreateBackup: handleCreateBackup,
       onRestoreBackup: handleRestoreBackup, onDownloadBackup: handleDownloadBackup,
     },
   };

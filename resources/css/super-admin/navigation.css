@@ -411,3 +411,64 @@
 /* =========================================
    MAIN
 ========================================= */
+/* === WBO STAGE 5 FINAL MOBILE HEADER HOTFIX === */
+@media (max-width: 720px) {
+  .ops-portal .ops-header-inner {
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .ops-portal .ops-header-left {
+    flex: 1 1 100%;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .ops-portal .ops-header-left > div {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .ops-portal .ops-header-title {
+    display: block;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.15;
+  }
+
+  .ops-portal .ops-header-actions {
+    flex: 1 1 100%;
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .ops-portal .hamburger-btn {
+    display: inline-flex;
+  }
+
+  .ops-portal .user-pill {
+    margin-left: 0;
+  }
+
+  .ops-portal .user-pill-name {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .ops-portal .theme-toggle,
+  .ops-portal .icon-btn,
+  .ops-portal .hamburger-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .ops-portal .ops-header-actions {
+    justify-content: space-between;
+  }
+}
+/* === WBO STAGE 5 FINAL MOBILE HEADER HOTFIX END === */

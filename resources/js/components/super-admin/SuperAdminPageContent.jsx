@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { LoadingState, ErrorState, EmptyState } from "./common/AdminCommon.jsx";
 import DashboardView from "./views/DashboardView.jsx";
 import ProductsView from "./views/ProductsView.jsx";
@@ -16,6 +16,10 @@ import SettingsView from "./views/SettingsView.jsx";
 import SystemHealthView from "./views/SystemHealthView.jsx";
 import RolePreviewView from "./views/RolePreviewView.jsx";
 
+const DataImportsView = React.lazy(
+  () => import("./views/DataImportsView.jsx"),
+);
+
 const PAGE_COMPONENTS = {
   Dashboard: DashboardView,
   Products: ProductsView,
@@ -26,6 +30,7 @@ const PAGE_COMPONENTS = {
   Suppliers: SuppliersView,
   "Stock Movement": StockMovementView,
   "Purchase Orders": PurchaseOrdersView,
+  "Data Imports": DataImportsView,
   Users: UsersView,
   "View as Role": RolePreviewView,
   Reports: ReportsView,
@@ -40,5 +45,13 @@ export default function SuperAdminPageContent({ activeMenu, loading, error, onRe
   if (!props.data) return <EmptyState text="No dashboard data was returned." />;
 
   const View = PAGE_COMPONENTS[activeMenu] || DashboardView;
-  return <View {...props} />;
+
+  return (
+    <React.Suspense fallback={<LoadingState />}>
+      <View
+        {...props}
+        onDashboardRefresh={onRetry}
+      />
+    </React.Suspense>
+  );
 }

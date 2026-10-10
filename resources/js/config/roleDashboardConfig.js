@@ -18,6 +18,7 @@ export const ROLE_DASHBOARDS = {
     modules: [
       ROLE_WORKSPACES.Operations_Manager.title,
       "Inventory Health",
+      "Data Imports",
       "Purchase Activity",
       "Sales Activity",
       "Operational Alerts",
@@ -35,6 +36,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       ROLE_WORKSPACES.Purchasing_Manager.title,
       "Suppliers",
+      "Data Imports",
+      "Supplier Returns",
       "Purchase Orders",
       "Reorder Needs",
       "Approvals",
@@ -52,6 +55,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       ROLE_WORKSPACES.Purchasing_Staff.title,
       "Suppliers",
+      "Data Imports",
+      "Supplier Returns",
       "Purchase Orders",
       "Reorder Requests",
     ],
@@ -68,6 +73,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       ROLE_WORKSPACES.Warehouse_Admin.title,
       "Receiving",
+      "Returned Items",
+      "Data Imports",
       "Batch Tracking",
       "Stock Movement",
       "Warehouse Issues",
@@ -85,6 +92,8 @@ export const ROLE_DASHBOARDS = {
     modules: [
       ROLE_WORKSPACES.Inventory_Controller.title,
       "Stock Movement",
+      "Return Inspection",
+      "Data Imports",
       "Stock In",
       "Adjustments",
       "Write Offs",
@@ -104,6 +113,7 @@ export const ROLE_DASHBOARDS = {
       ROLE_WORKSPACES.Sales_Manager.title,
       "Orders",
       "Customers",
+      "Returns & Refunds",
       "Customer Support",
       "Product Performance",
       "Sales Alerts",
@@ -122,6 +132,7 @@ export const ROLE_DASHBOARDS = {
       ROLE_WORKSPACES.Sales_Staff.title,
       "Orders",
       "Customers",
+      "Returns & Refunds",
       "Customer Support",
       "Product Availability",
     ],

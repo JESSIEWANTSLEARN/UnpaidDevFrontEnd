@@ -3,7 +3,11 @@ import { number } from "../../../utils/super-admin/superAdminUtils.js";
 import { apiRequest } from "../../../services/super-admin/superAdminApi.js";
 import { EmptyTable } from "../common/AdminCommon.jsx";
 
-function Categories({ data, openModal }) {
+function Categories({
+  data,
+  openModal,
+  onDashboardRefresh,
+}) {
   const categories = data.categories || [];
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(null);
@@ -51,7 +55,9 @@ function Categories({ data, openModal }) {
           is_active: Boolean(form.is_active),
         },
       });
-      window.location.reload();
+      setEditing(null);
+      setBusy(false);
+      onDashboardRefresh?.();
     } catch (requestError) {
       setError(requestError.message || "Unable to update category.");
       setBusy(false);

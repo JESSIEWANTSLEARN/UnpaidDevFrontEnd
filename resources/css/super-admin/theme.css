@@ -40,6 +40,13 @@
   --activity-selected: #eef2ff;
 
   --donut-track: rgba(17, 20, 30, 0.08);
+
+  /* Compatibility variables used by shared Super Admin components */
+  --ops-card: #ffffff;
+  --ops-soft: #f8fafc;
+  --ops-text: #0f172a;
+  --ops-muted: #64748b;
+  --ops-border: #d8e0ea;
 }
 
 .ops-portal[data-theme="dark"] {
@@ -81,6 +88,13 @@
   --activity-selected: rgba(129, 140, 248, 0.16);
 
   --donut-track: rgba(229, 233, 240, 0.08);
+
+  /* Compatibility variables used by shared Super Admin components */
+  --ops-card: #111827;
+  --ops-soft: #172033;
+  --ops-text: #e5e9f0;
+  --ops-muted: #94a3b8;
+  --ops-border: #334155;
 }
 
 .ops-portal,

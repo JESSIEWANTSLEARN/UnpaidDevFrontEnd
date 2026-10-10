@@ -1,6 +1,6 @@
-﻿import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
-import AppLoadingScreen from "../../components/shared/AppLoadingScreen.jsx";
+import { CustomerStoreSkeleton } from "../../components/customer/shell/CustomerLoadingSkeletons.jsx";
 import { useNavigate } from "react-router-dom";
 import CustomerCheckoutModal from "../../components/customer/checkout/CustomerCheckoutModal.jsx";
 import CustomerHeader from "../../components/customer/shell/CustomerHeader.jsx";
@@ -31,6 +31,8 @@ import "../../../css/customer/checkout.css";
 import "../../../css/customer/cart-feedback.css";
 import "../../../css/customer/notifications.css";
 import "../../../css/customer/orders.css";
+import "../../../css/customer/wallet.css";
+import "../../../css/customer/order-actions.css";
 
 const THEME_KEY = "wbo_customer_theme_v1";
 
@@ -41,6 +43,14 @@ export default function SystemUser({ previewMode = false }) {
   const [stats, setStats] = useState({});
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [walletData, setWalletData] = useState({
+    wallet: {
+      balance: "0.00",
+      status: "ACTIVE",
+    },
+    transactions: [],
+  });
+  const [walletBusy, setWalletBusy] = useState(false);
   const [orderFilter, setOrderFilter] = useState("ALL");
   const [cart, setCart] = useState({});
   const [cartOpen, setCartOpen] = useState(false);
@@ -73,7 +83,9 @@ export default function SystemUser({ previewMode = false }) {
   });
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState("details");
+  const [checkoutToken, setCheckoutToken] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("CASH_ON_DELIVERY");
+  const [paymentReference, setPaymentReference] = useState("");
   const [placedOrder, setPlacedOrder] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -173,6 +185,14 @@ export default function SystemUser({ previewMode = false }) {
         });
         setProducts(normalizedProducts);
         setOrders([]);
+        // Preview wallet uses sample zero-balance data and disables changes.
+        setWalletData({
+          wallet: {
+            balance: "0.00",
+            status: "ACTIVE",
+          },
+          transactions: [],
+        });
         setCart({});
         return;
       }
@@ -234,6 +254,24 @@ export default function SystemUser({ previewMode = false }) {
       setNotifications(
         notificationData.notifications ?? []
       );
+      try {
+        const walletDataResponse =
+          await api("/api/user/wallet");
+
+        setWalletData({
+          wallet: walletDataResponse.wallet ?? {
+            balance: "0.00",
+            status: "ACTIVE",
+          },
+          transactions:
+            walletDataResponse.transactions ?? [],
+        });
+      } catch (walletError) {
+        console.warn(
+          "Wallet unavailable:",
+          walletError.message
+        );
+      }
 
       if (Number.isInteger(userId) && userId > 0) {
         writeUserCart(userId, mergedCart);
@@ -310,7 +348,14 @@ export default function SystemUser({ previewMode = false }) {
   }, [cartPulse]);
 
   const categories = useMemo(
-    () => ["All", ...new Set(products.map((p) => p.category).filter(Boolean))],
+    () => [
+      "All",
+      ...new Set(
+        products
+          .map((product) => product.category)
+          .filter((value) => Boolean(value))
+      ),
+    ],
     [products]
   );
 
@@ -454,6 +499,118 @@ export default function SystemUser({ previewMode = false }) {
     }
   };
 
+  const cancelOrder = async (orderId, reason) => {
+    if (previewMode) return false;
+
+    try {
+      setBusy(true);
+      setError("");
+
+      const result = await api(
+        `/api/user/orders/${orderId}/cancel`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ reason }),
+        },
+      );
+
+      const [
+        orderData,
+        notificationData,
+        me,
+        refreshedWallet,
+      ] = await Promise.all([
+        api("/api/user/orders"),
+        api("/api/user/notifications"),
+        api("/api/user/me"),
+        api("/api/user/wallet"),
+      ]);
+
+      setOrders(orderData.orders ?? []);
+      setNotifications(
+        notificationData.notifications ?? [],
+      );
+      setStats(me.stats ?? {});
+
+      setWalletData({
+        wallet: refreshedWallet.wallet ?? {
+          balance: "0.00",
+          status: "ACTIVE",
+        },
+        transactions:
+          refreshedWallet.transactions ?? [],
+      });
+
+      setNotice(
+        result.message ||
+          `Order #${orderId} cancelled.`,
+      );
+
+      return true;
+    } catch (error) {
+      setError(error.message);
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  };
+
+
+  const topUpWallet = async (payload) => {
+    if (previewMode) {
+      setNotice(
+        "Preview mode: wallet top-up is disabled.",
+      );
+      return false;
+    }
+
+    try {
+      setWalletBusy(true);
+      setError("");
+
+      const result = await api(
+        "/api/user/wallet/top-up",
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+        },
+      );
+
+      const [
+        refreshedWallet,
+        refreshedNotifications,
+      ] = await Promise.all([
+        api("/api/user/wallet"),
+        api("/api/user/notifications"),
+      ]);
+
+      setWalletData({
+        wallet: refreshedWallet.wallet ?? {
+          balance: "0.00",
+          status: "ACTIVE",
+        },
+        transactions:
+          refreshedWallet.transactions ?? [],
+      });
+
+      setNotifications(
+        refreshedNotifications.notifications ?? [],
+      );
+
+      setNotice(
+        result.message ||
+          "Wallet top-up completed.",
+      );
+
+      return true;
+    } catch (e) {
+      setError(e.message);
+      return false;
+    } finally {
+      setWalletBusy(false);
+    }
+  };
+
   const changeTab = (nextTab) => {
     setTab(nextTab);
     setMobileOpen(false);
@@ -588,6 +745,13 @@ export default function SystemUser({ previewMode = false }) {
     }));
 
     setPaymentMethod("CASH_ON_DELIVERY");
+    setPaymentReference("");
+    setCheckoutToken(
+      window.crypto?.randomUUID?.() ??
+        `wbo-checkout-${Date.now()}-${Math.random()
+          .toString(16)
+          .slice(2)}`,
+    );
     setPlacedOrder(null);
     setCheckoutStep("details");
     setError("");
@@ -611,6 +775,30 @@ export default function SystemUser({ previewMode = false }) {
 
   const reviewPayment = () => {
     setError("");
+
+    if (
+      !["CASH_ON_DELIVERY", "WALLET"].includes(
+        paymentMethod,
+      ) &&
+      !paymentReference.trim()
+    ) {
+      setError(
+        "Generate or enter a demo payment reference before continuing.",
+      );
+      return;
+    }
+
+    if (
+      paymentMethod === "WALLET" &&
+      Number(walletData?.wallet?.balance || 0) + 0.00001 <
+        Number(cartTotal || 0)
+    ) {
+      setError(
+        "Insufficient wallet balance. Open Wallet and top up before continuing.",
+      );
+      return;
+    }
+
     setCheckoutStep("summary");
   };
 
@@ -650,6 +838,13 @@ export default function SystemUser({ previewMode = false }) {
             delivery_notes: checkoutForm.delivery_notes,
           },
           payment_method: paymentMethod,
+          payment_reference_number:
+            ["CASH_ON_DELIVERY", "WALLET"].includes(
+              paymentMethod,
+            )
+              ? null
+              : paymentReference.trim(),
+          checkout_token: checkoutToken || null,
         }),
       });
 
@@ -667,6 +862,7 @@ export default function SystemUser({ previewMode = false }) {
           data.payment?.payment_method ?? paymentMethod,
         payment_status:
           data.payment?.payment_status ?? "PENDING",
+        payment_reference_number: data.payment?.reference_number ?? paymentReference.trim(),
       });
       setCheckoutStep("success");
       await load();
@@ -865,11 +1061,12 @@ export default function SystemUser({ previewMode = false }) {
     ["orders", "Orders", "orders"],
     ["reviews", "Reviews", "products"],
     ["support", "Support", "chat"],
+    ["wallet", "Wallet", "wallet"],
     ["account", "Account", "user"],
   ];
 
   if (loading) {
-    return <AppLoadingScreen label="Loading your store..." theme={theme} />;
+    return <CustomerStoreSkeleton theme={theme} />;
   }
 
   return (
@@ -877,9 +1074,9 @@ export default function SystemUser({ previewMode = false }) {
       <CustomerHeader ctx={{ previewMode, mobileOpen, setMobileOpen, nav, tab, changeTab, handleSearch, search, setSearch, unreadNotificationCount, setNotificationOpen, notificationOpen, readAllNotifications, notificationBusy, notifications, readNotification, setTheme, theme, cartPulse, setCartOpen, cartCount, logout, busy, error, setError }} />
 
 
-            <CustomerMainViews ctx={{ tab, products, stats, categoryCards, changeTab, chooseCategory, addToCart, setCart, setCartOpen, showCartFeedback, setCartPulse, cartAddedId, cartShakeId, filteredProducts, search, setSearch, handleSearch, categories, category, setCategory, orderFilter, orderStatusCounts, setOrderFilter, filteredOrders, orders, previewMode, saveProfile, user, profile, setProfile, busy, photoBusy, changeProfilePhoto, removeProfilePhoto, password, setPassword, savePassword, deliveryProfile, setDeliveryProfile, saveDeliveryAddress, logout }} />
+            <CustomerMainViews ctx={{ tab, products, stats, categoryCards, changeTab, chooseCategory, addToCart, setCart, setCartOpen, showCartFeedback, setCartPulse, cartAddedId, cartShakeId, filteredProducts, search, setSearch, handleSearch, categories, category, setCategory, orderFilter, orderStatusCounts, setOrderFilter, filteredOrders, orders, cancelOrder, walletData, walletBusy, topUpWallet, previewMode, saveProfile, user, profile, setProfile, busy, photoBusy, changeProfilePhoto, removeProfilePhoto, password, setPassword, savePassword, deliveryProfile, setDeliveryProfile, saveDeliveryAddress, logout }} />
 
-      <CustomerOverlays ctx={{ notice, cartFeedback, checkoutOpen, checkoutStep, closeCheckout, busy, error, setError, reviewCheckout, checkoutForm, setCheckoutForm, setCheckoutOpen, setCartOpen, paymentMethod, setPaymentMethod, reviewPayment, cartItems, cartTotal, checkout, previewMode, placedOrder, setTab, setNotice, cartOpen, cartCount, setQty, startCheckout }} />
+      <CustomerOverlays ctx={{ notice, cartFeedback, checkoutOpen, checkoutStep, setCheckoutStep, closeCheckout, busy, error, setError, reviewCheckout, checkoutForm, setCheckoutForm, setCheckoutOpen, setCartOpen, paymentMethod, setPaymentMethod, paymentReference, setPaymentReference, reviewPayment, cartItems, cartTotal, walletData, checkout, previewMode, placedOrder, setTab, setNotice, cartOpen, cartCount, setQty, startCheckout }} />
     </div>
   );
 }

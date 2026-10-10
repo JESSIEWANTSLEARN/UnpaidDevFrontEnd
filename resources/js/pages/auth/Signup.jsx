@@ -1,12 +1,8 @@
-import { backendUrl } from "../../config/api.js";
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import "../../../css/auth/signup.css";
+import { useNavigate } from "react-router-dom";
 import usePublicTheme from "../../hooks/usePublicTheme.js";
-import "../../../css/auth/public-theme.css";
-
+import CinematicAuthLayout from "../../components/shared/CinematicAuthLayout.jsx";
 import { authFetch } from "../../services/auth/authRequest.js";
-const Logo = backendUrl("/storage/site/Logo.png");
 
 async function readJson(response) {
   const text = await response.text();
@@ -126,20 +122,13 @@ function Signup() {
         );
 
         if (data.redirect) {
-          window.setTimeout(
-            () => navigate(data.redirect),
-            900,
-          );
+          window.setTimeout(() => navigate(data.redirect), 900);
         }
 
         return;
       }
 
-      sessionStorage.setItem(
-        "wbo_signup_email",
-        data.email || email,
-      );
-
+      sessionStorage.setItem("wbo_signup_email", data.email || email);
       saveOtpPolicy(data.otp_policy);
 
       navigate(data.redirect || "/signup-verify");
@@ -151,57 +140,28 @@ function Signup() {
   };
 
   return (
-    <div className="signup-page" data-theme={theme}>
-      <header className="signup-header">
-        <div className="signup-header-inner">
-          <Link to="/" className="signup-brand">
-            <img
-              src={Logo}
-              alt="Walang Brown Out Logo"
-              width="45"
-              height="45"
-            />
-
-            <div className="signup-brand-text">
-              <span>Republic of the Philippines</span>
-              <strong>WALANG BROWN OUT</strong>
-            </div>
-          </Link>
-
-          <button
-            type="button"
-            className="auth-theme-toggle"
-            onClick={toggleTheme}
-            aria-label={
-              theme === "dark"
-                ? "Switch to light mode"
-                : "Switch to dark mode"
-            }
-            title={
-              theme === "dark"
-                ? "Light mode"
-                : "Dark mode"
-            }
-          >
-            {theme === "dark" ? "Light mode" : "Dark mode"}
-          </button>        </div>
-      </header>
-
-      <main className="signup-container">
-        <Link to="/login" className="back-button">
-          &larr; Back to Login
-        </Link>
-
-        <div className="signup-title">
-          <h2>Create an Account</h2>
-          <p>Create your WalangBrownout customer account</p>
+    <CinematicAuthLayout
+      theme={theme}
+      toggleTheme={toggleTheme}
+      eyebrow="CREATE YOUR ACCOUNT"
+      title="Start shopping smarter."
+      description="Create a customer account for secure checkout, order tracking, returns, and support."
+      backTo="/login"
+      backLabel="Back to login"
+      footerText="Already have an account?"
+      footerLinkTo="/login"
+      footerLinkLabel="Sign in"
+    >
+      {error ? (
+        <div className="cinematic-auth-error" role="alert">
+          {error}
         </div>
+      ) : null}
 
-        {error && <div className="signup-error">{error}</div>}
-
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Full Name</label>
+      <form className="cinematic-auth-form" onSubmit={handleSubmit}>
+        <div className="cinematic-field-grid">
+          <label className="cinematic-field">
+            <span>Full name</span>
             <input
               type="text"
               name="name"
@@ -212,24 +172,10 @@ function Signup() {
               onChange={handleChange}
               disabled={loading}
             />
-          </div>
+          </label>
 
-          <div className="form-group">
-            <label>Email Address</label>
-            <input
-              type="email"
-              name="email"
-              required
-              autoComplete="email"
-              placeholder="name@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={loading}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Contact Number</label>
+          <label className="cinematic-field">
+            <span>Contact number</span>
             <input
               type="tel"
               name="contactNumber"
@@ -240,12 +186,28 @@ function Signup() {
               onChange={handleChange}
               disabled={loading}
             />
-          </div>
+          </label>
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="signup-password">Password</label>
+        <label className="cinematic-field">
+          <span>Email address</span>
+          <input
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="name@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </label>
 
-            <div className="password-field">
+        <div className="cinematic-field-grid">
+          <label className="cinematic-field" htmlFor="signup-password">
+            <span>Password</span>
+
+            <div className="cinematic-password-field">
               <input
                 id="signup-password"
                 type={showPassword ? "text" : "password"}
@@ -253,14 +215,13 @@ function Signup() {
                 required
                 minLength="6"
                 autoComplete="new-password"
-                placeholder="********"
+                placeholder="At least 6 characters"
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}
               />
 
               <button
-                className="password-toggle"
                 type="button"
                 onClick={() => setShowPassword((visible) => !visible)}
                 disabled={loading}
@@ -270,12 +231,12 @@ function Signup() {
                 {showPassword ? "Hide" : "Show"}
               </button>
             </div>
-          </div>
+          </label>
 
-          <div className="form-group">
-            <label htmlFor="signup-confirm-password">Confirm Password</label>
+          <label className="cinematic-field" htmlFor="signup-confirm-password">
+            <span>Confirm password</span>
 
-            <div className="password-field">
+            <div className="cinematic-password-field">
               <input
                 id="signup-confirm-password"
                 type={showConfirmPassword ? "text" : "password"}
@@ -283,14 +244,13 @@ function Signup() {
                 required
                 minLength="6"
                 autoComplete="new-password"
-                placeholder="********"
+                placeholder="Repeat password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 disabled={loading}
               />
 
               <button
-                className="password-toggle"
                 type="button"
                 onClick={() =>
                   setShowConfirmPassword((visible) => !visible)
@@ -306,29 +266,24 @@ function Signup() {
                 {showConfirmPassword ? "Hide" : "Show"}
               </button>
             </div>
-          </div>
+          </label>
+        </div>
 
-          <button
-            className="signup-button"
-            type="submit"
-            disabled={loading}
-          >
-            {loading
-              ? "Creating Account..."
-              : "Create Account"}
-          </button>
+        <p className="cinematic-form-note">
+          Your email will be verified using the existing Walang Brownout OTP
+          process before the account becomes active.
+        </p>
 
-          <p className="login-text">
-            Already have an account?{" "}
-            <Link to="/login">Login here</Link>
-          </p>
-        </form>
-      </main>
-
-      <footer className="signup-footer">
-        <strong>&copy; 2026 WalangBrownOut.</strong> All rights reserved.
-      </footer>
-    </div>
+        <button
+          className="cinematic-primary-button"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Creating account..." : "Create account"}
+          <span aria-hidden="true">→</span>
+        </button>
+      </form>
+    </CinematicAuthLayout>
   );
 }
 
