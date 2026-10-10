@@ -70,6 +70,10 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
   const [title, setTitle] = useState("");
   const [comment, setComment] = useState("");
   const [busy, setBusy] = useState(false);
+  const [editingReview, setEditingReview] = useState(null);
+  const [editRating, setEditRating] = useState(5);
+  const [editTitle, setEditTitle] = useState("");
+  const [editComment, setEditComment] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -114,6 +118,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
         method: "POST",
         body: {
           product_id: selected.product_id,
+          order_id: selected.order_id,
           rating,
           title: title.trim() || null,
           comment: comment.trim(),
@@ -133,24 +138,141 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
     }
   };
 
-  const renderReviewCard = (review) => (
-    <article className="customer-review-card" key={review.review_id}>
-      <div className="customer-review-head">
-        <div>
-          <strong>{review.product_name}</strong>
-          <small>{review.customer_name || review.sku}</small>
-        </div>
-        <Stars value={review.rating} />
-      </div>
+  const startEditing = (review) => {
+    setEditingReview(review.review_id);
+    setEditRating(Number(review.rating) || 5);
+    setEditTitle(review.title || "");
+    setEditComment(review.comment || "");
+    setError("");
+    setNotice("");
+  };
 
-      {review.title && <h3>{review.title}</h3>}
-      <p>{review.comment}</p>
-      <span className="customer-review-verified">Verified Purchase</span>
-      {review.status && (
-        <small className="customer-review-status">{review.status}</small>
-      )}
-    </article>
-  );
+  const cancelEditing = () => {
+    setEditingReview(null);
+    setEditRating(5);
+    setEditTitle("");
+    setEditComment("");
+  };
+
+  const saveEdit = async (event, reviewId) => {
+    event.preventDefault();
+    if (busy) return;
+
+    setBusy(true);
+    setError("");
+
+    try {
+      const result = await apiRequest("/api/user/reviews/" + reviewId, {
+        method: "PUT",
+        body: {
+          rating: editRating,
+          title: editTitle.trim() || null,
+          comment: editComment.trim(),
+        },
+      });
+
+      setNotice(result.message || "Your review was updated.");
+      cancelEditing();
+      await load();
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const renderReviewCard = (review, canEdit = false) => {
+    const isEditing = canEdit && editingReview === review.review_id;
+
+    return (
+      <article className="customer-review-card" key={review.review_id}>
+        <div className="customer-review-head">
+          <div>
+            <strong>{review.product_name}</strong>
+            <small>{review.customer_name || review.sku}</small>
+          </div>
+          <Stars value={isEditing ? editRating : review.rating} />
+        </div>
+
+        {isEditing ? (
+          <form
+            className="customer-review-form customer-review-edit-form"
+            onSubmit={(event) => saveEdit(event, review.review_id)}
+          >
+            <label>
+              Rating
+              <div className="customer-review-rating">
+                {[1, 2, 3, 4, 5].map((number) => (
+                  <button
+                    type="button"
+                    key={number}
+                    className={number <= editRating ? "is-selected" : ""}
+                    aria-label={number + " star rating"}
+                    onClick={() => setEditRating(number)}
+                  >
+                    {"\u2605"}
+                  </button>
+                ))}
+              </div>
+            </label>
+            <label>
+              Title (optional)
+              <input
+                maxLength={120}
+                value={editTitle}
+                onChange={(event) => setEditTitle(event.target.value)}
+              />
+            </label>
+            <label>
+              Comment
+              <textarea
+                required
+                minLength={3}
+                maxLength={2000}
+                rows={5}
+                value={editComment}
+                onChange={(event) => setEditComment(event.target.value)}
+              />
+            </label>
+            <div className="customer-review-edit-actions">
+              <button
+                type="button"
+                className="customer-review-submit"
+                disabled={busy}
+                onClick={cancelEditing}
+              >
+                Cancel
+              </button>
+              <button className="customer-review-submit" disabled={busy}>
+                {busy ? "Saving..." : "Save changes"}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <>
+            {review.title && <h3>{review.title}</h3>}
+            <p>{review.comment}</p>
+          </>
+        )}
+
+        <span className="customer-review-verified">Verified Purchase</span>
+        {review.status && (
+          <small className="customer-review-status">{review.status}</small>
+        )}
+        {canEdit && !isEditing && (
+          <div className="customer-review-edit-actions">
+            <button
+              type="button"
+              className="customer-review-submit"
+              onClick={() => startEditing(review)}
+            >
+              Edit review
+            </button>
+          </div>
+        )}
+      </article>
+    );
+  };
   if (loading) {
     return <CustomerReviewsSkeleton />;
   }
@@ -164,7 +286,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
           <p>
             {previewMode
               ? "Preview public customer reviews without exposing private purchase history."
-              : "Only fulfilled purchases can be reviewed. One review per product."}
+              : "Only fulfilled purchases can be reviewed. You can review a product once per fulfilled order."}
           </p>
         </div>
       </div>
@@ -191,7 +313,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
                 {eligible.map((product) => (
                   <article
                     className="customer-review-eligible"
-                    key={product.product_id}
+                    key={`${product.product_id}:${product.order_id}`}
                   >
                     <div>
                       <small>{product.sku}</small>
@@ -206,7 +328,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
               </div>
             ) : (
               <div className="customer-review-empty">
-                No fulfilled, unreviewed products are waiting for feedback.
+                No fulfilled purchases are waiting for feedback.
               </div>
             )}
           </div>
@@ -267,7 +389,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
             <h2>My reviews</h2>
             <div className="customer-review-grid">
               {mine.length ? (
-                mine.map(renderReviewCard)
+                mine.map((review) => renderReviewCard(review, true))
               ) : (
                 <div className="customer-review-empty">
                   You have not submitted a product review yet.
