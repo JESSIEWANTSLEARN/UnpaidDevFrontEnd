@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { ROLE_DASHBOARDS } from "../../../config/roleDashboardConfig.js";
 import useRoleDashboard from "../../../hooks/role-dashboard/useRoleDashboard.js";
 import AppLoadingScreen from "../AppLoadingScreen.jsx";
@@ -131,6 +131,7 @@ export default function RoleDashboardShell({
             }
             onSalesOrderStatus={handleSalesOrderStatus}
             onDashboardRefresh={refresh}
+            onModuleChange={setActiveModule}
             theme={theme}
           />
         )}

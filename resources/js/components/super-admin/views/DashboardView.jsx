@@ -22,6 +22,7 @@ function Dashboard({ data, setActiveMenu }) {
       </div>
 
       <UserActivityPanel activity={data.user_activity} />
+      <AnonymousVisitorsPanel visitors={data.anonymous_visitors} />
 
       <div className="ops-panel dashboard-inventory-panel">
         <div className="panel-head">
@@ -500,12 +501,50 @@ function UserActivityPanel({ activity = {} }) {
         </span>
 
         <span>
-          Anonymous landing-page visitors are not included yet.
+          Anonymous visitors are reported separately below.
         </span>
       </div>
     </section>
   );
 }
+
+function AnonymousVisitorsPanel({ visitors = {} }) {
+  const format = (value) => Number(value || 0).toLocaleString();
+
+  return (
+    <section className="ops-panel padded user-activity-panel">
+      <div className="panel-head user-activity-head">
+        <div>
+          <h2>Anonymous Visitors</h2>
+          <span>
+            Unique anonymous browser sessions per Manila calendar day
+          </span>
+        </div>
+      </div>
+
+      <div className="user-activity-kpis">
+        <div className="user-activity-kpi">
+          <span>Today</span>
+          <strong>{format(visitors.today)}</strong>
+          <small>Anonymous sessions</small>
+        </div>
+
+        <div className="user-activity-kpi">
+          <span>Last 7 Days</span>
+          <strong>{format(visitors.last_7_days)}</strong>
+          <small>Anonymous sessions, daily unique</small>
+        </div>
+
+        <div className="user-activity-kpi">
+          <span>Last 30 Days</span>
+          <strong>{format(visitors.last_30_days)}</strong>
+          <small>Anonymous sessions, daily unique</small>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TrendPanel({ trend }) {
   const values = trend.map((item) => Number(item.net_movement || 0));
   const maxAbs = Math.max(1, ...values.map((value) => Math.abs(value)));

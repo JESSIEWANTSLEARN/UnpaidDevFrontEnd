@@ -25,15 +25,7 @@ export default function PurchasingDashboardContent({
 }) {
   const [selectedSupplier, setSelectedSupplier] =
     useState(null);
-  const overviewModule =
-    roleKey === "Purchasing_Manager"
-      ? "Purchasing Overview"
-      : "Purchasing Tasks";
-
-  if (
-    activeModule === "Overview" ||
-    activeModule === overviewModule
-  ) {
+  if (activeModule === "Overview") {
     return (
       <RoleDashboardOverview
         roleKey={roleKey}

@@ -1,4 +1,6 @@
-﻿/*
+import { ROLE_WORKSPACES } from "./roleWorkspaceConfig.js";
+
+/*
  * Shared staff-role dashboard configuration.
  * Role keys must match WBO_Users.role exactly.
  * This config controls presentation only; Laravel still enforces authorization.
@@ -14,7 +16,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Coordinate purchasing, inventory, sales, and operational issues.",
     modules: [
-      "Operational Overview",
+      ROLE_WORKSPACES.Operations_Manager.title,
       "Inventory Health",
       "Data Imports",
       "Purchase Activity",
@@ -32,7 +34,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Manage suppliers, purchase orders, approvals, and replenishment.",
     modules: [
-      "Purchasing Overview",
+      ROLE_WORKSPACES.Purchasing_Manager.title,
       "Suppliers",
       "Data Imports",
       "Supplier Returns",
@@ -51,7 +53,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Handle supplier records and day-to-day purchase-order work.",
     modules: [
-      "Purchasing Tasks",
+      ROLE_WORKSPACES.Purchasing_Staff.title,
       "Suppliers",
       "Data Imports",
       "Supplier Returns",
@@ -69,7 +71,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Supervise receiving, stock, batches, and warehouse accuracy.",
     modules: [
-      "Warehouse Overview",
+      ROLE_WORKSPACES.Warehouse_Admin.title,
       "Receiving",
       "Returned Items",
       "Data Imports",
@@ -88,7 +90,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Control stock records, movements, adjustments, and low-stock monitoring.",
     modules: [
-      "Inventory Overview",
+      ROLE_WORKSPACES.Inventory_Controller.title,
       "Stock Movement",
       "Return Inspection",
       "Data Imports",
@@ -108,7 +110,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Monitor sales, orders, customers, and product performance.",
     modules: [
-      "Sales Overview",
+      ROLE_WORKSPACES.Sales_Manager.title,
       "Orders",
       "Customers",
       "Returns & Refunds",
@@ -127,7 +129,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Support customer orders and daily sales activity.",
     modules: [
-      "Sales Tasks",
+      ROLE_WORKSPACES.Sales_Staff.title,
       "Orders",
       "Customers",
       "Returns & Refunds",
@@ -144,7 +146,7 @@ export const ROLE_DASHBOARDS = {
     subtitle:
       "Manage user accounts, roles, account status, and session access.",
     modules: [
-      "User Overview",
+      ROLE_WORKSPACES.User_Admin.title,
       "User Accounts",
       "Roles & Status",
       "Sessions",

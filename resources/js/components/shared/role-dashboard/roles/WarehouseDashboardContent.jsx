@@ -23,10 +23,7 @@ export default function WarehouseDashboardContent({
 }) {
   const roleKey = "Warehouse_Admin";
 
-  if (
-    activeModule === "Overview" ||
-    activeModule === "Warehouse Overview"
-  ) {
+  if (activeModule === "Overview") {
     return (
       <RoleDashboardOverview
         roleKey={roleKey}

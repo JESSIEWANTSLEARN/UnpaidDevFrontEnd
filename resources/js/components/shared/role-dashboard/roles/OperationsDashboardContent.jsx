@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Alerts,
-  Metrics,
   OrdersTable,
   ProductsTable,
   PurchaseOrdersTable,
@@ -21,15 +20,6 @@ export default function OperationsDashboardContent({
       <RoleDashboardOverview
         roleKey={roleKey}
         data={data}
-      />
-    );
-  }
-
-  if (activeModule === "Operational Overview") {
-    return (
-      <Metrics
-        metrics={data.metrics}
-        roleKey={roleKey}
       />
     );
   }

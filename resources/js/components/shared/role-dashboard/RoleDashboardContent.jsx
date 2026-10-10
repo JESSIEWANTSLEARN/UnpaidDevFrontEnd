@@ -1,4 +1,8 @@
-﻿import React from "react";
+import { ROLE_WORKSPACES } from "../../../config/roleWorkspaceConfig.js";
+import RoleFunctionDirectory from "./workspaces/RoleFunctionDirectory.jsx";
+import RoleWorkspace from "./workspaces/RoleWorkspace.jsx";
+import "../../../../css/shared/role-workspaces.css";
+import React from "react";
 import "../../../../css/shared/role-dashboard-data.css";
 import SalesDashboardContent from "../../sales/SalesDashboardContent.jsx";
 import UserAdminDashboardContent from "../../user-admin/UserAdminDashboardContent.jsx";
@@ -10,7 +14,7 @@ import WarehouseDashboardContent from "./roles/WarehouseDashboardContent.jsx";
 import DataImportsPanel from "../imports/DataImportsPanel.jsx";
 import ReturnWorkflowPanel from "../returns/ReturnWorkflowPanel.jsx";
 
-export default function RoleDashboardContent({
+function RoleModuleContent({
   roleKey,
   activeModule,
   data,
@@ -27,6 +31,7 @@ export default function RoleDashboardContent({
   onSalesOrderStatus,
   onDashboardRefresh,
   theme,
+  onModuleChange,
 }) {
   if (roleKey === "User_Admin") {
     return (
@@ -34,6 +39,7 @@ export default function RoleDashboardContent({
         activeModule={activeModule}
         previewMode={previewMode}
         theme={theme}
+        onModuleChange={onModuleChange}
       />
     );
   }
@@ -147,5 +153,25 @@ export default function RoleDashboardContent({
     <FoundationOnlyContent
       activeModule={activeModule}
     />
+  );
+}
+
+export default function RoleDashboardContent(props) {
+  const { roleKey, activeModule, data } = props;
+  if (roleKey === "User_Admin") return <RoleModuleContent {...props} />;
+  if (data?.live && activeModule === ROLE_WORKSPACES[roleKey]?.title) {
+    return <RoleWorkspace key={roleKey} {...props} />;
+  }
+  return (
+    <>
+      {activeModule === "Overview" && (
+        <RoleFunctionDirectory
+          roleKey={roleKey}
+          data={data}
+          onModuleChange={props.onModuleChange}
+        />
+      )}
+      <RoleModuleContent {...props} />
+    </>
   );
 }
