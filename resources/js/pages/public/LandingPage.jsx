@@ -1,4 +1,4 @@
-import { backendUrl } from "../../config/api.js";
+import { backendUrl, loadCsrfToken } from "../../config/api.js";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/public/landing-page.css";
@@ -179,6 +179,22 @@ function LandingPage() {
       .then((data) => {
         if (!cancelled && data?.authenticated) {
           setActiveSession(data);
+        }
+
+        if (!cancelled && !data?.authenticated) {
+          void (async () => {
+            const token = await loadCsrfToken();
+            await fetch(backendUrl("/api/public/landing-page-visit"), {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                Accept: "application/json",
+                ...(token ? { "X-CSRF-TOKEN": token } : {}),
+              },
+            });
+          })().catch(() => {
+            // Visitor analytics must not affect public landing-page access.
+          });
         }
       })
       .catch(() => {
