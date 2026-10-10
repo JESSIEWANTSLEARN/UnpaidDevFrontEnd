@@ -71,7 +71,8 @@
     font-weight: 800;
 }
 .customer-review-eligible button,
-.customer-review-submit {
+.customer-review-submit,
+.customer-review-edit {
     min-height: 38px;
     padding: 0 13px;
     border: 0;
@@ -80,6 +81,18 @@
     color: #fff;
     font: inherit;
     font-weight: 800;
+    cursor: pointer;
+}
+.customer-review-edit {
+    margin-top: 12px;
+}
+.customer-review-form-head button {
+    border: 1px solid var(--rv-border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    background: var(--rv-soft);
+    color: var(--rv-text);
+    font: inherit;
     cursor: pointer;
 }
 .customer-review-form {
