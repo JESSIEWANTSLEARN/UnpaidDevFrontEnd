@@ -3,10 +3,13 @@ import { backendUrl } from "../../../config/api.js";
 import CustomerReviewsPanel from "../reviews/CustomerReviewsPanel.jsx";
 import CustomerSupportPanel from "../support/CustomerSupportPanel.jsx";
 import CustomerProductDetails from "../products/CustomerProductDetails.jsx";
+import CustomerCatalog from "../products/CustomerCatalog.jsx";
+import { filterOrders } from "../../../utils/customer/historyFilters.mjs";
 import CustomerWalletPanel from "../wallet/CustomerWalletPanel.jsx";
 import CustomerOrderReturnPanel from "../orders/CustomerOrderReturnPanel.jsx";
 import CustomerOrderCancelPanel from "../orders/CustomerOrderCancelPanel.jsx";
 import "../../../../css/customer/customer-cinematic-store.css";
+import "../../../../css/customer/history.css";
 import "../../../../css/customer/customer-account-cinematic.css";
 import { EmptyState, Icon, ProfileAvatar, StatusBadge } from "../CustomerUi.jsx";
 import {
@@ -31,11 +34,8 @@ export default function CustomerMainViews({ ctx }) {
     setCartPulse,
     cartAddedId,
     cartShakeId,
-    filteredProducts,
     search,
     setSearch,
-    handleSearch,
-    categories,
     category,
     setCategory,
     orderFilter,
@@ -66,6 +66,12 @@ export default function CustomerMainViews({ ctx }) {
   } = ctx;
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [orderSearch, setOrderSearch] = useState("");
+  const [orderSort, setOrderSort] = useState("newest");
+  const visibleOrders = React.useMemo(
+    () => filterOrders(filteredOrders, { query: orderSearch, sort: orderSort }),
+    [filteredOrders, orderSearch, orderSort],
+  );
 
   useEffect(() => {
     if (tab !== "product") return;
@@ -417,122 +423,17 @@ export default function CustomerMainViews({ ctx }) {
         )}
 
         {tab === "shop" && (
-          <section className="customer-page-section wbo-cinematic-catalog">
-            <div className="customer-page-title">
-              <div>
-                <span className="customer-kicker">PRODUCT CATALOG</span>
-                <h1>Shop available products</h1>
-                <p>Availability is calculated from current warehouse batch quantities.</p>
-              </div>
-              <span className="customer-result-count">{filteredProducts.length} result(s)</span>
-            </div>
-
-            <div className="customer-catalog-toolbar">
-              <form className="customer-catalog-search" onSubmit={handleSearch}>
-                <Icon name="search" size={18} />
-                <input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search name, SKU, or description..."
-                />
-              </form>
-
-              <div className="customer-category-pills" aria-label="Filter by category">
-                {categories.map((item) => (
-                  <button
-                    type="button"
-                    key={item}
-                    className={category === item ? "is-active" : ""}
-                    onClick={() => setCategory(item)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {filteredProducts.length ? (
-              <div className="customer-product-grid">
-                {filteredProducts.map((product) => (
-                  <article
-                      className="customer-product-card"
-                      key={product.product_id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => openProduct(product)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          openProduct(product);
-                        }
-                      }}
-                    >
-                    <div className="customer-product-media">
-                      {product.image_url ? (
-                        <img
-                          src={backendUrl(product.image_url)}
-                          alt={product.name}
-                          loading="lazy"
-                          className="wbo-glow-image"
-                        />
-                      ) : (
-                        <div className="customer-product-placeholder"><Icon name="products" size={32} /></div>
-                      )}
-                      <span className={`customer-stock ${product.available_stock > 0 ? "is-in" : "is-out"}`}>
-                        {product.available_stock > 0
-                          ? `${product.available_stock} in stock`
-                          : "Out of stock"}
-                      </span>
-                    </div>
-
-                    <div className="customer-product-body">
-                      <span className="customer-product-category">{product.category}</span>
-                      <h3>{product.name}</h3>
-                      <p>{product.description || "Home comfort product from Walang Brownout."}</p>
-                      <small className="customer-sku">{product.sku}</small>
-
-                      <div className="customer-product-footer">
-                        <strong>{money(product.unit_price)}</strong>
-                        <button
-                          type="button"
-                          className={`customer-add-cart-button ${
-                            cartAddedId === product.product_id
-                              ? "is-added"
-                              : ""
-                          } ${
-                            cartShakeId === product.product_id
-                              ? "is-limit"
-                              : ""
-                          }`}
-                          onClick={(event) => {
-                              event.stopPropagation();
-                              addToCart(product);
-                            }}
-                          disabled={product.available_stock <= 0}
-                        >
-                          <Icon
-                            name={
-                              cartAddedId === product.product_id
-                                ? "check"
-                                : "cart"
-                            }
-                            size={17}
-                          />
-                          {product.available_stock <= 0
-                            ? "Unavailable"
-                            : cartAddedId === product.product_id
-                              ? "Added!"
-                              : "Add to cart"}
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <EmptyState title="No products found" text="Try another search or category." />
-            )}
-          </section>
+          <CustomerCatalog
+            products={products}
+            search={search}
+            setSearch={setSearch}
+            category={category}
+            setCategory={setCategory}
+            onOpen={openProduct}
+            onAdd={addToCart}
+            cartAddedId={cartAddedId}
+            cartShakeId={cartShakeId}
+          />
         )}
 
         {tab === "product" && (
@@ -562,6 +463,18 @@ export default function CustomerMainViews({ ctx }) {
             </div>
 
             {!previewMode && orders.length > 0 && (
+              <div className="wbo-history-toolbar">
+                <label className="wbo-history-search">
+                  <Icon name="search" size={18} />
+                  <input aria-label="Search orders" type="search" placeholder="Search order number, product, or SKU" value={orderSearch} onChange={(event) => setOrderSearch(event.target.value)} />
+                  {orderSearch && <button type="button" aria-label="Clear order search" onClick={() => setOrderSearch("")}>×</button>}
+                </label>
+                <label className="wbo-history-sort">Sort<select aria-label="Sort orders" value={orderSort} onChange={(event) => setOrderSort(event.target.value)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="default">Original order</option></select></label>
+                <span className="wbo-history-count" role="status">{visibleOrders.length} {visibleOrders.length === 1 ? "order" : "orders"}</span>
+              </div>
+            )}
+
+            {!previewMode && orders.length > 0 && (
               <div
                 className="customer-order-filters"
                 aria-label="Filter orders by status"
@@ -587,9 +500,9 @@ export default function CustomerMainViews({ ctx }) {
               </div>
             )}
 
-            {filteredOrders.length ? (
+            {visibleOrders.length ? (
               <div className="customer-orders-list">
-                {filteredOrders.map((order) => (
+                {visibleOrders.map((order) => (
                   <article
                     className="customer-order-card"
                     key={order.order_id}
@@ -661,10 +574,10 @@ export default function CustomerMainViews({ ctx }) {
               </div>
             ) : orders.length && !previewMode ? (
               <EmptyState
-                title={`No ${ORDER_STATUS_FILTERS.find(
+                title={orderSearch ? "No matching orders" : `No ${ORDER_STATUS_FILTERS.find(
                   (item) => item.key === orderFilter
                 )?.label.toLowerCase() ?? ""} orders`}
-                text="Choose another order status to view your orders."
+                text={orderSearch ? "Try a different order number, product name, or SKU." : "Choose another order status to view your orders."}
               />
             ) : (
               <EmptyState

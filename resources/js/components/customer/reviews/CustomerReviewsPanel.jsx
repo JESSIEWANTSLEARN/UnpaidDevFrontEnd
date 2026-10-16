@@ -1,7 +1,9 @@
 import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import React, { useEffect, useState } from "react";
 import { CustomerReviewsSkeleton } from "../shell/CustomerLoadingSkeletons.jsx";
+import { filterReviews } from "../../../utils/customer/historyFilters.mjs";
 import "../../../../css/customer/reviews.css";
+import "../../../../css/customer/history.css";
 
 async function apiRequest(url, options = {}) {
   const method = String(options.method || "GET").toUpperCase();
@@ -74,6 +76,12 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
   const [editRating, setEditRating] = useState(5);
   const [editTitle, setEditTitle] = useState("");
   const [editComment, setEditComment] = useState("");
+  const [reviewSearch, setReviewSearch] = useState("");
+  const [reviewRatingFilter, setReviewRatingFilter] = useState("all");
+  const [reviewSort, setReviewSort] = useState("newest");
+  const visibleMine = filterReviews(mine, { query: reviewSearch, rating: reviewRatingFilter, sort: reviewSort });
+  const visiblePublic = filterReviews(publicReviews, { query: reviewSearch, rating: reviewRatingFilter, sort: reviewSort });
+  const visibleEligible = eligible.filter((product) => !reviewSearch.trim() || [product.name, product.sku, product.order_id].some((value) => String(value ?? "").toLowerCase().includes(reviewSearch.trim().toLowerCase())));
 
   const load = async () => {
     setLoading(true);
@@ -291,13 +299,25 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
         </div>
       </div>
 
+      <div className="wbo-history-toolbar wbo-review-toolbar">
+        <label className="wbo-history-search">
+          <span aria-hidden="true">⌕</span>
+          <input aria-label="Search reviews" type="search" placeholder="Search product or review text" value={reviewSearch} onChange={(event) => setReviewSearch(event.target.value)} />
+          {reviewSearch && <button type="button" aria-label="Clear review search" onClick={() => setReviewSearch("")}>×</button>}
+        </label>
+        <label className="wbo-history-sort">Rating<select aria-label="Filter by rating" value={reviewRatingFilter} onChange={(event) => setReviewRatingFilter(event.target.value)}><option value="all">All ratings</option>{[5,4,3,2,1].map((value) => <option key={value} value={value}>{value} stars</option>)}</select></label>
+        <label className="wbo-history-sort">Sort<select aria-label="Sort reviews" value={reviewSort} onChange={(event) => setReviewSort(event.target.value)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="highest">Highest rated</option><option value="lowest">Lowest rated</option></select></label>
+        <span className="wbo-history-count" role="status">{visiblePublic.length} public {visiblePublic.length === 1 ? "review" : "reviews"}</span>
+        {(reviewSearch || reviewRatingFilter !== "all" || reviewSort !== "newest") && <button type="button" className="wbo-history-clear" onClick={() => { setReviewSearch(""); setReviewRatingFilter("all"); setReviewSort("newest"); }}>Clear filters</button>}
+      </div>
+
       {notice && <div className="customer-review-notice">{notice}</div>}
       {error && <div className="customer-review-error">{error}</div>}
 
       {previewMode ? (
         <div className="customer-review-grid">
-          {publicReviews.length ? (
-            publicReviews.map((review) => renderReviewCard(review))
+          {visiblePublic.length ? (
+            visiblePublic.map((review) => renderReviewCard(review))
           ) : (
             <div className="customer-review-empty">
               No visible product reviews yet.
@@ -308,9 +328,9 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
         <>
           <div className="customer-review-section">
             <h2>Ready to review</h2>
-            {eligible.length ? (
+            {visibleEligible.length ? (
               <div className="customer-review-grid">
-                {eligible.map((product) => (
+                {visibleEligible.map((product) => (
                   <article
                     className="customer-review-eligible"
                     key={`${product.product_id}:${product.order_id}`}
@@ -388,11 +408,11 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
           <div className="customer-review-section">
             <h2>My reviews</h2>
             <div className="customer-review-grid">
-              {mine.length ? (
-                mine.map((review) => renderReviewCard(review, true))
+              {visibleMine.length ? (
+                visibleMine.map((review) => renderReviewCard(review, true))
               ) : (
                 <div className="customer-review-empty">
-                  You have not submitted a product review yet.
+                  {mine.length ? "No reviews match these filters." : "You have not submitted a product review yet."}
                 </div>
               )}
             </div>
@@ -404,11 +424,11 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
               Visible verified-purchase reviews from Walang Brownout customers.
             </p>
             <div className="customer-review-grid">
-              {publicReviews.length ? (
-                publicReviews.map((review) => renderReviewCard(review))
+              {visiblePublic.length ? (
+                visiblePublic.map((review) => renderReviewCard(review))
               ) : (
                 <div className="customer-review-empty">
-                  No visible product reviews yet.
+                  {publicReviews.length ? "No public reviews match these filters." : "No visible product reviews yet."}
                 </div>
               )}
             </div>

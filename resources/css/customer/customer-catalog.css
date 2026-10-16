@@ -1,0 +1,77 @@
+/* Scoped catalog layout: home, product details and FAQ retain their design. */
+.customer-shell .wbo-shop { padding-block: 1.5rem 3rem; color: var(--customer-text); }
+.wbo-shop-heading { margin-bottom: 1.5rem; }
+.wbo-shop-heading h1 { margin: .4rem 0 .5rem; font-size: clamp(1.7rem, 3vw, 2.5rem); letter-spacing: -.035em; line-height: 1.15; }
+.wbo-shop-heading p { margin: 0; color: var(--customer-muted); line-height: 1.6; }
+.wbo-shop-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.wbo-shop-sidebar { border: 1px solid var(--customer-border); border-radius: 16px; background: var(--customer-surface); overflow: hidden; }
+.wbo-shop-filter-content { padding: 1.15rem; }
+.wbo-shop-filter-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: 1rem; }
+.wbo-shop-filter-heading h2 { font-size: 1.05rem; margin: 0; }
+.wbo-shop-filter-heading button { border: 0; background: transparent; color: var(--customer-text); text-decoration: underline; font-size: .8rem; cursor: pointer; padding: .5rem 0; }
+.wbo-shop fieldset { border: 0; border-top: 1px solid var(--customer-border); padding: 1rem 0; margin: 0; min-width: 0; }
+.wbo-shop legend { padding: .25rem .5rem .25rem 0; font-size: .9rem; font-weight: 750; }
+.wbo-shop-choice { display: flex; gap: .6rem; align-items: center; min-height: 40px; cursor: pointer; font-size: .875rem; }
+.wbo-shop-choice input { width: 16px; height: 16px; margin: 0; flex: 0 0 16px; accent-color: var(--customer-blue); }
+.wbo-shop-choice span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.wbo-shop-choice small { color: var(--customer-muted); }
+.wbo-shop-price-fields { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.wbo-shop-price-fields label { min-width: 0; font-size: .75rem; color: var(--customer-muted); }
+.wbo-shop-price-fields input { width: 100%; min-width: 0; margin-top: .4rem; padding: .65rem .45rem; border: 1px solid var(--customer-border); border-radius: 8px; color: var(--customer-text); background: var(--customer-surface-soft); font-size: .85rem; }
+.wbo-shop-apply { width: 100%; padding: .7rem; margin-top: .75rem; border: 1px solid var(--customer-blue); border-radius: 8px; background: var(--customer-blue); color: #fff; font-weight: 700; cursor: pointer; }
+.wbo-shop-error { color: var(--customer-red); font-size: .8rem; line-height: 1.5; }
+.wbo-shop-hint { color: var(--customer-muted); font-size: .85rem; line-height: 1.5; }
+.wbo-shop-filter-toggle { display: none; }
+.wbo-shop-results { min-width: 0; scroll-margin-top: 180px; }
+.wbo-shop-tools { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; padding: 1rem; background: var(--customer-surface); border: 1px solid var(--customer-border); border-radius: 14px; }
+.wbo-shop-search { display: flex; align-items: center; gap: .6rem; flex: 1 1 240px; min-width: 0; padding: .65rem .8rem; border: 1px solid var(--customer-border); border-radius: 9px; background: var(--customer-surface-soft); color: var(--customer-muted); }
+.wbo-shop-search input { width: 100%; min-width: 0; background: transparent; border: 0; color: var(--customer-text); outline: 0; font-size: .875rem; }
+.wbo-shop-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.wbo-shop-search button { display: grid; place-items: center; border: 0; background: transparent; color: var(--customer-text); cursor: pointer; padding: .25rem; }
+.wbo-shop-sort { display: flex; align-items: center; gap: .6rem; font-size: .8rem; color: var(--customer-muted); }
+.wbo-shop-sort select { min-height: 42px; max-width: 100%; padding: .5rem; border: 1px solid var(--customer-border); border-radius: 8px; background: var(--customer-surface-soft); color: var(--customer-text); font-size: .85rem; }
+.wbo-shop-result-summary { padding-block: 1rem; font-size: .85rem; color: var(--customer-muted); }
+.wbo-shop-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.wbo-shop-chips button { max-width: 100%; overflow-wrap: anywhere; padding: .5rem .8rem; border: 1px solid var(--customer-border); border-radius: 20px; background: var(--customer-blue-soft); color: var(--customer-text); cursor: pointer; font-size: .8rem; }
+.wbo-shop-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.wbo-shop-card { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--customer-border); border-radius: 14px; background: var(--customer-surface); overflow: hidden; transition: border-color 180ms ease, box-shadow 180ms ease; }
+.wbo-shop-card:hover { border-color: var(--customer-blue); box-shadow: var(--customer-card-shadow); }
+.wbo-shop-image { position: relative; flex-shrink: 0; display: grid; place-items: center; width: 100%; aspect-ratio: 1; padding: 1rem; border: 0; background: var(--customer-surface-soft); color: var(--customer-muted); cursor: pointer; }
+.wbo-shop-image img { position: absolute; inset: 0; padding: 1rem; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.wbo-shop-placeholder { display: grid; justify-items: center; gap: .75rem; }
+.wbo-shop-placeholder small { font-size: .75rem; }
+.wbo-shop-card-body { display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 1rem; gap: .5rem; }
+.wbo-shop-category-label { color: var(--customer-muted); font-size: .75rem; overflow-wrap: anywhere; }
+.wbo-shop-card h2 { margin: 0; font-size: .95rem; line-height: 1.45; }
+.wbo-shop-card h2 button { border: 0; padding: 0; background: transparent; color: var(--customer-text); text-align: left; font-weight: 750; cursor: pointer; overflow-wrap: anywhere; }
+.wbo-shop-sku { font-size: .7rem; color: var(--customer-muted); overflow-wrap: anywhere; }
+.wbo-shop-price { margin-top: auto; padding-top: .5rem; font-size: 1.15rem; overflow-wrap: anywhere; }
+.wbo-shop-stock { color: var(--customer-green); font-size: .75rem; }
+.wbo-shop-stock.is-out { color: var(--customer-muted); }
+.wbo-shop-add { display: flex; align-items: center; justify-content: center; gap: .4rem; width: 100%; min-height: 40px; margin-top: .25rem; padding: .5rem; border: 0; border-radius: 8px; color: #fff; background: var(--customer-blue); cursor: pointer; font-size: .8rem; font-weight: 700; }
+.wbo-shop-add:disabled { background: var(--customer-surface-soft); color: var(--customer-muted); cursor: not-allowed; }
+.wbo-shop-empty { display: grid; justify-items: center; text-align: center; padding: 3rem 1rem; border: 1px dashed var(--customer-border); border-radius: 14px; }
+.wbo-shop-empty h2 { font-size: 1.2rem; margin: 1rem 0 .5rem; }
+.wbo-shop-empty p { color: var(--customer-muted); line-height: 1.6; }
+.wbo-shop-empty button { max-width: 200px; }
+.wbo-shop-pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem; font-size: .85rem; }
+.wbo-shop-pagination button { padding: .65rem .8rem; border: 1px solid var(--customer-border); border-radius: 8px; background: var(--customer-surface); color: var(--customer-text); cursor: pointer; }
+.wbo-shop-pagination button:disabled { opacity: .5; cursor: not-allowed; }
+.wbo-shop :is(button, input, select):focus-visible { outline: 2px solid var(--customer-blue); outline-offset: 3px; }
+.wbo-shop-search:focus-within { outline: 2px solid var(--customer-blue); outline-offset: 2px; }
+.wbo-shop-search input:focus-visible { outline: none; }
+@media (max-width: 1200px) { .wbo-shop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1000px) { .wbo-shop-layout { grid-template-columns: 210px minmax(0, 1fr); gap: 1rem; } .wbo-shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .wbo-shop-layout { grid-template-columns: minmax(0, 1fr); }
+  .wbo-shop-filter-toggle { display: flex; justify-content: space-between; width: 100%; border: 0; padding: 1rem; background: var(--customer-surface); color: var(--customer-text); font-weight: 700; cursor: pointer; }
+  .wbo-shop-filter-content { display: none; }
+  .wbo-shop-filter-content.is-open { display: block; }
+  .wbo-shop-tools { padding: .75rem; }
+  .wbo-shop-sort { width: 100%; justify-content: space-between; }
+  .wbo-shop-grid { gap: .65rem; }
+  .wbo-shop-card-body { padding: .75rem; }
+  .wbo-shop-image { padding: .65rem; }
+}
+@media (max-width: 360px) { .wbo-shop-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .wbo-shop-card { transition: none; } }

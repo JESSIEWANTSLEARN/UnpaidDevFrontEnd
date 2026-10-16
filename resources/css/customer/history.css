@@ -1,0 +1,52 @@
+/* Compact search and filter controls shared by Orders and Reviews. */
+.wbo-history-toolbar { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; padding:.8rem; margin:1rem 0; border:1px solid var(--customer-border); border-radius:14px; background:var(--customer-surface); }
+.wbo-history-search { display:flex; align-items:center; gap:.55rem; flex:1 1 260px; min-width:0; min-height:42px; padding:.55rem .75rem; border:1px solid var(--customer-border); border-radius:9px; color:var(--customer-muted); background:var(--customer-surface-soft); }
+.wbo-history-search input { flex:1; width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--customer-text); font:inherit; font-size:.875rem; }
+.wbo-history-search input::-webkit-search-cancel-button { -webkit-appearance:none; }
+.wbo-history-search button { display:grid; place-items:center; border:0; padding:.2rem; background:transparent; color:var(--customer-text); cursor:pointer; font-size:1.2rem; }
+.wbo-history-sort { display:flex; align-items:center; gap:.45rem; color:var(--customer-muted); font-size:.8rem; }
+.wbo-history-sort select { min-height:40px; max-width:100%; padding:.45rem .55rem; border:1px solid var(--customer-border); border-radius:8px; color:var(--customer-text); background:var(--customer-surface-soft); font:inherit; }
+.wbo-history-clear { border:0; padding:.4rem; color:var(--customer-blue); background:transparent; cursor:pointer; font-size:.8rem; font-weight:700; }
+.wbo-history-count { margin-left:auto; color:var(--customer-muted); font-size:.8rem; font-weight:700; white-space:nowrap; }
+.wbo-history-toolbar :is(input,select,button):focus-visible { outline:2px solid var(--customer-blue); outline-offset:2px; }
+.wbo-history-search:focus-within { outline:2px solid var(--customer-blue); outline-offset:2px; }
+.wbo-history-search input:focus-visible { outline:0; }
+.customer-order-filters { display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 1rem; }
+.customer-order-filter { display:flex; align-items:center; gap:.5rem; min-height:40px; flex:0 0 auto; padding:.45rem .8rem; border:1px solid var(--customer-border); border-radius:999px; background:var(--customer-surface); color:var(--customer-muted); box-shadow:none; }
+.customer-order-filter strong { font-size:.85rem; }
+.customer-order-filter span { font-size:.75rem; letter-spacing:0; text-transform:none; }
+.customer-order-filter.is-active { background:var(--customer-blue-soft); }
+.customer-order-card { border-radius:14px; }
+.customer-order-head { padding:1rem 1.15rem; }
+.customer-order-items { padding-inline:1.15rem; }
+.customer-order-item { gap:.7rem; }
+.customer-order-item > div { min-width:0; }
+.customer-order-item > div strong { overflow-wrap:anywhere; }
+.customer-reviews-page .customer-page-title h1 { font-size:clamp(1.8rem,3vw,2.5rem); letter-spacing:-.035em; line-height:1.15; }
+.customer-reviews-page .customer-page-title p { max-width:70ch; line-height:1.6; }
+.wbo-review-toolbar { margin:1rem 0 1.4rem; }
+.customer-review-section { margin-top:1.5rem; }
+.customer-review-section > h2 { margin-bottom:.8rem; font-size:1.2rem; }
+.customer-review-grid { gap:.85rem; }
+.customer-review-card,.customer-review-eligible,.customer-review-form { border-radius:14px; padding:1rem; box-shadow:var(--customer-card-shadow); }
+.customer-review-card { min-width:0; overflow-wrap:anywhere; }
+.customer-review-head { align-items:center; }
+.customer-review-head > div { min-width:0; }
+.customer-review-head strong { overflow-wrap:anywhere; }
+.customer-review-card h3 { font-size:1rem; line-height:1.45; }
+.customer-review-card p { color:var(--rv-muted); overflow-wrap:anywhere; }
+.customer-review-eligible { align-items:center; }
+@media (max-width:760px) {
+ .wbo-history-toolbar { align-items:stretch; }
+ .wbo-history-search { flex-basis:100%; }
+ .wbo-history-sort { flex:1 1 auto; justify-content:space-between; }
+ .wbo-history-sort select { flex:1; max-width:65%; }
+ .wbo-history-clear { border:0; padding:.4rem; color:var(--customer-blue); background:transparent; cursor:pointer; font-size:.8rem; font-weight:700; }
+.wbo-history-count { margin-left:0; align-self:center; }
+ .customer-order-filters { flex-wrap:nowrap; overflow-x:auto; padding:0 .1rem .35rem; scrollbar-width:thin; }
+ .customer-order-filter { min-height:38px; }
+ .customer-order-head { align-items:flex-start; gap:.7rem; }
+ .customer-order-summary > strong { font-size:1rem; }
+ .customer-review-eligible { display:grid; }
+ .customer-review-grid { grid-template-columns:1fr; }
+}
