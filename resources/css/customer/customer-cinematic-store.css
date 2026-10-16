@@ -505,6 +505,18 @@
   appearance: textfield;
 }
 
+/* The quantity control already has its own minus and plus buttons. */
+.cin-product-quantity input::-webkit-inner-spin-button,
+.cin-product-quantity input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cin-product-quantity > div:focus-within {
+  outline: 2px solid var(--store-blue);
+  outline-offset: 2px;
+}
+
 .cin-product-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;

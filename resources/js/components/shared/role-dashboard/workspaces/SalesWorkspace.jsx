@@ -172,6 +172,7 @@ export default function SalesWorkspace({
         previewMode={previewMode}
         busy={busy}
         onStatus={onSalesOrderStatus}
+        showFilters={false}
       />
     </Workspace>
   );

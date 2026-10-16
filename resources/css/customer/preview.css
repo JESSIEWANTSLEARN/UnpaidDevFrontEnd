@@ -1,9 +1,7 @@
 /* Super Admin customer preview banner and preview-only layout. */
 /* === WBO FULL CUSTOMER PREVIEW BEGIN === */
 .customer-admin-preview-bar {
-  position: sticky;
-  top: 0;
-  z-index: 220;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;

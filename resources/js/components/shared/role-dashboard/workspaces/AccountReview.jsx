@@ -9,8 +9,6 @@ export default function AccountReview({
   onSessions,
 }) {
   const [condition, setCondition] = useState("All review conditions");
-  const [search, setSearch] = useState("");
-  const needle = search.trim().toLowerCase();
   const rows = list(data.users)
     .filter((u) => u.role !== "super_admin")
     .map((user) => ({ ...user, reasons: accountReasons(user) }))
@@ -18,13 +16,7 @@ export default function AccountReview({
       (user) =>
         user.reasons.length &&
         (condition === "All review conditions" ||
-          user.reasons.includes(condition)) &&
-        (!needle ||
-          [user.name, user.email, user.role].some((v) =>
-            String(v || "")
-              .toLowerCase()
-              .includes(needle),
-          )),
+          user.reasons.includes(condition)),
     );
   return (
     <Workspace
@@ -44,14 +36,6 @@ export default function AccountReview({
             "Multiple sessions",
           ]}
         />
-        <label className="role-workspace-choice">
-          <span>Find account</span>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
         <span role="status">{rows.length} accounts for review</span>
       </div>
       <WorkspaceTable

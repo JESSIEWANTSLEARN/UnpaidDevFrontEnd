@@ -69,22 +69,22 @@ export default function CustomerHeader({ ctx }) {
 
   return (
     <>
-{previewMode && (
-        <div className="customer-admin-preview-bar">
-          <div>
-            <strong>SUPER ADMIN - FULL CUSTOMER VIEW</strong>
-            <span>
-              You are still logged in as Super Admin. Private customer records and account-changing actions are protected.
-            </span>
-          </div>
-          <div className="customer-admin-preview-actions">
-            <a href="/">Landing Page</a>
-            <a href="/super-admin">Back to Super Admin</a>
-          </div>
-        </div>
-      )}
-
       <header className="customer-header">
+        {previewMode && (
+          <div className="customer-admin-preview-bar">
+            <div>
+              <strong>SUPER ADMIN - FULL CUSTOMER VIEW</strong>
+              <span>
+                You are still logged in as Super Admin. Private customer records and account-changing actions are protected.
+              </span>
+            </div>
+            <div className="customer-admin-preview-actions">
+              <a href="/">Landing Page</a>
+              <a href="/super-admin">Back to Super Admin</a>
+            </div>
+          </div>
+        )}
+
         <div className="customer-header-inner">
           <button
             type="button"

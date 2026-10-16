@@ -1,7 +1,7 @@
 import React from "react";
 import { ROLE_DASHBOARDS } from "../../../config/roleDashboardConfig.js";
 import useRoleDashboard from "../../../hooks/role-dashboard/useRoleDashboard.js";
-import AppLoadingScreen from "../AppLoadingScreen.jsx";
+import DashboardLoadingSkeleton from "../DashboardLoadingSkeleton.jsx";
 import RoleDashboardContent from "./RoleDashboardContent.jsx";
 import RoleDashboardMessages from "./feedback/RoleDashboardMessages.jsx";
 import RoleDashboardHeader from "./layout/RoleDashboardHeader.jsx";
@@ -59,9 +59,10 @@ export default function RoleDashboardShell({
 
   if (loading) {
     return (
-      <AppLoadingScreen
+      <DashboardLoadingSkeleton
         label={`Loading ${config.title}...`}
         theme={theme}
+        fullPage
       />
     );
   }

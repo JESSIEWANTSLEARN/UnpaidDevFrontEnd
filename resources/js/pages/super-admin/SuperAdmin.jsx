@@ -29,6 +29,7 @@ export default function SuperAdmin() {
         <main className="ops-main">
           <SuperAdminPageContent
             activeMenu={admin.activeMenu}
+            theme={admin.theme}
             loading={admin.loading}
             error={admin.error}
             onRetry={admin.refresh}

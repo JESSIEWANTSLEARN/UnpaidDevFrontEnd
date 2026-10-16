@@ -10,6 +10,7 @@ function Suppliers({
 }) {
   const suppliers = data.suppliers || [];
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({
     name: "", contact_number: "", email: "", address: "",
@@ -20,12 +21,13 @@ function Suppliers({
 
   const filteredSuppliers = useMemo(() => {
     const needle = search.trim().toLowerCase();
-    if (!needle) return suppliers;
-    return suppliers.filter((supplier) =>
-      [supplier.name, supplier.contact_number, supplier.email, supplier.address, supplier.supplier_status]
-        .some((value) => String(value || "").toLowerCase().includes(needle))
-    );
-  }, [suppliers, search]);
+    return suppliers.filter((supplier) => {
+      const statusMatches = statusFilter === "all" || supplier.supplier_status === statusFilter;
+      const searchMatches = !needle || [supplier.name, supplier.contact_number, supplier.email, supplier.address, supplier.supplier_status]
+        .some((value) => String(value || "").toLowerCase().includes(needle));
+      return statusMatches && searchMatches;
+    });
+  }, [suppliers, search, statusFilter]);
 
   const openEditor = (supplier) => {
     setEditing(supplier);
@@ -90,13 +92,18 @@ function Suppliers({
             placeholder="Search suppliers, email, contact, status..." aria-label="Search suppliers" />
           {search && <button className="user-search-clear" type="button" onClick={() => setSearch("")}>Clear</button>}
         </div>
+        <select className="user-filter-select" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} aria-label="Filter suppliers by status">
+          <option value="all">All statuses</option>
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
       </div>
 
       <div className="ops-panel"><div className="table-wrap"><table className="ops-table">
         <thead><tr><th>Supplier</th><th>Status</th><th>Contact</th><th>Email</th><th>Lead Time</th><th>Products</th><th>Actions</th></tr></thead>
         <tbody>
           {filteredSuppliers.length === 0
-            ? <EmptyTable colSpan={7} text="No suppliers match your search." />
+            ? <EmptyTable colSpan={7} text="No suppliers match your search and filter." />
             : filteredSuppliers.map((supplier) => <tr key={supplier.supplier_id}>
                 <td>{supplier.name}</td><td>{supplier.supplier_status}</td><td>{supplier.contact_number || "-"}</td>
                 <td>{supplier.email || "-"}</td><td>{number(supplier.lead_time_days)} day(s)</td>

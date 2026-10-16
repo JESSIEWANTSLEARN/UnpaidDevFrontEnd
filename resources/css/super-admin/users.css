@@ -291,3 +291,8 @@
         width: 100%;
     }
 }
+/* Keep the explicit Clear button without a second browser clear icon. */
+.ops-portal .user-search-wrap input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
