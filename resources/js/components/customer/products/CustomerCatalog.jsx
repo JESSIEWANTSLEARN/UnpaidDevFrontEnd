@@ -68,7 +68,7 @@ export default function CustomerCatalog({ products, search, setSearch, category,
           <button type="button" className="wbo-shop-filter-toggle" aria-expanded={filtersOpen} aria-controls="wbo-shop-filters" onClick={() => setFiltersOpen(!filtersOpen)}>Filters <span>{filtersOpen ? "−" : "+"}</span></button>
           <div id="wbo-shop-filters" className={`wbo-shop-filter-content ${filtersOpen ? "is-open" : ""}`}>
             <div className="wbo-shop-filter-heading"><h2>Filters</h2><button type="button" onClick={reset}>Reset all</button></div>
-            <fieldset><legend>Categories</legend>
+            <fieldset><legend>Product categories</legend>
               <label className="wbo-shop-choice"><input type="radio" name="catalog-category" checked={category === "All"} onChange={() => setCategory("All")} /><span>All products</span><small>{products.length}</small></label>
               {categories.map(([name, count]) => <label className="wbo-shop-choice" key={name}><input type="radio" name="catalog-category" checked={category === name} onChange={() => setCategory(name)} /><span>{name}</span><small>{count}</small></label>)}
               {!products.length && <p className="wbo-shop-hint">Categories appear when products are available.</p>}

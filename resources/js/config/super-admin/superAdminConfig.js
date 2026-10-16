@@ -6,7 +6,7 @@
       { name: "Inventory", icon: "package" },
       { name: "Products", icon: "warehouse" },
       { name: "Product Reviews", icon: "search" },
-      { name: "Categories", icon: "tag" },
+      { name: "Product Categories", icon: "tag" },
       { name: "Suppliers", icon: "truck" },
     ],
   },

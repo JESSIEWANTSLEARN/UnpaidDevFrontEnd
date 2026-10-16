@@ -1,5 +1,6 @@
 ﻿import React from "react";
-import { LoadingState, ErrorState, EmptyState } from "./common/AdminCommon.jsx";
+import { ErrorState, EmptyState } from "./common/AdminCommon.jsx";
+import DashboardLoadingSkeleton from "../shared/DashboardLoadingSkeleton.jsx";
 import DashboardView from "./views/DashboardView.jsx";
 import ProductsView from "./views/ProductsView.jsx";
 import ProductReviewsView from "./views/ProductReviewsView.jsx";
@@ -25,7 +26,7 @@ const PAGE_COMPONENTS = {
   Products: ProductsView,
   "Product Reviews": ProductReviewsView,
   Inventory: InventoryView,
-  Categories: CategoriesView,
+  "Product Categories": CategoriesView,
   "Sales Orders": SalesOrdersView,
   Suppliers: SuppliersView,
   "Stock Movement": StockMovementView,
@@ -39,15 +40,15 @@ const PAGE_COMPONENTS = {
   Settings: SettingsView,
 };
 
-export default function SuperAdminPageContent({ activeMenu, loading, error, onRetry, ...props }) {
-  if (loading) return <LoadingState />;
+export default function SuperAdminPageContent({ activeMenu, loading, error, onRetry, theme = "light", ...props }) {
+  if (loading) return <DashboardLoadingSkeleton label="Loading Super Admin data..." theme={theme} />;
   if (error) return <ErrorState message={error} onRetry={onRetry} />;
   if (!props.data) return <EmptyState text="No dashboard data was returned." />;
 
   const View = PAGE_COMPONENTS[activeMenu] || DashboardView;
 
   return (
-    <React.Suspense fallback={<LoadingState />}>
+    <React.Suspense fallback={<DashboardLoadingSkeleton label="Loading this section..." theme={theme} />}>
       <View
         {...props}
         onDashboardRefresh={onRetry}

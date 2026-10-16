@@ -1,5 +1,6 @@
 import { backendUrl, loadCsrfToken } from "../../../config/api.js";
 import React, { useEffect, useState } from "react";
+import { Icon } from "../CustomerUi.jsx";
 import { CustomerReviewsSkeleton } from "../shell/CustomerLoadingSkeletons.jsx";
 import { filterReviews } from "../../../utils/customer/historyFilters.mjs";
 import "../../../../css/customer/reviews.css";
@@ -301,7 +302,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
 
       <div className="wbo-history-toolbar wbo-review-toolbar">
         <label className="wbo-history-search">
-          <span aria-hidden="true">⌕</span>
+          <Icon name="search" size={17} />
           <input aria-label="Search reviews" type="search" placeholder="Search product or review text" value={reviewSearch} onChange={(event) => setReviewSearch(event.target.value)} />
           {reviewSearch && <button type="button" aria-label="Clear review search" onClick={() => setReviewSearch("")}>×</button>}
         </label>
