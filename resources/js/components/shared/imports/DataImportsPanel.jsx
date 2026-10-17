@@ -211,9 +211,7 @@ export default function DataImportsPanel({
 
       setPreview(result.preview || null);
       setNotice(
-        canConfirm
-          ? "Preview complete. Review invalid rows before importing."
-          : "Preview complete. Share this validation with Super Admin to confirm the product import.",
+        "Preview complete. Review invalid rows before importing.",
       );
     } catch (requestError) {
       setPreview(null);
@@ -323,7 +321,7 @@ export default function DataImportsPanel({
           <h1>Data Imports</h1>
           <p>
             {roleKey === "Operations_Manager"
-              ? "Validate product files and review import history. Super Admin confirms changes to the catalog."
+              ? "Import product files and review product-import history."
               : "Import only the data assigned to this role. Super Admin can supervise every import type and view all import history."}
           </p>
         </div>
@@ -472,7 +470,7 @@ export default function DataImportsPanel({
               <p>
                 {canConfirm
                   ? "Valid rows will be imported. Invalid rows are skipped and stored in the error history."
-                  : "Validation only. No product records change until Super Admin performs the import."}
+                  : "Validation only. No product records change in preview mode."}
               </p>
             </div>
 
