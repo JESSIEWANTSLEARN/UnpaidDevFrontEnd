@@ -1,10 +1,22 @@
 /* Scoped catalog layout: home, product details and FAQ retain their design. */
-.customer-shell .wbo-shop { padding-block: 1.5rem 3rem; color: var(--customer-text); }
+.customer-shell .wbo-shop { --wbo-shop-sticky-top: calc(var(--customer-header-height, 80px) + 16px); padding-block: 1.5rem 3rem; color: var(--customer-text); }
 .wbo-shop-heading { margin-bottom: 1.5rem; }
 .wbo-shop-heading h1 { margin: .4rem 0 .5rem; font-size: clamp(1.7rem, 3vw, 2.5rem); letter-spacing: -.035em; line-height: 1.15; }
 .wbo-shop-heading p { margin: 0; color: var(--customer-muted); line-height: 1.6; }
 .wbo-shop-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 1.5rem; align-items: start; }
-.wbo-shop-sidebar { border: 1px solid var(--customer-border); border-radius: 16px; background: var(--customer-surface); overflow: hidden; }
+.wbo-shop-sidebar {
+  position: sticky;
+  top: var(--wbo-shop-sticky-top);
+  align-self: start;
+  max-height: calc(100vh - var(--wbo-shop-sticky-top) - 16px);
+  max-height: calc(100dvh - var(--wbo-shop-sticky-top) - 16px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  border: 1px solid var(--customer-border);
+  border-radius: 16px;
+  background: var(--customer-surface);
+}
 .wbo-shop-filter-content { padding: 1.15rem; }
 .wbo-shop-filter-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: 1rem; }
 .wbo-shop-filter-heading h2 { font-size: 1.05rem; margin: 0; }
@@ -22,7 +34,7 @@
 .wbo-shop-error { color: var(--customer-red); font-size: .8rem; line-height: 1.5; }
 .wbo-shop-hint { color: var(--customer-muted); font-size: .85rem; line-height: 1.5; }
 .wbo-shop-filter-toggle { display: none; }
-.wbo-shop-results { min-width: 0; scroll-margin-top: 180px; }
+.wbo-shop-results { min-width: 0; scroll-margin-top: var(--wbo-shop-sticky-top); }
 .wbo-shop-tools { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; padding: 1rem; background: var(--customer-surface); border: 1px solid var(--customer-border); border-radius: 14px; }
 .wbo-shop-search { display: flex; align-items: center; gap: .6rem; flex: 1 1 240px; min-width: 0; padding: .65rem .8rem; border: 1px solid var(--customer-border); border-radius: 9px; background: var(--customer-surface-soft); color: var(--customer-muted); }
 .wbo-shop-search input { width: 100%; min-width: 0; background: transparent; border: 0; color: var(--customer-text); outline: 0; font-size: .875rem; }
@@ -64,6 +76,7 @@
 @media (max-width: 1000px) { .wbo-shop-layout { grid-template-columns: 210px minmax(0, 1fr); gap: 1rem; } .wbo-shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) {
   .wbo-shop-layout { grid-template-columns: minmax(0, 1fr); }
+  .wbo-shop-sidebar { position: static; max-height: none; overflow: hidden; overscroll-behavior-y: auto; }
   .wbo-shop-filter-toggle { display: flex; justify-content: space-between; width: 100%; border: 0; padding: 1rem; background: var(--customer-surface); color: var(--customer-text); font-weight: 700; cursor: pointer; }
   .wbo-shop-filter-content { display: none; }
   .wbo-shop-filter-content.is-open { display: block; }

@@ -1,8 +1,6 @@
-/*
- * Customer skeleton loading states.
- * Performance rule: animate opacity only so the skeleton does not add
- * layout or main-thread animation cost while slow APIs are still loading.
- */
+@import "../shared/skeleton-animation.css";
+
+/* Customer skeleton loading states; motion is shared with staff loaders. */
 
 .customer-skeleton-screen {
   --skeleton-bg: #f5f7fb;
@@ -40,7 +38,6 @@
   display: block;
   border-radius: 9px;
   background: var(--skeleton-soft);
-  animation: wbo-skeleton-pulse 1.15s ease-in-out infinite alternate;
 }
 
 .customer-skeleton-header {
@@ -378,11 +375,6 @@
   width: 54%;
 }
 
-@keyframes wbo-skeleton-pulse {
-  from { opacity: .56; }
-  to { opacity: 1; }
-}
-
 @media (max-width: 1100px) {
   .customer-skeleton-nav {
     display: none;
@@ -454,11 +446,5 @@
 
   .customer-skeleton-card-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wbo-skeleton-block {
-    animation: none;
   }
 }
