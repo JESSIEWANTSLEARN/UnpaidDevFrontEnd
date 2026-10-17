@@ -1,5 +1,5 @@
 const rawApiUrl =
-    import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+    import.meta.env?.VITE_API_URL || "http://127.0.0.1:8000";
 
 export const API_URL = rawApiUrl.replace(/\/+$/, "");
 
@@ -82,6 +82,17 @@ export async function loadCsrfToken({ forceRefresh = false } = {}) {
     }
 }
 
+// Abort this caller's wait without cancelling a shared token request used by others.
+function waitForToken(promise, signal) {
+    if (!signal) return promise;
+    if (signal.aborted) return Promise.reject(new DOMException("Request aborted", "AbortError"));
+    return new Promise((resolve, reject) => {
+        const abort = () => reject(new DOMException("Request aborted", "AbortError"));
+        signal.addEventListener("abort", abort, { once: true });
+        promise.then(resolve, reject).finally(() => signal.removeEventListener("abort", abort));
+    });
+}
+
 export async function csrfFetch(path, options = {}) {
     const method = String(options.method || "GET").toUpperCase();
     const requiresCsrf = method !== "GET" && method !== "HEAD";
@@ -94,7 +105,7 @@ export async function csrfFetch(path, options = {}) {
         }
 
         if (requiresCsrf) {
-            const token = await loadCsrfToken({ forceRefresh });
+            const token = await waitForToken(loadCsrfToken({ forceRefresh }), options.signal);
 
             if (token) {
                 headers.set("X-CSRF-TOKEN", token);

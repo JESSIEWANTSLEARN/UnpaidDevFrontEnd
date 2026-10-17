@@ -24,6 +24,7 @@ import UserAdmin from "./pages/user-admin/UserAdmin.jsx";
 import RolePreview from "./pages/super-admin/RolePreview.jsx";
 
 import PresenceTracker from "./components/shared/session/PresenceTracker.jsx";
+import SessionRoleGate from "./components/shared/session/SessionRoleGate.jsx";
 
 import "../css/auth/transitions.css";
 
@@ -209,25 +210,25 @@ function AnimatedRoutes() {
                         SYSTEM USER
                         ===================================== */}
 
-                    <Route path="/user" element={<SystemUser />} />
+                    <Route path="/user" element={<SessionRoleGate role="System_User"><SystemUser /></SessionRoleGate>} />
                     {/* STAFF ROLE DASHBOARDS */}
-                    <Route path="/operations-manager" element={<OperationsManager />} />
-                    <Route path="/purchasing-manager" element={<PurchasingManager />} />
-                    <Route path="/purchasing-staff" element={<PurchasingStaff />} />
-                    <Route path="/warehouse-admin" element={<WarehouseAdmin />} />
-                    <Route path="/inventory-controller" element={<InventoryController />} />
-                    <Route path="/sales-manager" element={<SalesManager />} />
-                    <Route path="/sales-staff" element={<SalesStaff />} />
-                    <Route path="/user-admin" element={<UserAdmin />} />
+                    <Route path="/operations-manager" element={<SessionRoleGate role="Operations_Manager"><OperationsManager /></SessionRoleGate>} />
+                    <Route path="/purchasing-manager" element={<SessionRoleGate role="Purchasing_Manager"><PurchasingManager /></SessionRoleGate>} />
+                    <Route path="/purchasing-staff" element={<SessionRoleGate role="Purchasing_Staff"><PurchasingStaff /></SessionRoleGate>} />
+                    <Route path="/warehouse-admin" element={<SessionRoleGate role="Warehouse_Admin"><WarehouseAdmin /></SessionRoleGate>} />
+                    <Route path="/inventory-controller" element={<SessionRoleGate role="Inventory_Controller"><InventoryController /></SessionRoleGate>} />
+                    <Route path="/sales-manager" element={<SessionRoleGate role="Sales_Manager"><SalesManager /></SessionRoleGate>} />
+                    <Route path="/sales-staff" element={<SessionRoleGate role="Sales_Staff"><SalesStaff /></SessionRoleGate>} />
+                    <Route path="/user-admin" element={<SessionRoleGate role="User_Admin"><UserAdmin /></SessionRoleGate>} />
 
                     {/* =====================================
                         SUPER ADMIN
                         ===================================== */}
 
-                    <Route path="/super-admin" element={<SuperAdmin />} />
-                    <Route path="/super-admin/role-preview/:roleKey" element={<RolePreview />} />
-                    <Route path="/super-admin/content" element={<WebsiteContentAdmin />} />
-                    <Route path="/store-preview" element={<SystemUser previewMode />} />
+                    <Route path="/super-admin" element={<SessionRoleGate role="super_admin"><SuperAdmin /></SessionRoleGate>} />
+                    <Route path="/super-admin/role-preview/:roleKey" element={<SessionRoleGate role="super_admin"><RolePreview /></SessionRoleGate>} />
+                    <Route path="/super-admin/content" element={<SessionRoleGate role="super_admin"><WebsiteContentAdmin /></SessionRoleGate>} />
+                    <Route path="/store-preview" element={<SessionRoleGate role="super_admin"><SystemUser previewMode /></SessionRoleGate>} />
                 </Routes>
             </div>
         </div>

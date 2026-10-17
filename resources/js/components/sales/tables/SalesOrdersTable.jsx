@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { salesOrderActions } from "../../../utils/salesActionPermissions.mjs";
 import { SalesEmpty } from "../common/SalesDashboardPrimitives.jsx";
 import {
   formatDate,
@@ -6,8 +7,9 @@ import {
   formatNumber,
 } from "../utils/salesFormatters.js";
 
-function actionList(order) {
+export function actionList(order, roleKey) {
   const actions = [];
+  const permitted = salesOrderActions(roleKey);
   const prepaid =
     order.payment_method &&
     order.payment_method !== "CASH_ON_DELIVERY";
@@ -34,7 +36,7 @@ function actionList(order) {
       ["cancel", "Cancel"],
     );
 
-    return actions;
+    return actions.filter(([action]) => permitted.includes(action));
   }
 
   if (order.status === "PROCESSING") {
@@ -45,11 +47,12 @@ function actionList(order) {
     );
   }
 
-  return actions;
+  return actions.filter(([action]) => permitted.includes(action));
 }
 
 export default function SalesOrdersTable({
   orders,
+  roleKey,
   previewMode,
   busy,
   onStatus,
@@ -201,7 +204,7 @@ export default function SalesOrdersTable({
                         Read only
                       </span>
                     ) : (
-                      actionList(order).map(
+                      actionList(order, roleKey).map(
                         ([action, label]) => (
                           <button
                             type="button"

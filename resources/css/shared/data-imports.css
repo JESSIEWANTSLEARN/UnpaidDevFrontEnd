@@ -525,3 +525,7 @@
   color: #e5e9f0;
 }
 /* === WBO STAGE 5 FINAL THEME HOTFIX END === */
+
+.data-import-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin: 16px 0; }
+.data-import-controls label { display: grid; gap: 6px; flex: 1 1 220px; min-width: 0; }
+.data-import-controls input, .data-import-controls select { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid currentColor; border-radius: 8px; color: inherit; background: inherit; font: inherit; }

@@ -1,9 +1,18 @@
+import WorkflowSearchControls from "../../shared/WorkflowSearchControls.jsx";
+import { filterWorkflowRows } from "../../../utils/importFilters.mjs";
 import React, { useEffect, useRef, useState } from "react";
-import { backendUrl, loadCsrfToken } from "../../../config/api.js";
+import { csrfFetch } from "../../../config/api.js";
 import "../../../../css/sales/support-chat.css";
 
 export default function SalesSupportPanel({ previewMode = false }) {
   const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const statuses = [...new Set(rows.map((row) => row.status).filter(Boolean))];
+  const searchControls = (
+    <WorkflowSearchControls search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} statuses={statuses} />
+  );
+  const visibleRows = filterWorkflowRows(rows, search, statusFilter);
   const [conversation, setConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -52,19 +61,13 @@ export default function SalesSupportPanel({ previewMode = false }) {
   };
 
   const api = async (url, options = {}) => {
-    const method = String(options.method || "GET").toUpperCase();
-    const token =
-      method !== "GET" && method !== "HEAD"
-        ? await loadCsrfToken()
-        : "";
 
-    const response = await fetch(backendUrl(url), {
+    const response = await csrfFetch(url, {
       credentials: "include",
       ...options,
       headers: {
         Accept: "application/json",
         ...(options.body ? { "Content-Type": "application/json" } : {}),
-        ...(token ? { "X-CSRF-TOKEN": token } : {}),
         ...(options.headers || {}),
       },
     });
@@ -305,8 +308,9 @@ export default function SalesSupportPanel({ previewMode = false }) {
 
       <div className="sales-support-layout">
         <aside className="sales-support-list">
-          {rows.length ? (
-            rows.map((item) => (
+          {searchControls}
+          {visibleRows.length ? (
+            visibleRows.map((item) => (
               <button
                 type="button"
                 key={item.conversation_id}
@@ -327,7 +331,7 @@ export default function SalesSupportPanel({ previewMode = false }) {
               </button>
             ))
           ) : (
-            <div className="sales-support-empty">No support conversations yet.</div>
+            <div className="sales-support-empty">No support conversations match your filters.</div>
           )}
         </aside>
 

@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useMemo, useRef, useState } from "react";
 import { apiRequest } from "../../../services/super-admin/superAdminApi.js";
 import "../../../../css/shared/data-imports.css";
+import { filterImportHistory, filterImportRows } from "../../../utils/importFilters.mjs";
 
 const IMPORT_TYPES = {
   PRODUCTS: {
@@ -104,10 +105,16 @@ export default function DataImportsPanel({
 }) {
   const inputRef = useRef(null);
   const [allowedTypes, setAllowedTypes] = useState([]);
+  const [canConfirm, setCanConfirm] = useState(false);
   const [importType, setImportType] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [history, setHistory] = useState([]);
+  const [historySearch, setHistorySearch] = useState("");
+  const [previewSearch, setPreviewSearch] = useState("");
+  const [rowResult, setRowResult] = useState("all");
+  const visibleHistory = filterImportHistory(history, historySearch);
+  const visibleRows = filterImportRows(preview?.rows || [], previewSearch, rowResult);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
@@ -139,6 +146,7 @@ export default function DataImportsPanel({
 
       const types = result.allowed_types || [];
       setAllowedTypes(types);
+      setCanConfirm(result.can_confirm === true);
       setHistory(result.imports || []);
 
       setImportType((current) =>
@@ -148,6 +156,7 @@ export default function DataImportsPanel({
       );
     } catch (requestError) {
       setAllowedTypes([]);
+      setCanConfirm(false);
       setHistory([]);
       setError(
         requestError.message ||
@@ -202,7 +211,9 @@ export default function DataImportsPanel({
 
       setPreview(result.preview || null);
       setNotice(
-        "Preview complete. Review invalid rows before importing.",
+        canConfirm
+          ? "Preview complete. Review invalid rows before importing."
+          : "Preview complete. Share this validation with Super Admin to confirm the product import.",
       );
     } catch (requestError) {
       setPreview(null);
@@ -218,6 +229,7 @@ export default function DataImportsPanel({
   const confirmImport = async () => {
     if (
       previewMode ||
+      !canConfirm ||
       !file ||
       !preview ||
       busy
@@ -310,9 +322,9 @@ export default function DataImportsPanel({
           <span>DATA MANAGEMENT</span>
           <h1>Data Imports</h1>
           <p>
-            Import only the data assigned to this role.
-            Super Admin can supervise every import type and
-            view all import history.
+            {roleKey === "Operations_Manager"
+              ? "Validate product files and review import history. Super Admin confirms changes to the catalog."
+              : "Import only the data assigned to this role. Super Admin can supervise every import type and view all import history."}
           </p>
         </div>
 
@@ -458,12 +470,13 @@ export default function DataImportsPanel({
               <span>STEP 3</span>
               <h2>Preview validation</h2>
               <p>
-                Valid rows will be imported. Invalid rows are
-                skipped and stored in the error history.
+                {canConfirm
+                  ? "Valid rows will be imported. Invalid rows are skipped and stored in the error history."
+                  : "Validation only. No product records change until Super Admin performs the import."}
               </p>
             </div>
 
-            <button
+            {canConfirm && <button
               type="button"
               className="data-import-primary"
               onClick={confirmImport}
@@ -476,7 +489,7 @@ export default function DataImportsPanel({
               {busy === "import"
                 ? "Importing..."
                 : `Confirm ${preview.valid_rows} valid row(s)`}
-            </button>
+            </button>}
           </div>
 
           <div className="data-import-stats">
@@ -494,6 +507,18 @@ export default function DataImportsPanel({
             </div>
           </div>
 
+          <div className="data-import-controls" role="search" aria-label="Import preview filters">
+            <label>Search preview rows
+              <input type="search" value={previewSearch} onChange={(e) => setPreviewSearch(e.target.value)} placeholder="Row, product, SKU, validation..." />
+            </label>
+            <label>Validation result
+              <select value={rowResult} onChange={(e) => setRowResult(e.target.value)}>
+                <option value="all">All rows</option><option value="valid">Valid</option><option value="invalid">Invalid</option>
+              </select>
+            </label>
+            <button type="button" className="data-import-secondary" onClick={() => { setPreviewSearch(""); setRowResult("all"); }}>Reset</button>
+          </div>
+          <p aria-live="polite">Showing {visibleRows.length} of {(preview.rows || []).length} loaded preview rows. Filters do not change which rows are imported.</p>
           <div className="data-import-table-wrap">
             <table className="data-import-table">
               <thead>
@@ -506,7 +531,8 @@ export default function DataImportsPanel({
                 </tr>
               </thead>
               <tbody>
-                {(preview.rows || []).map((row) => (
+                {!visibleRows.length && <tr><td colSpan={5}>No preview rows match your filters.</td></tr>}
+                {visibleRows.map((row) => (
                   <tr key={row.row_number}>
                     <td>{row.row_number}</td>
                     <td>
@@ -581,13 +607,19 @@ export default function DataImportsPanel({
           </button>
         </div>
 
+        <div className="data-import-controls" role="search" aria-label="Import history search">
+          <label>Search loaded import history
+            <input type="search" value={historySearch} onChange={(e) => setHistorySearch(e.target.value)} placeholder="Filename, type, status, uploader..." />
+          </label>
+          <button type="button" className="data-import-secondary" onClick={() => setHistorySearch("")}>Clear</button>
+        </div>
         {historyLoading ? (
           <div className="data-import-empty">
             Loading import history...
           </div>
-        ) : history.length ? (
+        ) : visibleHistory.length ? (
           <div className="data-import-history">
-            {history.map((item) => (
+            {visibleHistory.map((item) => (
               <article
                 className="data-import-history-card"
                 key={item.import_id}
@@ -652,7 +684,7 @@ export default function DataImportsPanel({
           </div>
         ) : (
           <div className="data-import-empty">
-            No relevant imports have been confirmed yet.
+            {history.length ? "No imports match your search." : "No relevant imports have been confirmed yet."}
           </div>
         )}
       </section>

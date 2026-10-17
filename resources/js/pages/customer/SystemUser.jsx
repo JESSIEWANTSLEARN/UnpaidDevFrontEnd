@@ -1,4 +1,4 @@
-import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { csrfFetch } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { CustomerStoreSkeleton } from "../../components/customer/shell/CustomerLoadingSkeletons.jsx";
 import { useNavigate } from "react-router-dom";
@@ -107,19 +107,13 @@ export default function SystemUser({ previewMode = false }) {
 
   const api = async (url, options = {}) => {
     const isFormData = options.body instanceof FormData;
-    const method = String(options.method || "GET").toUpperCase();
-    const token =
-      method !== "GET" && method !== "HEAD"
-        ? await loadCsrfToken()
-        : "";
 
-    const response = await fetch(backendUrl(url), {
+    const response = await csrfFetch(url, {
       credentials: "include",
       ...options,
       headers: {
         Accept: "application/json",
         ...(options.body && !isFormData ? { "Content-Type": "application/json" } : {}),
-        ...(token ? { "X-CSRF-TOKEN": token } : {}),
         ...(options.headers ?? {}),
       },
     });
@@ -132,7 +126,7 @@ export default function SystemUser({ previewMode = false }) {
       data = { message: text };
     }
 
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
       navigate("/login");
       throw new Error(data.message || "Please log in again.");
     }
@@ -554,7 +548,6 @@ export default function SystemUser({ previewMode = false }) {
       setBusy(false);
     }
   };
-
 
   const topUpWallet = async (payload) => {
     if (previewMode) {
@@ -1041,13 +1034,10 @@ export default function SystemUser({ previewMode = false }) {
       return;
     }
 
-    window.dispatchEvent(
-      new Event("wbo:logout-started"),
-    );
-
     try {
       setBusy(true);
       const data = await api("/logout", { method: "POST", body: "{}" });
+      window.dispatchEvent(new Event("wbo:logout-started"));
       window.location.href = data.redirect || "/login";
     } catch (e) {
       setError(e.message);
@@ -1072,7 +1062,6 @@ export default function SystemUser({ previewMode = false }) {
   return (
     <div className="customer-shell app-page-enter" data-theme={theme}>
       <CustomerHeader ctx={{ previewMode, mobileOpen, setMobileOpen, nav, tab, changeTab, handleSearch, search, setSearch, unreadNotificationCount, setNotificationOpen, notificationOpen, readAllNotifications, notificationBusy, notifications, readNotification, setTheme, theme, cartPulse, setCartOpen, cartCount, logout, busy, error, setError }} />
-
 
             <CustomerMainViews ctx={{ tab, products, stats, categoryCards, changeTab, chooseCategory, addToCart, setCart, setCartOpen, showCartFeedback, setCartPulse, cartAddedId, cartShakeId, filteredProducts, search, setSearch, handleSearch, categories, category, setCategory, orderFilter, orderStatusCounts, setOrderFilter, filteredOrders, orders, cancelOrder, walletData, walletBusy, topUpWallet, previewMode, saveProfile, user, profile, setProfile, busy, photoBusy, changeProfilePhoto, removeProfilePhoto, password, setPassword, savePassword, deliveryProfile, setDeliveryProfile, saveDeliveryAddress, logout }} />
 

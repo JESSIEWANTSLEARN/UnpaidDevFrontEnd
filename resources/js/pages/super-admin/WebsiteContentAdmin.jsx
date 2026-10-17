@@ -1,4 +1,4 @@
-import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { backendUrl, csrfFetch } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FaqEditor from "../../components/super-admin/website-content/FaqEditor.jsx";
@@ -29,18 +29,7 @@ async function requestJson(url, options = {}) {
         headers.set("Content-Type", "application/json");
     }
 
-    const method = String(options.method || "GET").toUpperCase();
-
-    const token =
-        method !== "GET" && method !== "HEAD"
-            ? await loadCsrfToken()
-            : "";
-
-    if (token) {
-        headers.set("X-CSRF-TOKEN", token);
-    }
-
-    const response = await fetch(backendUrl(url), {
+    const response = await csrfFetch(url, {
         credentials: "include",
         ...options,
         headers,

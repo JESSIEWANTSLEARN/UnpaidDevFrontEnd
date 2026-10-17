@@ -273,10 +273,9 @@ export default function useRoleDashboard({
     );
 
   async function logout() {
-    window.dispatchEvent(new Event("wbo:logout-started"));
 
     try {
-      await csrfFetch("/logout", {
+      const response = await csrfFetch("/logout", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -286,8 +285,11 @@ export default function useRoleDashboard({
           reason: "manual",
         }),
       });
-    } finally {
+      if (!response.ok) throw new Error("Logout failed. Please try again.");
+      window.dispatchEvent(new Event("wbo:logout-started"));
       window.location.href = "/login";
+    } catch (error) {
+      setError(error.message || "Logout failed. Please try again.");
     }
   }
 
