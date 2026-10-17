@@ -8,9 +8,10 @@ export default function useSuperAdmin() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [activeMenu, setActiveMenuState] = useState(() =>
-    localStorage.getItem(
-      "wbo-super-admin-active-menu"
-    ) || "Dashboard"
+    (() => {
+      const savedMenu = localStorage.getItem("wbo-super-admin-active-menu");
+      return savedMenu === "Categories" ? "Product Categories" : savedMenu || "Dashboard";
+    })()
   );
 
   const setActiveMenu = (nextMenu) => {

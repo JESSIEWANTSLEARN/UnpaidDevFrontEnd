@@ -28,6 +28,8 @@ function Products({
 }) {
   const products = data.products || [];
   const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [visibilityFilter, setVisibilityFilter] = useState("all");
   const [editing, setEditing] = useState(null);
   const [editForm, setEditForm] = useState(emptyEditForm);
   const [editBusy, setEditBusy] = useState(false);
@@ -35,13 +37,11 @@ function Products({
 
   const filteredProducts = useMemo(() => {
     const needle = search.trim().toLowerCase();
-
-    if (!needle) {
-      return products;
-    }
-
-    return products.filter((product) =>
-      [
+    return products.filter((product) => {
+      const categoryMatches = categoryFilter === "all" || product.category === categoryFilter;
+      const visibilityMatches = visibilityFilter === "all" ||
+        (visibilityFilter === "visible" ? Boolean(product.is_visible) : !Boolean(product.is_visible));
+      const searchMatches = !needle || [
         product.product_id,
         product.name,
         product.sku,
@@ -51,9 +51,12 @@ function Products({
         String(value ?? "")
           .toLowerCase()
           .includes(needle)
-      )
-    );
-  }, [products, search]);
+      );
+      return categoryMatches && visibilityMatches && searchMatches;
+    });
+  }, [products, search, categoryFilter, visibilityFilter]);
+
+  const categories = [...new Set(products.map((product) => product.category).filter(Boolean))].sort();
 
   const openEditor = (product) => {
     const categoryId =
@@ -179,6 +182,15 @@ function Products({
             </button>
           )}
         </div>
+        <select className="user-filter-select" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} aria-label="Filter products by category">
+          <option value="all">All categories</option>
+          {categories.map((category) => <option key={category} value={category}>{category}</option>)}
+        </select>
+        <select className="user-filter-select" value={visibilityFilter} onChange={(event) => setVisibilityFilter(event.target.value)} aria-label="Filter products by customer visibility">
+          <option value="all">All visibility</option>
+          <option value="visible">Visible</option>
+          <option value="hidden">Hidden</option>
+        </select>
       </div>
 
       <div className="ops-panel">
@@ -201,7 +213,7 @@ function Products({
             </thead>
             <tbody>
               {filteredProducts.length === 0 ? (
-                <EmptyTable colSpan={11} text="No products match your search." />
+                <EmptyTable colSpan={11} text="No products match your search and filters." />
               ) : (
                 filteredProducts.map((product) => (
                   <tr key={product.product_id}>

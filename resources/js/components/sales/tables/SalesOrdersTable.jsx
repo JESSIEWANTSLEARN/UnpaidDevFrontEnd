@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SalesEmpty } from "../common/SalesDashboardPrimitives.jsx";
 import {
   formatDate,
@@ -53,15 +53,73 @@ export default function SalesOrdersTable({
   previewMode,
   busy,
   onStatus,
+  showFilters = true,
 }) {
   const [expanded, setExpanded] = useState(null);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+
+  const statuses = useMemo(
+    () => [...new Set((orders || []).map((order) => order.status).filter(Boolean))].sort(),
+    [orders],
+  );
+
+  const filteredOrders = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    return (orders || []).filter((order) => {
+      const statusMatches = status === "all" || order.status === status;
+      const searchMatches = !needle || [
+        order.order_id,
+        order.customer_name,
+        order.customer_email,
+        order.customer_contact,
+        order.order_date,
+        order.status,
+        order.payment_method,
+        order.payment_status,
+        order.payment_reference_number,
+      ].some((value) => String(value ?? "").toLowerCase().includes(needle));
+      return statusMatches && searchMatches;
+    });
+  }, [orders, search, status]);
 
   if (!orders.length) {
     return <SalesEmpty text="No orders found." />;
   }
 
   return (
-    <div className="sales-role-table-wrap">
+    <>
+      {showFilters && <div className="role-live-filter-bar" role="search">
+        <div className="role-live-search-wrap">
+          <input
+            className="role-live-search-input"
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search order, customer, payment..."
+            aria-label="Search sales orders"
+          />
+          {search && (
+            <button className="role-live-search-clear" type="button" onClick={() => setSearch("")}>
+              Clear
+            </button>
+          )}
+        </div>
+        <select
+          className="role-live-filter-select"
+          value={status}
+          onChange={(event) => setStatus(event.target.value)}
+          aria-label="Filter sales orders by status"
+        >
+          <option value="all">All statuses</option>
+          {statuses.map((value) => <option key={value} value={value}>{value}</option>)}
+        </select>
+      </div>}
+
+      {filteredOrders.length === 0 ? (
+        <SalesEmpty text="No orders match your search and filter." />
+      ) : (
+      <div className="sales-role-table-wrap">
       <table className="sales-role-table">
         <thead>
           <tr>
@@ -76,7 +134,7 @@ export default function SalesOrdersTable({
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <React.Fragment key={order.order_id}>
               <tr>
                 <td>#{order.order_id}</td>
@@ -209,6 +267,8 @@ export default function SalesOrdersTable({
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
+      )}
+    </>
   );
 }

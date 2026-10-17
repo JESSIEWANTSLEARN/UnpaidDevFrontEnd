@@ -6,15 +6,18 @@ function Inventory({ data, openModal }) {
   const batches = data.batches || [];
   const metrics = data.metrics || {};
   const [search, setSearch] = useState("");
+  const [expiryFilter, setExpiryFilter] = useState("all");
 
   const filteredBatches = useMemo(() => {
     const needle = search.trim().toLowerCase();
-    if (!needle) return batches;
-    return batches.filter((batch) =>
-      [batch.batch_number, batch.product_name, batch.sku, batch.expiry_date]
-        .some((value) => String(value ?? "").toLowerCase().includes(needle))
-    );
-  }, [batches, search]);
+    return batches.filter((batch) => {
+      const hasExpiry = Boolean(batch.expiry_date);
+      const expiryMatches = expiryFilter === "all" || (expiryFilter === "dated" ? hasExpiry : !hasExpiry);
+      const searchMatches = !needle || [batch.batch_number, batch.product_name, batch.sku, batch.expiry_date]
+        .some((value) => String(value ?? "").toLowerCase().includes(needle));
+      return expiryMatches && searchMatches;
+    });
+  }, [batches, search, expiryFilter]);
 
   return (
     <>
@@ -36,13 +39,18 @@ function Inventory({ data, openModal }) {
             placeholder="Search batch, product, SKU, expiry..." aria-label="Search inventory" />
           {search && <button className="user-search-clear" type="button" onClick={() => setSearch("")}>Clear</button>}
         </div>
+        <select className="user-filter-select" value={expiryFilter} onChange={(event) => setExpiryFilter(event.target.value)} aria-label="Filter inventory batches by expiry date">
+          <option value="all">All expiry records</option>
+          <option value="dated">Has expiry date</option>
+          <option value="undated">No expiry date recorded</option>
+        </select>
       </div>
 
       <div className="ops-panel"><div className="table-wrap"><table className="ops-table">
         <thead><tr><th>Batch</th><th>Product</th><th>SKU</th><th>Received</th><th>Current</th><th>Received Date</th><th>Expiry</th></tr></thead>
         <tbody>
           {filteredBatches.length === 0
-            ? <EmptyTable colSpan={7} text="No inventory batches match your search." />
+            ? <EmptyTable colSpan={7} text="No inventory batches match your search and filter." />
             : filteredBatches.map((batch) => <tr key={batch.batch_id}>
                 <td>{batch.batch_number}</td><td>{batch.product_name}</td><td>{batch.sku}</td>
                 <td>{number(batch.quantity_received)}</td><td>{number(batch.current_quantity)}</td>

@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import Icon from "../Icon.jsx";
 import { number, formatDate, stockState } from "../../../utils/super-admin/superAdminUtils.js";
 import { EmptyState, StatCard, ProductName, EmptyTable } from "../common/AdminCommon.jsx";
 
 function Dashboard({ data, setActiveMenu }) {
   const { metrics = {}, products = [], categories = [], notifications = [], audit_logs: auditLogs = [], stock_trend: stockTrend = [] } = data;
+  const [inventorySearch, setInventorySearch] = useState("");
+  const [inventoryStatus, setInventoryStatus] = useState("all");
   // Each product now has its own reorder point.
   const maxStock = Math.max(1, ...products.map((product) => Number(product.available_stock || 0)));
-  const recentProducts = products.slice(0, 8);
+  const filteredProducts = useMemo(() => {
+    const needle = inventorySearch.trim().toLowerCase();
+    return products.filter((product) => {
+      const available = Number(product.available_stock || 0);
+      const reorderPoint = Number(product.reorder_point ?? 10);
+      const status = available <= 0 ? "out" : available <= reorderPoint ? "low" : "in";
+      const statusMatches = inventoryStatus === "all" || status === inventoryStatus;
+      const searchMatches = !needle || [product.name, product.sku, product.category]
+        .some((value) => String(value ?? "").toLowerCase().includes(needle));
+      return statusMatches && searchMatches;
+    });
+  }, [products, inventorySearch, inventoryStatus]);
+  const recentProducts = filteredProducts.slice(0, 8);
   const recentAudit = auditLogs.slice(0, 5);
 
   return (
@@ -29,6 +43,25 @@ function Dashboard({ data, setActiveMenu }) {
           <h2>Inventory Overview</h2>
           <button type="button" className="panel-link" onClick={() => setActiveMenu("Inventory")}>View All →</button>
         </div>
+        <div className="ops-panel user-filter-panel dashboard-inventory-filters" role="search">
+          <div className="user-search-wrap">
+            <input
+              className="user-search-input"
+              type="search"
+              value={inventorySearch}
+              onChange={(event) => setInventorySearch(event.target.value)}
+              placeholder="Search product, SKU, or category..."
+              aria-label="Search inventory overview"
+            />
+            {inventorySearch && <button className="user-search-clear" type="button" onClick={() => setInventorySearch("")}>Clear</button>}
+          </div>
+          <select className="user-filter-select" value={inventoryStatus} onChange={(event) => setInventoryStatus(event.target.value)} aria-label="Filter inventory by stock status">
+            <option value="all">All stock statuses</option>
+            <option value="in">In stock</option>
+            <option value="low">Low stock</option>
+            <option value="out">Out of stock</option>
+          </select>
+        </div>
         <div className="table-wrap">
           <table className="ops-table">
             <thead>
@@ -43,7 +76,7 @@ function Dashboard({ data, setActiveMenu }) {
             </thead>
             <tbody>
               {recentProducts.length === 0 ? (
-                <EmptyTable colSpan={6} text="No products found." />
+                <EmptyTable colSpan={6} text="No products match your search and filter." />
               ) : recentProducts.map((product) => {
                 const status = stockState(
                   product.available_stock,
@@ -80,7 +113,7 @@ function Dashboard({ data, setActiveMenu }) {
           </table>
         </div>
         <div className="table-footer">
-          <span>Showing {recentProducts.length} of {products.length} products</span>
+          <span>Showing {recentProducts.length} of {filteredProducts.length} matching products</span>
         </div>
       </div>
 

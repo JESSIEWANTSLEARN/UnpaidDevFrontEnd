@@ -6,14 +6,23 @@ export default function ProductsTable({
   products = [],
 }) {
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [stockCondition, setStockCondition] = useState("all");
+
+  const categories = useMemo(
+    () => [...new Set(products.map((product) => product.category).filter(Boolean))].sort(),
+    [products],
+  );
 
   const filteredProducts = useMemo(() => {
     const needle = search.trim().toLowerCase();
-
-    if (!needle) return products;
-
-    return products.filter((product) =>
-      [
+    return products.filter((product) => {
+      const stock = Number(product.available_stock || 0);
+      const reorderPoint = Number(product.reorder_point ?? 10);
+      const condition = stock <= 0 ? "Out of stock" : stock <= reorderPoint ? "Low stock" : "In stock";
+      const categoryMatches = category === "all" || product.category === category;
+      const conditionMatches = stockCondition === "all" || condition === stockCondition;
+      const searchMatches = !needle || [
         product.product_id,
         product.sku,
         product.name,
@@ -21,9 +30,10 @@ export default function ProductsTable({
         product.supplier_name,
       ].some((value) =>
         String(value ?? "").toLowerCase().includes(needle)
-      )
-    );
-  }, [products, search]);
+      );
+      return categoryMatches && conditionMatches && searchMatches;
+    });
+  }, [products, search, category, stockCondition]);
 
   if (!products.length) {
     return <Empty text="No products found." />;
@@ -31,7 +41,7 @@ export default function ProductsTable({
 
   return (
     <>
-      <div className="role-live-filter-bar">
+      <div className="role-live-filter-bar" role="search">
         <div className="role-live-search-wrap">
           <input
             className="role-live-search-input"
@@ -51,10 +61,30 @@ export default function ProductsTable({
             </button>
           )}
         </div>
+        <select
+          className="role-live-filter-select"
+          value={category}
+          onChange={(event) => setCategory(event.target.value)}
+          aria-label="Filter products by category"
+        >
+          <option value="all">All categories</option>
+          {categories.map((value) => <option key={value} value={value}>{value}</option>)}
+        </select>
+        <select
+          className="role-live-filter-select"
+          value={stockCondition}
+          onChange={(event) => setStockCondition(event.target.value)}
+          aria-label="Filter products by stock condition"
+        >
+          <option value="all">All stock conditions</option>
+          <option value="Out of stock">Out of stock</option>
+          <option value="Low stock">Low stock</option>
+          <option value="In stock">In stock</option>
+        </select>
       </div>
 
       {filteredProducts.length === 0 ? (
-        <Empty text="No products match your search." />
+        <Empty text="No products match your search and filters." />
       ) : (
         <div className="role-live-table-wrap">
           <table className="role-live-table">

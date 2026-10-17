@@ -15,8 +15,13 @@ import {
 
 export default function WarehousePlanning({ data, onModuleChange }) {
   const [window, setWindow] = useState("Within 30 days");
+  const [receiptSupplier, setReceiptSupplier] = useState("All suppliers");
   const receipts = list(data.purchase_orders).filter(
     (po) => incoming(po) && outstanding(po) > 0,
+  );
+  const receiptSuppliers = [...new Set(receipts.map((po) => po.supplier_name).filter(Boolean))].sort();
+  const filteredReceipts = receipts.filter(
+    (po) => receiptSupplier === "All suppliers" || po.supplier_name === receiptSupplier,
   );
   const batches = list(data.batches)
     .filter((b) => numeric(b.current_quantity) > 0)
@@ -41,6 +46,12 @@ export default function WarehousePlanning({ data, onModuleChange }) {
         scope="Uses up to 100 recent PO lines and 100 recent batches. Expiry windows use the Asia/Manila calendar date; older records may be outside this view."
       >
         <div className="role-workspace-controls">
+          <Choice
+            label="Supplier"
+            value={receiptSupplier}
+            onChange={setReceiptSupplier}
+            options={["All suppliers", ...receiptSuppliers]}
+          />
           <ModuleButton module="Receiving" onModuleChange={onModuleChange}>
             Record delivery
           </ModuleButton>
@@ -54,7 +65,7 @@ export default function WarehousePlanning({ data, onModuleChange }) {
             "Received",
             "Remaining",
           ]}
-          rows={receipts.map((po, i) => ({
+          rows={filteredReceipts.map((po, i) => ({
             key: `${po.po_id}-${po.po_detail_id || i}`,
             cells: [
               po.po_number,

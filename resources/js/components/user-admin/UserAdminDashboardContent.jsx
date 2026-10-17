@@ -1,6 +1,6 @@
 import RoleFunctionDirectory from "../shared/role-dashboard/workspaces/RoleFunctionDirectory.jsx";
 import AccountReview from "../shared/role-dashboard/workspaces/AccountReview.jsx";
-import AppLoadingScreen from "../shared/AppLoadingScreen.jsx";
+import DashboardLoadingSkeleton from "../shared/DashboardLoadingSkeleton.jsx";
 import useUserAdminDashboard from "../../hooks/user-admin/useUserAdminDashboard.js";
 import UserAdminFilters from "./filters/UserAdminFilters.jsx";
 import CreateUserForm from "./forms/CreateUserForm.jsx";
@@ -55,7 +55,7 @@ export default function UserAdminDashboardContent({
 
   if (loading) {
     return (
-      <AppLoadingScreen
+      <DashboardLoadingSkeleton
         label="Loading User Admin..."
         theme={theme}
       />

@@ -741,12 +741,6 @@
   cursor: pointer;
 }
 
-.role-live-search-input:focus,
-.role-live-filter-select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 12%);
-}
-
 .role-live-search-clear {
   position: absolute;
   top: 50%;
@@ -786,4 +780,17 @@
     width: 100%;
     min-width: 100%;
   }
+}
+/* These fields already provide an accessible Clear button. */
+.role-live-search-wrap input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* One role-colored focus ring, overriding the shell's generic outline. */
+.role-dashboard-layout .role-live-search-input:focus,
+.role-dashboard-layout .role-live-filter-select:focus {
+  outline: none;
+  border-color: var(--role-accent);
+  box-shadow: 0 0 0 3px rgb(var(--role-accent-rgb) / 20%);
 }

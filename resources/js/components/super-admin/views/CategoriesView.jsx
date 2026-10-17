@@ -10,6 +10,7 @@ function Categories({
 }) {
   const categories = data.categories || [];
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", description: "", is_active: true });
   const [busy, setBusy] = useState(false);
@@ -17,12 +18,14 @@ function Categories({
 
   const filteredCategories = useMemo(() => {
     const needle = search.trim().toLowerCase();
-    if (!needle) return categories;
-    return categories.filter((item) =>
-      [item.category, item.description, item.is_active ? "active" : "inactive"]
-        .some((value) => String(value || "").toLowerCase().includes(needle))
-    );
-  }, [categories, search]);
+    return categories.filter((item) => {
+      const status = item.is_active ? "active" : "inactive";
+      const statusMatches = statusFilter === "all" || status === statusFilter;
+      const searchMatches = !needle || [item.category, item.description, status]
+        .some((value) => String(value || "").toLowerCase().includes(needle));
+      return statusMatches && searchMatches;
+    });
+  }, [categories, search, statusFilter]);
 
   const openEditor = (category) => {
     setEditing(category);
@@ -78,13 +81,18 @@ function Categories({
             placeholder="Search categories..." aria-label="Search categories" />
           {search && <button className="user-search-clear" type="button" onClick={() => setSearch("")}>Clear</button>}
         </div>
+        <select className="user-filter-select" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} aria-label="Filter categories by status">
+          <option value="all">All statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
       </div>
 
       <div className="ops-panel"><div className="table-wrap"><table className="ops-table">
         <thead><tr><th>Category</th><th>Status</th><th>Products</th><th>Total Stock</th><th>Actions</th></tr></thead>
         <tbody>
           {filteredCategories.length === 0
-            ? <EmptyTable colSpan={5} text="No categories match your search." />
+            ? <EmptyTable colSpan={5} text="No categories match your search and filter." />
             : filteredCategories.map((item) => <tr key={item.category_id}>
                 <td>{item.category}</td><td>{item.is_active ? "ACTIVE" : "INACTIVE"}</td>
                 <td>{number(item.product_count)}</td><td>{number(item.total_stock)}</td>
