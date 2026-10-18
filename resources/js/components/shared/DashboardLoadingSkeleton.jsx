@@ -1,4 +1,5 @@
 import React from "react";
+import BrandedLoadingIndicator from "./BrandedLoadingIndicator.jsx";
 import "../../../css/shared/dashboard-loading-skeleton.css";
 
 function SkeletonBlock({ className = "" }) {
@@ -57,13 +58,14 @@ export default function DashboardLoadingSkeleton({
   if (!fullPage) {
     return (
       <section
-        className="dashboard-loading dashboard-loading-content"
+        className="dashboard-loading dashboard-loading-content wbo-brand-loader-host"
         data-theme={theme}
         role="status"
         aria-live="polite"
         aria-busy="true"
       >
-        <span className="dashboard-loading-label">{label}</span>
+        <span className="dashboard-loading-label wbo-brand-loader-sr">{label}</span>
+        <BrandedLoadingIndicator label={label} />
         {content}
       </section>
     );
@@ -71,13 +73,14 @@ export default function DashboardLoadingSkeleton({
 
   return (
     <main
-      className="dashboard-loading dashboard-loading-page"
+      className="dashboard-loading dashboard-loading-page wbo-brand-loader-host wbo-brand-loader-host--page"
       data-theme={theme}
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
-      <span className="dashboard-loading-label">{label}</span>
+      <span className="dashboard-loading-label wbo-brand-loader-sr">{label}</span>
+      <BrandedLoadingIndicator label={label} />
       <div className="dashboard-skeleton-layout" aria-hidden="true">
         <aside className="dashboard-skeleton-sidebar">
           <SkeletonBlock className="is-brand" />

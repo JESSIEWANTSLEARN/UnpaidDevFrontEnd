@@ -1,0 +1,180 @@
+/* One shared, CSS-only animation. It mounts only while its skeleton is visible. */
+.wbo-brand-loader-host {
+  --brand-loader-surface: #fff;
+  --brand-loader-text: #23364e;
+  --brand-loader-line: #dbe6f2;
+  --brand-loader-accent: #2684ff;
+  position: relative;
+  isolation: isolate;
+  min-height: 24rem;
+}
+
+.wbo-brand-loader-host[data-theme="dark"],
+.customer-shell[data-theme="dark"] .wbo-brand-loader-host {
+  --brand-loader-surface: #0d1b2c;
+  --brand-loader-text: #e5eefb;
+  --brand-loader-line: #29405c;
+  --brand-loader-accent: #69afff;
+}
+
+.wbo-brand-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+/* Full-page loaders center in the viewport, even when their placeholders are taller. */
+.wbo-brand-loader-host--page > .wbo-brand-loader {
+  position: fixed;
+}
+
+.wbo-brand-loader-card {
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+  width: min(100%, 270px);
+  box-sizing: border-box;
+  padding: 1.1rem 1.5rem 1.35rem;
+  border: 1px solid var(--brand-loader-line);
+  border-radius: 24px;
+  background: var(--brand-loader-surface);
+  box-shadow: 0 16px 48px rgb(4 20 42 / 0.16);
+}
+
+.wbo-brand-loader-stage {
+  position: relative;
+  width: 132px;
+  height: 150px;
+}
+
+.wbo-brand-loader-bounce {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  transform-origin: 50% 100%;
+  animation: wbo-brand-loader-jump 1.65s infinite;
+}
+
+.wbo-brand-loader-shadow {
+  position: absolute;
+  bottom: 4px;
+  left: 33px;
+  width: 66px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--brand-loader-accent);
+  animation: wbo-brand-loader-shadow 1.65s infinite;
+}
+
+.wbo-brand-loader-orbit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+}
+
+.wbo-brand-loader-orbit::before,
+.wbo-brand-loader-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--brand-loader-line);
+  border-top-color: var(--brand-loader-accent);
+  border-right-color: var(--brand-loader-accent);
+  border-radius: 50%;
+  animation: wbo-brand-loader-spin 2.4s linear infinite;
+}
+
+.wbo-brand-loader-orbit::after {
+  inset: -6px;
+  border-color: transparent;
+  border-bottom-color: var(--brand-loader-accent);
+  opacity: 0.5;
+  animation-direction: reverse;
+  animation-duration: 3.6s;
+}
+
+.wbo-brand-loader-logo {
+  display: block;
+  width: 72px;
+  height: 72px;
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 50%;
+  background: #fff;
+  object-fit: contain;
+  animation: wbo-brand-loader-flip 1.65s infinite;
+}
+
+.wbo-brand-loader-text {
+  max-width: 24ch;
+  color: var(--brand-loader-text);
+  font: 600 0.875rem/1.5 system-ui, sans-serif;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.wbo-brand-loader-host > .dashboard-skeleton-layout,
+.wbo-brand-loader-host > .dashboard-skeleton-content,
+.wbo-brand-loader-host > .customer-skeleton-header,
+.wbo-brand-loader-host > .customer-skeleton-body,
+.wbo-brand-loader-host > .customer-review-skeleton-title,
+.wbo-brand-loader-host > .customer-review-skeleton-section {
+  opacity: 0.55;
+}
+
+.wbo-brand-loader-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes wbo-brand-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Crouch, spring, hang in the air, then land with a tiny recovery hop. */
+@keyframes wbo-brand-loader-jump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  12% { transform: translateY(3px) scale(1.12, 0.86); animation-timing-function: cubic-bezier(0.16, 0.7, 0.25, 1); }
+  32% { transform: translateY(-30px) scale(0.96, 1.06); }
+  44% { transform: translateY(-34px) scale(1); animation-timing-function: cubic-bezier(0.65, 0, 0.9, 0.5); }
+  64% { transform: translateY(3px) scale(1.15, 0.82); }
+  76% { transform: translateY(-7px) scale(0.98, 1.03); }
+  88% { transform: translateY(1px) scale(1.03, 0.97); }
+}
+
+@keyframes wbo-brand-loader-flip {
+  0%, 12% { transform: rotate(0deg); }
+  44% { transform: rotate(180deg); }
+  64% { transform: rotate(360deg); }
+  76% { transform: rotate(370deg); }
+  88%, 100% { transform: rotate(360deg); }
+}
+
+@keyframes wbo-brand-loader-shadow {
+  0%, 100% { transform: scaleX(1); opacity: 0.23; }
+  12%, 64% { transform: scaleX(1.16); opacity: 0.3; }
+  32%, 44% { transform: scaleX(0.55); opacity: 0.12; }
+  76% { transform: scaleX(0.8); opacity: 0.18; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wbo-brand-loader-bounce,
+  .wbo-brand-loader-shadow,
+  .wbo-brand-loader-logo,
+  .wbo-brand-loader-orbit::before,
+  .wbo-brand-loader-orbit::after {
+    animation: none;
+  }
+}

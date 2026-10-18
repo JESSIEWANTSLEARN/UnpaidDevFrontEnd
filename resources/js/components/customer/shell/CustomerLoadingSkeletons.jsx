@@ -1,4 +1,5 @@
 import React from "react";
+import BrandedLoadingIndicator from "../../shared/BrandedLoadingIndicator.jsx";
 import "../../../../css/customer/loading-skeletons.css";
 
 function Block({ className = "" }) {
@@ -8,13 +9,14 @@ function Block({ className = "" }) {
 export function CustomerStoreSkeleton({ theme = "light" }) {
   return (
     <main
-      className="customer-skeleton-screen"
+      className="customer-skeleton-screen wbo-brand-loader-host wbo-brand-loader-host--page"
       data-theme={theme}
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
       <span className="customer-skeleton-sr">Loading your store...</span>
+      <BrandedLoadingIndicator label="Loading your store..." />
 
       <div className="customer-skeleton-header">
         <div className="customer-skeleton-brand">
@@ -99,12 +101,13 @@ export function CustomerStoreSkeleton({ theme = "light" }) {
 export function CustomerReviewsSkeleton() {
   return (
     <section
-      className="customer-page-section customer-review-skeleton"
+      className="customer-page-section customer-review-skeleton wbo-brand-loader-host"
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
       <span className="customer-skeleton-sr">Loading reviews...</span>
+      <BrandedLoadingIndicator label="Loading reviews..." />
 
       <div className="customer-review-skeleton-title">
         <Block className="is-review-kicker" />
