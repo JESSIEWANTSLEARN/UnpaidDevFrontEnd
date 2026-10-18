@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { applyInventoryUpdate } from "../../utils/inventoryUpdates.mjs";
 import {
   backendUrl,
   csrfFetch,
@@ -69,6 +70,7 @@ export default function useRoleDashboard({
         : "Overview";
     });
   const [data, setData] = useState(null);
+  const inventoryRevision = useRef(0);
   const [loading, setLoading] = useState(true);
   const [actionBusy, setActionBusy] = useState(false);
   const [error, setError] = useState("");
@@ -87,6 +89,7 @@ export default function useRoleDashboard({
 
   useEffect(() => {
     let cancelled = false;
+    const loadRevision = inventoryRevision.current;
 
     async function loadPage() {
       setLoading(true);
@@ -137,7 +140,7 @@ export default function useRoleDashboard({
             previewMode,
           );
 
-          if (!cancelled) {
+          if (!cancelled && loadRevision === inventoryRevision.current) {
             setData({
               ...roleData,
               live: true,
@@ -164,10 +167,12 @@ export default function useRoleDashboard({
           return;
         }
 
-        setError(
-          requestError.message ||
-            "Unable to load this role dashboard.",
-        );
+        if (loadRevision === inventoryRevision.current) {
+          setError(
+            requestError.message ||
+              "Unable to load this role dashboard.",
+          );
+        }
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -187,7 +192,12 @@ export default function useRoleDashboard({
     roleKey,
   ]);
 
-  const refresh = () => {
+  const refresh = (result) => {
+    if (result?.inventory_update) {
+      inventoryRevision.current += 1;
+      setData((current) => applyInventoryUpdate(current, result.inventory_update));
+      return;
+    }
     setReloadToken((value) => value + 1);
   };
 
@@ -204,7 +214,7 @@ export default function useRoleDashboard({
       const result = await action();
 
       setNotice(result?.message || successFallback);
-      refresh();
+      refresh(result);
 
       return result;
     } catch (requestError) {

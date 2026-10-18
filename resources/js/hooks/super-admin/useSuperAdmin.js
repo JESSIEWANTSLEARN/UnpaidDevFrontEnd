@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { applyInventoryUpdate } from "../../utils/inventoryUpdates.mjs";
 import { useNavigate } from "react-router-dom";
 import { INITIAL_FORMS } from "../../config/super-admin/superAdminConfig.js";
 import { apiRequest, download, logoutRequest, toFormData } from "../../services/super-admin/superAdminApi.js";
@@ -50,6 +51,7 @@ export default function useSuperAdmin() {
   });
   const [activeModal, setActiveModal] = useState(null);
   const [data, setData] = useState(null);
+  const inventoryRevision = useRef(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadToken, setReloadToken] = useState(0);
@@ -71,7 +73,14 @@ export default function useSuperAdmin() {
     [key]: typeof update === "function" ? update(all[key]) : update,
   }));
   const resetForm = (key) => setForm(key, { ...INITIAL_FORMS[key] });
-  const refresh = () => setReloadToken((v) => v + 1);
+  const refresh = (result) => {
+    if (result?.inventory_update) {
+      inventoryRevision.current += 1;
+      setData((current) => applyInventoryUpdate(current, result.inventory_update));
+      return;
+    }
+    setReloadToken((v) => v + 1);
+  };
 
   useEffect(() => {
     localStorage.setItem(
@@ -89,12 +98,13 @@ export default function useSuperAdmin() {
 
   useEffect(() => {
     let cancelled = false;
+    const loadRevision = inventoryRevision.current;
     setLoading(true); setError("");
     apiRequest("/api/super-admin/dashboard-data")
-      .then((result) => { if (!cancelled) setData(result); })
+      .then((result) => { if (!cancelled && loadRevision === inventoryRevision.current) setData(result); })
       .catch((err) => {
         if (err.status === 401) return navigate("/login", { replace: true });
-        if (!cancelled) setError(err.message || "Unable to load Super Admin data.");
+        if (!cancelled && loadRevision === inventoryRevision.current) setError(err.message || "Unable to load Super Admin data.");
       })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
@@ -136,7 +146,7 @@ export default function useSuperAdmin() {
 
   const runModalAction = async (action, keepOpen = false) => {
     setModalBusy(true); setModalError("");
-    try { await action(); if (!keepOpen) setActiveModal(null); refresh(); }
+    try { const result = await action(); if (!keepOpen) setActiveModal(null); refresh(result); }
     catch (err) {
       if (err.status === 401) navigate("/login", { replace: true });
       setModalError(err.message || "The request could not be completed.");
@@ -153,7 +163,7 @@ export default function useSuperAdmin() {
     await apiRequest("/api/super-admin/categories", { method: "POST", body: forms.category });
     resetForm("category");
   });
-  const handleStockIn = () => runModalAction(async () => { await apiRequest("/api/super-admin/stock-in", { method: "POST", body: forms.stock }); resetForm("stock"); });
+  const handleStockIn = () => runModalAction(async () => { const result = await apiRequest("/api/super-admin/stock-in", { method: "POST", body: forms.stock }); resetForm("stock"); return result; });
   const handleAddUser = () => runModalAction(async () => { await apiRequest("/api/super-admin/users", { method: "POST", body: forms.user }); resetForm("user"); });
   const handleAddSupplier = () => runModalAction(async () => { await apiRequest("/api/super-admin/suppliers", { method: "POST", body: forms.supplier }); resetForm("supplier"); });
   const handleAddPurchaseOrder = () => runModalAction(async () => { await apiRequest("/api/super-admin/purchase-orders", { method: "POST", body: forms.purchaseOrder }); resetForm("purchaseOrder"); });

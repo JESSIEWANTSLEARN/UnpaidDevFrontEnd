@@ -41,7 +41,7 @@ const PAGE_COMPONENTS = {
 };
 
 export default function SuperAdminPageContent({ activeMenu, loading, error, onRetry, theme = "light", ...props }) {
-  if (loading) return <DashboardLoadingSkeleton label="Loading Super Admin data..." theme={theme} />;
+  if (loading && !props.data) return <DashboardLoadingSkeleton label="Loading Super Admin data..." theme={theme} />;
   if (error) return <ErrorState message={error} onRetry={onRetry} />;
   if (!props.data) return <EmptyState text="No dashboard data was returned." />;
 

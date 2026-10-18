@@ -267,7 +267,7 @@ export default function DataImportsPanel({
       }
 
       await loadHistory();
-      onDashboardRefresh?.();
+      onDashboardRefresh?.(result);
     } catch (requestError) {
       setError(
         requestError.message ||
