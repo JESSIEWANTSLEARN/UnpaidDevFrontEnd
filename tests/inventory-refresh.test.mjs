@@ -8,14 +8,15 @@ import { applyInventoryUpdate } from '../resources/js/utils/inventoryUpdates.mjs
 import { INITIAL_FORMS } from '../resources/js/config/super-admin/superAdminConfig.js';
 
 // Run the actual hook code with deterministic React state/effect scheduling and mocked HTTP boundaries.
-function harness(kind, { legacy=false, preview=false, fail=false, scopedFail=false }={}) {
+function harness(kind, { legacy=false, preview=false, fail=false, scopedFail=false, gated=false }={}) {
   const slots=[], effects=[], pending=[], calls=[];
   let cursor=0, effectCursor=0, block=false, release, rejectRelease;
   const dashboard=()=>block?new Promise((resolve,reject)=>{release=()=>{block=false;resolve(data);};rejectRelease=()=>{block=false;reject(new Error('Old refresh failed'));};}):Promise.resolve(data);
   const react={
+    useContext: () => gated ? {authenticated:true,role:preview?"super_admin":"Inventory_Controller"} : null,
     useState(initial) {const i=cursor++;if(!(i in slots))slots[i]=typeof initial==='function'?initial():initial;return [slots[i],(next)=>{slots[i]=typeof next==='function'?next(slots[i]):next;}];},
     useRef(initial) {const i=cursor++;if(!(i in slots))slots[i]={current:initial};return slots[i];},
-    useEffect(fn,deps) {const i=effectCursor++;const old=effects[i];if(!old||deps.some((value,index)=>!Object.is(value,old.deps[index])))pending.push(()=>{old?.cleanup?.();effects[i]={deps,cleanup:fn()};});},
+    useEffect(fn,deps) {const i=effectCursor++;const old=effects[i];if(!old||deps.some((value,index)=>!Object.is(value,old.deps[index])))pending.push(()=>{old?.cleanup?.();effects[i]={deps,fn,cleanup:fn()};});},
   };
   const data={role:'Inventory_Controller',products:[{product_id:1,available_stock:2,reorder_point:5}],batches:[],transactions:[],metrics:{},settings:{}};
   if(kind==='admin')delete data.role;
@@ -33,6 +34,7 @@ function harness(kind, { legacy=false, preview=false, fail=false, scopedFail=fal
   const adminApi={toFormData:(value)=>value,apiRequest:async(path)=>{calls.push(path);if(path.includes('?sections='))return scoped(decodeURIComponent(path.split('?sections=')[1]).split(','));return path.endsWith('dashboard-data')?dashboard():mutate('save',path.endsWith('/stock-in'));}};
   const navigate=()=>{};
   const modules={
+    "../../services/auth/sessionStatus.js": {VerifiedSessionContext: {}, readSessionStatus: async () => {calls.push("session"); return {response:{ok:true}, data:{authenticated:true,role:preview?"super_admin":"Inventory_Controller"}};}},
     '../../utils/dashboardRefresh.mjs':dashboardRefresh,
     react,'react-router-dom':{useNavigate:()=>navigate},
     '../../utils/inventoryUpdates.mjs':{applyInventoryUpdate},
@@ -49,7 +51,7 @@ function harness(kind, { legacy=false, preview=false, fail=false, scopedFail=fal
   const hook=context.module.exports.default;
   const render=()=>{cursor=0;effectCursor=0;return kind==='admin'?hook():hook({roleKey:'Inventory_Controller',previewMode:preview,config:{liveData:true,modules:[]}});};
   const settle=async()=>{while(pending.length)pending.shift()();await new Promise(setImmediate);};
-  return {calls,render,settle,blockNextDashboard:()=>{block=true;},releaseDashboard:()=>release(),rejectDashboard:()=>rejectRelease()};
+  return {calls,render,settle,settleStrict:async()=>{while(pending.length)pending.shift()();for(const effect of effects){effect?.cleanup?.();if(effect)effect.cleanup=effect.fn();}await new Promise(setImmediate);},blockNextDashboard:()=>{block=true;},releaseDashboard:()=>release(),rejectDashboard:()=>rejectRelease()};
 }
 
 for(const action of ['handleStockIn','handleAdjustment','handleWriteOff','handleReceivePurchaseOrder']) {
@@ -121,4 +123,22 @@ test('a successful mutation with failed follow-up refresh is not replayed or rep
  const result=await before.handleCreateSupplier({});h.render();await h.settle();const after=h.render();
  assert.equal(result.message,'Saved');assert.equal(h.calls.filter(x=>x==='roleCreateSupplier').length,1);
  assert.equal(after.data,before.data);assert.match(after.error,/Saved, but/);
+});
+
+
+test('staff reuses its gate session on mount but manual Refresh verifies again', async () => {
+  const h = harness('staff', {gated:true});
+  h.render(); await h.settle();
+  assert.equal(h.calls.filter(x=>x==='session').length,0);
+  assert.equal(h.calls.filter(x=>x==='dashboard').length,1);
+  h.render().refresh(); h.render(); await h.settle();
+  assert.equal(h.calls.filter(x=>x==='session').length,1);
+});
+
+test('StrictMode gate reuse does not duplicate the staff dashboard read', async () => {
+  const h = harness('staff', {gated:true});
+  h.render(); await h.settleStrict();
+  assert.equal(h.calls.filter(x=>x==='session').length,0);
+  assert.equal(h.calls.filter(x=>x==='dashboard').length,1);
+  assert.equal(h.render().loading,false);
 });

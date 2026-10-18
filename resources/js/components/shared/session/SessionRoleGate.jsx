@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { backendUrl } from "../../../config/api.js";
+import { readSessionStatus, VerifiedSessionContext } from "../../../services/auth/sessionStatus.js";
 
 /** Prevent role-protected React pages from rendering until the server confirms the session role. */
 export default function SessionRoleGate({ role, children }) {
     const [state, setState] = useState("checking");
     const [attempt, setAttempt] = useState(0);
+    const [verified, setVerified] = useState(null);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -14,16 +15,8 @@ export default function SessionRoleGate({ role, children }) {
             setState("checking");
 
             try {
-                const response = await fetch(
-                    backendUrl("/api/session/status"),
-                    {
-                        credentials: "include",
-                        headers: { Accept: "application/json" },
-                        signal: controller.signal,
-                    },
-                );
-
-                const data = await response.json().catch(() => ({}));
+                // Cleanup detaches this consumer without aborting other subscribers.
+                const { response, data } = await readSessionStatus();
 
                 if (controller.signal.aborted) return;
 
@@ -41,6 +34,7 @@ export default function SessionRoleGate({ role, children }) {
                     return;
                 }
 
+                setVerified({ role, data });
                 setState("allowed");
             } catch {
                 if (!controller.signal.aborted) setState("unavailable");
@@ -55,7 +49,7 @@ export default function SessionRoleGate({ role, children }) {
         return <Navigate to="/login" replace />;
     }
 
-    if (state !== "allowed") {
+    if (state !== "allowed" || verified?.role !== role) {
         return (
             <main
                 role="status"
@@ -88,5 +82,5 @@ export default function SessionRoleGate({ role, children }) {
         );
     }
 
-    return children;
+    return <VerifiedSessionContext.Provider value={verified.data}>{children}</VerifiedSessionContext.Provider>;
 }

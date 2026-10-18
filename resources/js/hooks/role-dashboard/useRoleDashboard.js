@@ -1,8 +1,8 @@
+import { readSessionStatus, VerifiedSessionContext } from "../../services/auth/sessionStatus.js";
 import { mergeDashboardUpdate, importRefreshSections, queueDashboardRefresh } from "../../utils/dashboardRefresh.mjs";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { applyInventoryUpdate } from "../../utils/inventoryUpdates.mjs";
 import {
-  backendUrl,
   csrfFetch,
 } from "../../config/api.js";
 import { routeForRole } from "../../config/roleDashboardConfig.js";
@@ -48,6 +48,7 @@ export default function useRoleDashboard({
     );
   };
 
+  const verifiedSession = useContext(VerifiedSessionContext);
   const [session, setSession] = useState(null);
 
   const roleModuleStorageKey =
@@ -98,20 +99,13 @@ export default function useRoleDashboard({
       setError("");
 
       try {
-        const response = await fetch(
-          backendUrl("/api/session/status"),
-          {
-            credentials: "include",
-            headers: {
-              Accept: "application/json",
-            },
-          },
-        );
+        // Initial mount uses this page's gate result. Manual refresh rechecks.
+        const { response, data: sessionData } = verifiedSession && reloadToken === 0
+          ? { response: { ok: true }, data: verifiedSession }
+          : await readSessionStatus();
 
-        const sessionData = await response
-          .json()
-          .catch(() => ({}));
-
+        // Yield so StrictMode cleanup can detach its first mount before data loading.
+        await Promise.resolve();
         if (cancelled) return;
 
         if (
@@ -188,6 +182,7 @@ export default function useRoleDashboard({
       cancelled = true;
     };
   }, [
+    verifiedSession,
     config?.liveData,
     previewMode,
     reloadToken,

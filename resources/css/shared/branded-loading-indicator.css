@@ -3,7 +3,7 @@
   --brand-loader-surface: #fff;
   --brand-loader-text: #23364e;
   --brand-loader-line: #dbe6f2;
-  --brand-loader-accent: #2684ff;
+  --brand-loader-shadow: #334155;
   position: relative;
   isolation: isolate;
   min-height: 24rem;
@@ -14,7 +14,7 @@
   --brand-loader-surface: #0d1b2c;
   --brand-loader-text: #e5eefb;
   --brand-loader-line: #29405c;
-  --brand-loader-accent: #69afff;
+  --brand-loader-shadow: #94a3b8;
 }
 
 .wbo-brand-loader {
@@ -33,6 +33,8 @@
 }
 
 .wbo-brand-loader-card {
+  position: relative;
+  z-index: 1;
   display: grid;
   justify-items: center;
   gap: 0.65rem;
@@ -66,11 +68,11 @@
   width: 66px;
   height: 9px;
   border-radius: 50%;
-  background: var(--brand-loader-accent);
+  background: var(--brand-loader-shadow);
   animation: wbo-brand-loader-shadow 1.65s infinite;
 }
 
-.wbo-brand-loader-orbit {
+.wbo-brand-loader-mark {
   position: relative;
   display: grid;
   place-items: center;
@@ -78,35 +80,14 @@
   height: 104px;
 }
 
-.wbo-brand-loader-orbit::before,
-.wbo-brand-loader-orbit::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 2px solid var(--brand-loader-line);
-  border-top-color: var(--brand-loader-accent);
-  border-right-color: var(--brand-loader-accent);
-  border-radius: 50%;
-  animation: wbo-brand-loader-spin 2.4s linear infinite;
-}
-
-.wbo-brand-loader-orbit::after {
-  inset: -6px;
-  border-color: transparent;
-  border-bottom-color: var(--brand-loader-accent);
-  opacity: 0.5;
-  animation-direction: reverse;
-  animation-duration: 3.6s;
-}
-
 .wbo-brand-loader-logo {
   display: block;
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   box-sizing: border-box;
-  padding: 4px;
+  padding: 0;
   border-radius: 50%;
-  background: #fff;
+  background: transparent;
   object-fit: contain;
   animation: wbo-brand-loader-flip 1.65s infinite;
 }
@@ -139,10 +120,6 @@
   white-space: nowrap;
 }
 
-@keyframes wbo-brand-loader-spin {
-  to { transform: rotate(360deg); }
-}
-
 /* Crouch, spring, hang in the air, then land with a tiny recovery hop. */
 @keyframes wbo-brand-loader-jump {
   0%, 100% { transform: translateY(0) scale(1); }
@@ -169,12 +146,57 @@
   76% { transform: scaleX(0.8); opacity: 0.18; }
 }
 
+/* Independent, mirrored X/Y paths bounce at the loading area's edges.
+   Percentage transforms follow the current area size without resize listeners. */
+.wbo-brand-dvd-field {
+  --dvd-logo-size: clamp(40px, 5vw, 64px);
+  position: absolute;
+  inset: 18px;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wbo-brand-dvd-x,
+.wbo-brand-dvd-y {
+  position: absolute;
+  inset: 0;
+}
+
+.wbo-brand-dvd-x {
+  animation: wbo-brand-dvd-x 13s linear infinite alternate;
+}
+
+.wbo-brand-dvd-y {
+  animation: wbo-brand-dvd-y 9s linear infinite alternate;
+}
+
+.wbo-brand-dvd-logo {
+  display: block;
+  width: var(--dvd-logo-size);
+  height: var(--dvd-logo-size);
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+@keyframes wbo-brand-dvd-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100% - var(--dvd-logo-size))); }
+}
+
+@keyframes wbo-brand-dvd-y {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(100% - var(--dvd-logo-size))); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .wbo-brand-dvd-field {
+    display: none;
+  }
+
   .wbo-brand-loader-bounce,
   .wbo-brand-loader-shadow,
-  .wbo-brand-loader-logo,
-  .wbo-brand-loader-orbit::before,
-  .wbo-brand-loader-orbit::after {
+  .wbo-brand-loader-logo {
     animation: none;
   }
 }
