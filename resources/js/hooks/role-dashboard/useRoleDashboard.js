@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { readSessionStatus, VerifiedSessionContext } from "../../services/auth/sessionStatus.js";
+import { mergeDashboardUpdate, importRefreshSections, queueDashboardRefresh } from "../../utils/dashboardRefresh.mjs";
+import { useContext, useEffect, useRef, useState } from "react";
+import { applyInventoryUpdate } from "../../utils/inventoryUpdates.mjs";
 import {
-  backendUrl,
   csrfFetch,
 } from "../../config/api.js";
 import { routeForRole } from "../../config/roleDashboardConfig.js";
@@ -46,6 +48,7 @@ export default function useRoleDashboard({
     );
   };
 
+  const verifiedSession = useContext(VerifiedSessionContext);
   const [session, setSession] = useState(null);
 
   const roleModuleStorageKey =
@@ -69,6 +72,8 @@ export default function useRoleDashboard({
         : "Overview";
     });
   const [data, setData] = useState(null);
+  const inventoryRevision = useRef(0);
+  const refreshQueue = useRef(Promise.resolve());
   const [loading, setLoading] = useState(true);
   const [actionBusy, setActionBusy] = useState(false);
   const [error, setError] = useState("");
@@ -87,26 +92,20 @@ export default function useRoleDashboard({
 
   useEffect(() => {
     let cancelled = false;
+    const loadRevision = inventoryRevision.current;
 
     async function loadPage() {
       setLoading(true);
       setError("");
 
       try {
-        const response = await fetch(
-          backendUrl("/api/session/status"),
-          {
-            credentials: "include",
-            headers: {
-              Accept: "application/json",
-            },
-          },
-        );
+        // Initial mount uses this page's gate result. Manual refresh rechecks.
+        const { response, data: sessionData } = verifiedSession && reloadToken === 0
+          ? { response: { ok: true }, data: verifiedSession }
+          : await readSessionStatus();
 
-        const sessionData = await response
-          .json()
-          .catch(() => ({}));
-
+        // Yield so StrictMode cleanup can detach its first mount before data loading.
+        await Promise.resolve();
         if (cancelled) return;
 
         if (
@@ -137,7 +136,7 @@ export default function useRoleDashboard({
             previewMode,
           );
 
-          if (!cancelled) {
+          if (!cancelled && loadRevision === inventoryRevision.current) {
             setData({
               ...roleData,
               live: true,
@@ -164,10 +163,12 @@ export default function useRoleDashboard({
           return;
         }
 
-        setError(
-          requestError.message ||
-            "Unable to load this role dashboard.",
-        );
+        if (loadRevision === inventoryRevision.current) {
+          setError(
+            requestError.message ||
+              "Unable to load this role dashboard.",
+          );
+        }
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -181,17 +182,34 @@ export default function useRoleDashboard({
       cancelled = true;
     };
   }, [
+    verifiedSession,
     config?.liveData,
     previewMode,
     reloadToken,
     roleKey,
   ]);
 
-  const refresh = () => {
+  const refresh = (result, sections = importRefreshSections(result)) => {
+    if (result?.inventory_update) {
+      inventoryRevision.current += 1;
+      setData((current) => applyInventoryUpdate(current, result.inventory_update));
+      return;
+    }
+    if (Array.isArray(sections) && sections.length) {
+      inventoryRevision.current += 1;
+      return queueDashboardRefresh(refreshQueue, inventoryRevision,
+        () => loadRoleDashboard(roleKey, previewMode, sections),
+        (response) => setData((current) => response.dashboard_update
+          ? mergeDashboardUpdate(current, response.dashboard_update) : { ...response, live: true }),
+        (err) => {
+          if (err.status === 401 || err.status === 403) window.location.href = "/login";
+          else setError("Saved, but the affected data could not be refreshed. Use Refresh. " + (err.message || ""));
+        });
+    }
     setReloadToken((value) => value + 1);
   };
 
-  const runAction = async (action, successFallback) => {
+  const runAction = async (action, successFallback, sections = null) => {
     if (previewMode || actionBusy) {
       return;
     }
@@ -204,7 +222,7 @@ export default function useRoleDashboard({
       const result = await action();
 
       setNotice(result?.message || successFallback);
-      refresh();
+      await refresh(result, sections);
 
       return result;
     } catch (requestError) {
@@ -240,18 +258,21 @@ export default function useRoleDashboard({
     runAction(
       () => roleCreateSupplier(form),
       "Supplier added successfully.",
+      ["suppliers"],
     );
 
   const handleUpdateSupplier = (supplierId, form) =>
     runAction(
       () => roleUpdateSupplier(supplierId, form),
       "Supplier updated successfully.",
+      ["suppliers", "products", "purchase_orders"],
     );
 
   const handleCreatePurchaseOrder = (form) =>
     runAction(
       () => roleCreatePurchaseOrder(form),
       "Purchase order created.",
+      ["purchase_orders"],
     );
 
 
@@ -264,12 +285,14 @@ export default function useRoleDashboard({
     runAction(
       () => roleUpdatePurchaseOrderStatus(poId, action),
       "Purchase order updated.",
+      ["purchase_orders"],
     );
 
   const handleSalesOrderStatus = (orderId, action) =>
     runAction(
       () => roleUpdateSalesOrderStatus(orderId, action),
       "Sales order updated.",
+      ["orders", "products", "customers", "product_performance"],
     );
 
   async function logout() {

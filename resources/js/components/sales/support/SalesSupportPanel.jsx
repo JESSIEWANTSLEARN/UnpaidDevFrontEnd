@@ -1,3 +1,4 @@
+import { startVisiblePolling } from "../../../utils/visiblePolling.mjs";
 import WorkflowSearchControls from "../../shared/WorkflowSearchControls.jsx";
 import { filterWorkflowRows } from "../../../utils/importFilters.mjs";
 import React, { useEffect, useRef, useState } from "react";
@@ -165,7 +166,7 @@ export default function SalesSupportPanel({ previewMode = false }) {
       return undefined;
     }
 
-    const timer = window.setInterval(
+    const stop = startVisiblePolling(
       () =>
         openConversation(
           conversation.conversation_id,
@@ -173,19 +174,19 @@ export default function SalesSupportPanel({ previewMode = false }) {
       5000,
     );
 
-    return () => window.clearInterval(timer);
+    return stop;
   }, [
     previewMode,
     conversation?.conversation_id,
   ]);
 
   useEffect(() => {
-    const timer = window.setInterval(
+    const stop = startVisiblePolling(
       () => load(false).catch(() => {}),
       15000,
     );
 
-    return () => window.clearInterval(timer);
+    return stop;
   }, [previewMode]);
 
   const action = async (

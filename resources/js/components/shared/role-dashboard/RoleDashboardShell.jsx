@@ -57,7 +57,7 @@ export default function RoleDashboardShell({
     );
   }
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <DashboardLoadingSkeleton
         label={`Loading ${config.title}...`}

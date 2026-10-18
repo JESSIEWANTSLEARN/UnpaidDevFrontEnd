@@ -1,3 +1,4 @@
+import { startVisiblePolling } from "../../../utils/visiblePolling.mjs";
 import { backendUrl } from "../../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -97,12 +98,11 @@ export default function UsersView({
       }
     };
 
-    refreshPresence();
-    const intervalId = window.setInterval(refreshPresence, 30_000);
+    const stop = startVisiblePolling(refreshPresence, 30_000, { immediate: true });
 
     return () => {
       cancelled = true;
-      window.clearInterval(intervalId);
+      stop();
     };
   }, []);
 

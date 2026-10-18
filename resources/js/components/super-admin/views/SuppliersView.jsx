@@ -71,7 +71,7 @@ function Suppliers({
       });
       setEditing(null);
       setBusy(false);
-      onDashboardRefresh?.();
+      onDashboardRefresh?.(null, ["suppliers", "purchase_orders", "audit_logs"]);
     } catch (requestError) {
       setError(requestError.message || "Unable to update supplier.");
       setBusy(false);

@@ -1,3 +1,4 @@
+import { readSessionStatus } from "../../../services/auth/sessionStatus.js";
 import {
     backendUrl,
     csrfFetch,
@@ -151,7 +152,7 @@ export default function PresenceTracker() {
         };
 
         const loadPolicy = async () => {
-            const { response, data } = await request("/api/session/status");
+            const { response, data } = await readSessionStatus();
 
             if (disposed) return;
 
@@ -240,7 +241,8 @@ export default function PresenceTracker() {
             }).catch(() => null);
         };
 
-        void loadPolicy();
+        // A failed read must not become an unhandled rejection. Access stays guarded.
+        void loadPolicy().catch(() => {});
 
         HUMAN_ACTIVITY_EVENTS.forEach((eventName) => {
             window.addEventListener(eventName, markHumanActivity, {

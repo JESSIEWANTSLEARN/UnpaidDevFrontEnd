@@ -79,8 +79,8 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
   const visiblePublic = filterReviews(publicReviews, { query: reviewSearch, rating: reviewRatingFilter, sort: reviewSort });
   const visibleEligible = eligible.filter((product) => !reviewSearch.trim() || [product.name, product.sku, product.order_id].some((value) => String(value ?? "").toLowerCase().includes(reviewSearch.trim().toLowerCase())));
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (initial = false) => {
+    if (initial) setLoading(true);
     setError("");
 
     try {
@@ -106,7 +106,7 @@ export default function CustomerReviewsPanel({ previewMode = false }) {
   };
 
   useEffect(() => {
-    load();
+    load(true);
   }, [previewMode]);
 
   const submit = async (event) => {

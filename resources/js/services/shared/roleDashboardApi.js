@@ -68,9 +68,12 @@ const SALES_ROLES = new Set([
 export const loadRoleDashboard = (
   roleKey,
   previewMode = false,
+  sections = null,
 ) => {
-  const query =
-    previewMode ? "?preview=1" : "";
+  const params = new URLSearchParams();
+  if (previewMode) params.set("preview", "1");
+  if (sections?.length) params.set("sections", sections.join(","));
+  const query = params.size ? `?${params}` : "";
 
   const base = SALES_ROLES.has(roleKey)
     ? "/api/sales-role"

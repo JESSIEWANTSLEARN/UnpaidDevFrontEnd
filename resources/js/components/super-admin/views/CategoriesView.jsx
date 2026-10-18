@@ -60,7 +60,7 @@ function Categories({
       });
       setEditing(null);
       setBusy(false);
-      onDashboardRefresh?.();
+      onDashboardRefresh?.(null, ["categories", "products", "audit_logs"]);
     } catch (requestError) {
       setError(requestError.message || "Unable to update category.");
       setBusy(false);

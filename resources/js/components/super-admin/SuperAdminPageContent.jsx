@@ -41,18 +41,21 @@ const PAGE_COMPONENTS = {
 };
 
 export default function SuperAdminPageContent({ activeMenu, loading, error, onRetry, theme = "light", ...props }) {
-  if (loading) return <DashboardLoadingSkeleton label="Loading Super Admin data..." theme={theme} />;
-  if (error) return <ErrorState message={error} onRetry={onRetry} />;
+  if (loading && !props.data) return <DashboardLoadingSkeleton label="Loading Super Admin data..." theme={theme} />;
+  if (error && !props.data) return <ErrorState message={error} onRetry={onRetry} />;
   if (!props.data) return <EmptyState text="No dashboard data was returned." />;
 
   const View = PAGE_COMPONENTS[activeMenu] || DashboardView;
 
   return (
     <React.Suspense fallback={<DashboardLoadingSkeleton label="Loading this section..." theme={theme} />}>
+      <>
+      {error && <div role="alert"><ErrorState message={error} onRetry={onRetry} /></div>}
       <View
         {...props}
         onDashboardRefresh={onRetry}
       />
+      </>
     </React.Suspense>
   );
 }

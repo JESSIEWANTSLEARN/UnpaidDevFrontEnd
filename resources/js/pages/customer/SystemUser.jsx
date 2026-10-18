@@ -1,5 +1,6 @@
+import { startVisiblePolling } from "../../utils/visiblePolling.mjs";
 import { csrfFetch } from "../../config/api.js";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CustomerStoreSkeleton } from "../../components/customer/shell/CustomerLoadingSkeletons.jsx";
 import { useNavigate } from "react-router-dom";
 import CustomerCheckoutModal from "../../components/customer/checkout/CustomerCheckoutModal.jsx";
@@ -88,6 +89,8 @@ export default function SystemUser({ previewMode = false }) {
   const [paymentReference, setPaymentReference] = useState("");
   const [placedOrder, setPlacedOrder] = useState(null);
   const [notifications, setNotifications] = useState([]);
+  const notificationRequest = useRef(null);
+  const notificationRevision = useRef(0);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notificationBusy, setNotificationBusy] = useState(false);
   const [cartFeedback, setCartFeedback] = useState(null);
@@ -286,38 +289,59 @@ export default function SystemUser({ previewMode = false }) {
     load();
   }, []);
 
+  const refreshNotifications = () => {
+    if (notificationRequest.current) return notificationRequest.current;
+    const revision = notificationRevision.current;
+    const request = api("/api/user/notifications").then((result) => {
+      if (revision === notificationRevision.current) setNotifications(result.notifications ?? []);
+    }).finally(() => {
+      if (notificationRequest.current === request) notificationRequest.current = null;
+    });
+    notificationRequest.current = request;
+    return request;
+  };
+
   useEffect(() => {
     if (previewMode) return undefined;
-
-    let cancelled = false;
-
-    const refreshCustomerNotifications =
-      async () => {
-        try {
-          const data = await api(
-            "/api/user/notifications"
-          );
-
-          if (!cancelled) {
-            setNotifications(
-              data.notifications ?? []
-            );
-          }
-        } catch {
-          // Main session handling already manages auth failures.
-        }
-      };
-
-    const timer = window.setInterval(
-      refreshCustomerNotifications,
-      30000
-    );
-
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
+    const stop = startVisiblePolling(() => refreshNotifications(), 30000);
+    return stop;
   }, [previewMode]);
+
+  const refreshOrder = async (orderId) => {
+    const result = await api(`/api/user/orders?order_id=${encodeURIComponent(orderId)}&include_stats=1`);
+    if (result.partial_order === true) {
+      setOrders((current) => {
+        const incoming = result.orders || [];
+        const ids = new Set(incoming.map((item) => Number(item.order_id)));
+        return [...incoming, ...current.filter((item) => !ids.has(Number(item.order_id)))].sort((a, b) =>
+          (Date.parse(b.order_date) || 0) - (Date.parse(a.order_date) || 0) || Number(b.order_id) - Number(a.order_id));
+      });
+      setStats(result.stats ?? {});
+    } else {
+      // Older backend ignores the parameters and returns the complete order list.
+      setOrders(result.orders ?? []);
+      const me = await api("/api/user/me");
+      setStats(me.stats ?? {});
+    }
+  };
+
+  const refreshWallet = async () => {
+    const result = await api("/api/user/wallet");
+    setWalletData({ wallet: result.wallet ?? { balance: "0.00", status: "ACTIVE" }, transactions: result.transactions ?? [] });
+  };
+
+  const refreshAfterOrder = async (orderId, walletChanged) => {
+    notificationRevision.current += 1;
+    // An older poll may still finish; it cannot overwrite the new notification snapshot.
+    const pending = notificationRequest.current;
+    if (pending) await pending.catch(() => {});
+    const results = await Promise.allSettled([
+      refreshOrder(orderId), refreshNotifications(), ...(walletChanged ? [refreshWallet()] : []),
+    ]);
+    if (results.some((result) => result.status === "rejected")) {
+      setError("Order saved, but some data could not be refreshed. Reload before your next order action.");
+    }
+  };
 
   useEffect(() => {
     const userId = Number(user?.user_id);
@@ -432,6 +456,7 @@ export default function SystemUser({ previewMode = false }) {
     notificationId
   ) => {
     if (previewMode) return;
+    notificationRevision.current += 1;
 
     setNotifications((current) =>
       current.map((item) =>
@@ -466,6 +491,7 @@ export default function SystemUser({ previewMode = false }) {
     }
 
     try {
+      notificationRevision.current += 1;
       setNotificationBusy(true);
 
       await api(
@@ -508,32 +534,8 @@ export default function SystemUser({ previewMode = false }) {
         },
       );
 
-      const [
-        orderData,
-        notificationData,
-        me,
-        refreshedWallet,
-      ] = await Promise.all([
-        api("/api/user/orders"),
-        api("/api/user/notifications"),
-        api("/api/user/me"),
-        api("/api/user/wallet"),
-      ]);
-
-      setOrders(orderData.orders ?? []);
-      setNotifications(
-        notificationData.notifications ?? [],
-      );
-      setStats(me.stats ?? {});
-
-      setWalletData({
-        wallet: refreshedWallet.wallet ?? {
-          balance: "0.00",
-          status: "ACTIVE",
-        },
-        transactions:
-          refreshedWallet.transactions ?? [],
-      });
+      const cancelledOrder = orders.find((item) => Number(item.order_id) === Number(orderId));
+      await refreshAfterOrder(orderId, cancelledOrder?.payment?.payment_method === "WALLET");
 
       setNotice(
         result.message ||
@@ -569,26 +571,13 @@ export default function SystemUser({ previewMode = false }) {
         },
       );
 
-      const [
-        refreshedWallet,
-        refreshedNotifications,
-      ] = await Promise.all([
-        api("/api/user/wallet"),
-        api("/api/user/notifications"),
-      ]);
-
-      setWalletData({
-        wallet: refreshedWallet.wallet ?? {
-          balance: "0.00",
-          status: "ACTIVE",
-        },
-        transactions:
-          refreshedWallet.transactions ?? [],
-      });
-
-      setNotifications(
-        refreshedNotifications.notifications ?? [],
-      );
+      notificationRevision.current += 1;
+      const pending = notificationRequest.current;
+      if (pending) await pending.catch(() => {});
+      const refreshed = await Promise.allSettled([refreshWallet(), refreshNotifications()]);
+      if (refreshed.some((item) => item.status === "rejected")) {
+        setError("Top-up saved, but wallet data could not be refreshed. Reload before paying.");
+      }
 
       setNotice(
         result.message ||
@@ -858,7 +847,7 @@ export default function SystemUser({ previewMode = false }) {
         payment_reference_number: data.payment?.reference_number ?? paymentReference.trim(),
       });
       setCheckoutStep("success");
-      await load();
+      await refreshAfterOrder(data.order_id, paymentMethod === "WALLET");
     } catch (e) {
       setError(e.message);
     } finally {
