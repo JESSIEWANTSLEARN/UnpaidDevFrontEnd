@@ -1,3 +1,4 @@
+import { mergeDashboardUpdate, importRefreshSections, queueDashboardRefresh } from "../../utils/dashboardRefresh.mjs";
 import { useEffect, useRef, useState } from "react";
 import { applyInventoryUpdate } from "../../utils/inventoryUpdates.mjs";
 import {
@@ -71,6 +72,7 @@ export default function useRoleDashboard({
     });
   const [data, setData] = useState(null);
   const inventoryRevision = useRef(0);
+  const refreshQueue = useRef(Promise.resolve());
   const [loading, setLoading] = useState(true);
   const [actionBusy, setActionBusy] = useState(false);
   const [error, setError] = useState("");
@@ -192,16 +194,27 @@ export default function useRoleDashboard({
     roleKey,
   ]);
 
-  const refresh = (result) => {
+  const refresh = (result, sections = importRefreshSections(result)) => {
     if (result?.inventory_update) {
       inventoryRevision.current += 1;
       setData((current) => applyInventoryUpdate(current, result.inventory_update));
       return;
     }
+    if (Array.isArray(sections) && sections.length) {
+      inventoryRevision.current += 1;
+      return queueDashboardRefresh(refreshQueue, inventoryRevision,
+        () => loadRoleDashboard(roleKey, previewMode, sections),
+        (response) => setData((current) => response.dashboard_update
+          ? mergeDashboardUpdate(current, response.dashboard_update) : { ...response, live: true }),
+        (err) => {
+          if (err.status === 401 || err.status === 403) window.location.href = "/login";
+          else setError("Saved, but the affected data could not be refreshed. Use Refresh. " + (err.message || ""));
+        });
+    }
     setReloadToken((value) => value + 1);
   };
 
-  const runAction = async (action, successFallback) => {
+  const runAction = async (action, successFallback, sections = null) => {
     if (previewMode || actionBusy) {
       return;
     }
@@ -214,7 +227,7 @@ export default function useRoleDashboard({
       const result = await action();
 
       setNotice(result?.message || successFallback);
-      refresh(result);
+      await refresh(result, sections);
 
       return result;
     } catch (requestError) {
@@ -250,18 +263,21 @@ export default function useRoleDashboard({
     runAction(
       () => roleCreateSupplier(form),
       "Supplier added successfully.",
+      ["suppliers"],
     );
 
   const handleUpdateSupplier = (supplierId, form) =>
     runAction(
       () => roleUpdateSupplier(supplierId, form),
       "Supplier updated successfully.",
+      ["suppliers", "products", "purchase_orders"],
     );
 
   const handleCreatePurchaseOrder = (form) =>
     runAction(
       () => roleCreatePurchaseOrder(form),
       "Purchase order created.",
+      ["purchase_orders"],
     );
 
 
@@ -274,12 +290,14 @@ export default function useRoleDashboard({
     runAction(
       () => roleUpdatePurchaseOrderStatus(poId, action),
       "Purchase order updated.",
+      ["purchase_orders"],
     );
 
   const handleSalesOrderStatus = (orderId, action) =>
     runAction(
       () => roleUpdateSalesOrderStatus(orderId, action),
       "Sales order updated.",
+      ["orders", "products", "customers", "product_performance"],
     );
 
   async function logout() {

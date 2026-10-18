@@ -60,14 +60,12 @@ async function request(url, options = {}) {
   return payload;
 }
 
-export const loadUserAdminDashboard = (
-  previewMode = false,
-) =>
-  request(
-    `/api/user-admin/dashboard${
-      previewMode ? "?preview=1" : ""
-    }`,
-  );
+export const loadUserAdminDashboard = (previewMode = false, userId = null) => {
+  const params = new URLSearchParams();
+  if (previewMode) params.set("preview", "1");
+  if (userId) params.set("user_id", String(userId));
+  return request(`/api/user-admin/dashboard${params.size ? `?${params}` : ""}`);
+};
 
 export const createManagedUser = (form) =>
   request("/api/user-admin/users", {

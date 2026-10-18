@@ -1,3 +1,4 @@
+import * as dashboardRefresh from "../resources/js/utils/dashboardRefresh.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -7,7 +8,7 @@ import { applyInventoryUpdate } from '../resources/js/utils/inventoryUpdates.mjs
 import { INITIAL_FORMS } from '../resources/js/config/super-admin/superAdminConfig.js';
 
 // Run the actual hook code with deterministic React state/effect scheduling and mocked HTTP boundaries.
-function harness(kind, { legacy=false, preview=false, fail=false }={}) {
+function harness(kind, { legacy=false, preview=false, fail=false, scopedFail=false }={}) {
   const slots=[], effects=[], pending=[], calls=[];
   let cursor=0, effectCursor=0, block=false, release, rejectRelease;
   const dashboard=()=>block?new Promise((resolve,reject)=>{release=()=>{block=false;resolve(data);};rejectRelease=()=>{block=false;reject(new Error('Old refresh failed'));};}):Promise.resolve(data);
@@ -19,12 +20,20 @@ function harness(kind, { legacy=false, preview=false, fail=false }={}) {
   const data={role:'Inventory_Controller',products:[{product_id:1,available_stock:2,reorder_point:5}],batches:[],transactions:[],metrics:{},settings:{}};
   if(kind==='admin')delete data.role;
   const update={product_stocks:[{product_id:1,available_stock:5}],batches:[{batch_id:1,product_id:1,current_quantity:5,received_date:'2026-10-18'}],transactions:[],metrics:{total_stock:5,low_stock_items:1,out_of_stock:0}};
-  const mutate=async(name)=>{calls.push(name);if(fail)throw Object.assign(new Error('Rejected'),{status:422});return legacy?{message:'Saved'}:{message:'Saved',inventory_update:update};};
-  const roleApi={loadRoleDashboard:async()=>{calls.push('dashboard');return dashboard();}};
+  const mutate=async(name, inventory=true)=>{calls.push(name);if(fail)throw Object.assign(new Error('Rejected'),{status:422});return legacy||!inventory?{message:'Saved'}:{message:'Saved',inventory_update:update};};
+  const scopedData = {suppliers:[{supplier_id:1,name:'Updated supplier'}],purchase_orders:[{po_id:1,status:'APPROVED'}],current_user:{user_id:1,name:'Updated admin'},metrics:{active_suppliers:1}};
+  const scoped = (sections) => {
+    calls.push('sections:'+sections.join(','));
+    if(scopedFail)throw Object.assign(new Error('Refresh unavailable'),{status:500});
+    return {dashboard_update:Object.fromEntries(Object.entries(scopedData).filter(([key])=>key==='metrics'||sections.includes(key)))};
+  };
+  const roleApi={loadRoleDashboard:async(role,preview,sections)=>{if(sections)return scoped(sections);calls.push('dashboard');return dashboard();}};
   for(const name of ['roleStockIn','roleAdjustStock','roleWriteOffStock','roleReceivePurchaseOrder'])roleApi[name]=()=>mutate(name);
-  const adminApi={apiRequest:async(path)=>{calls.push(path);return path.endsWith('dashboard-data')?dashboard():mutate('save');}};
+  for(const name of ['roleCreateSupplier','roleUpdateSupplier','roleCreatePurchaseOrder','roleUpdatePurchaseOrderStatus','roleUpdateSalesOrderStatus'])roleApi[name]=()=>mutate(name,false);
+  const adminApi={toFormData:(value)=>value,apiRequest:async(path)=>{calls.push(path);if(path.includes('?sections='))return scoped(decodeURIComponent(path.split('?sections=')[1]).split(','));return path.endsWith('dashboard-data')?dashboard():mutate('save',path.endsWith('/stock-in'));}};
   const navigate=()=>{};
   const modules={
+    '../../utils/dashboardRefresh.mjs':dashboardRefresh,
     react,'react-router-dom':{useNavigate:()=>navigate},
     '../../utils/inventoryUpdates.mjs':{applyInventoryUpdate},
     '../../config/api.js':{backendUrl:(path)=>path,csrfFetch:async()=>({ok:true})},
@@ -86,4 +95,30 @@ for(const kind of ['staff','admin'])test(`${kind} ignores an old refresh error a
   const h=harness(kind);h.render();await h.settle();h.render();h.blockNextDashboard();h.render().refresh();h.render();await h.settle();
   const pending=h.render();if(kind==='staff')await pending.handleStockIn({});else await pending.modalProps.onStockIn();
   h.rejectDashboard();await h.settle();const after=h.render();assert.equal(after.data.products[0].available_stock,5);assert.equal(after.error,'');
+});
+
+for(const [action,scope] of [
+ ['handleCreateSupplier','suppliers'],['handleUpdateSupplier','suppliers,products,purchase_orders'],
+ ['handleCreatePurchaseOrder','purchase_orders'],['handlePurchaseOrderStatus','purchase_orders'],
+ ['handleSalesOrderStatus','orders,products,customers,product_performance'],
+])test(`staff ${action} refreshes only its domains without repeating session handshake`,async()=>{
+ const h=harness('staff');h.render();await h.settle();const before=h.render();
+ await before[action](1,{});h.render();await h.settle();const after=h.render();
+ assert.equal(h.calls.filter(x=>x==='dashboard').length,1);assert.equal(h.calls.filter(x=>x==='session').length,1);
+ assert.ok(h.calls.includes('sections:'+scope));assert.equal(after.data.settings,before.data.settings);assert.equal(after.loading,false);
+});
+for(const [action,scope] of [
+ ['onProfileSave','current_user,users,transactions,purchase_orders,notifications,audit_logs'],['onAddCategory','categories,audit_logs'],['onAddSupplier','suppliers,audit_logs'],
+ ['onAddProduct','products,categories,suppliers,notifications,audit_logs'],['onAddUser','users,audit_logs'],
+ ['onAddPurchaseOrder','purchase_orders,audit_logs'],['onCompanySave','settings,audit_logs'],['onPasswordUpdate','audit_logs'],
+])test(`admin ${action} uses a scoped refresh and retains inventory state`,async()=>{
+ const h=harness('admin');h.render();await h.settle();const before=h.render();await before.modalProps[action]();h.render();await h.settle();const after=h.render();
+ assert.ok(h.calls.includes('sections:'+scope));assert.equal(h.calls.filter(x=>x.endsWith('dashboard-data')).length,1);
+ assert.equal(after.data.products,before.data.products);assert.equal(after.loading,false);
+});
+test('a successful mutation with failed follow-up refresh is not replayed or reported as a failed save',async()=>{
+ const h=harness('staff',{scopedFail:true});h.render();await h.settle();const before=h.render();
+ const result=await before.handleCreateSupplier({});h.render();await h.settle();const after=h.render();
+ assert.equal(result.message,'Saved');assert.equal(h.calls.filter(x=>x==='roleCreateSupplier').length,1);
+ assert.equal(after.data,before.data);assert.match(after.error,/Saved, but/);
 });

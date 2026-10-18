@@ -46,8 +46,8 @@ export default function ProductReviewsView() {
         [status, setStatus] = useState("ALL"),
         [rating, setRating] = useState("ALL"),
         [search, setSearch] = useState("");
-    const load = async () => {
-        setLoading(true);
+    const load = async (initial = false) => {
+        if (initial) setLoading(true);
         setError("");
         try {
             setData(await api("/api/super-admin/product-reviews"));
@@ -58,7 +58,7 @@ export default function ProductReviewsView() {
         }
     };
     useEffect(() => {
-        load();
+        load(true);
     }, []);
     const rows = useMemo(() => {
         const q = search.toLowerCase().trim();

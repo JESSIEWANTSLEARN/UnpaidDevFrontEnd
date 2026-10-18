@@ -1,3 +1,4 @@
+import { mergeDashboardUpdate, importRefreshSections, queueDashboardRefresh } from "../../utils/dashboardRefresh.mjs";
 import { useEffect, useRef, useState } from "react";
 import { applyInventoryUpdate } from "../../utils/inventoryUpdates.mjs";
 import { useNavigate } from "react-router-dom";
@@ -52,6 +53,7 @@ export default function useSuperAdmin() {
   const [activeModal, setActiveModal] = useState(null);
   const [data, setData] = useState(null);
   const inventoryRevision = useRef(0);
+  const refreshQueue = useRef(Promise.resolve());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadToken, setReloadToken] = useState(0);
@@ -73,11 +75,22 @@ export default function useSuperAdmin() {
     [key]: typeof update === "function" ? update(all[key]) : update,
   }));
   const resetForm = (key) => setForm(key, { ...INITIAL_FORMS[key] });
-  const refresh = (result) => {
+  const refresh = (result, sections = importRefreshSections(result, true)) => {
     if (result?.inventory_update) {
       inventoryRevision.current += 1;
       setData((current) => applyInventoryUpdate(current, result.inventory_update));
       return;
+    }
+    if (Array.isArray(sections) && sections.length) {
+      inventoryRevision.current += 1;
+      return queueDashboardRefresh(refreshQueue, inventoryRevision,
+        () => apiRequest(`/api/super-admin/dashboard-data?sections=${encodeURIComponent(sections.join(","))}`),
+        (response) => setData((current) => response.dashboard_update
+          ? mergeDashboardUpdate(current, response.dashboard_update) : response),
+        (err) => {
+          if (err.status === 401 || err.status === 403) navigate("/login", { replace: true });
+          else setError("Saved, but the affected data could not be refreshed. Use Refresh. " + (err.message || ""));
+        });
     }
     setReloadToken((v) => v + 1);
   };
@@ -144,33 +157,33 @@ export default function useSuperAdmin() {
     }
   };
 
-  const runModalAction = async (action, keepOpen = false) => {
+  const runModalAction = async (action, keepOpen = false, sections = null) => {
     setModalBusy(true); setModalError("");
-    try { const result = await action(); if (!keepOpen) setActiveModal(null); refresh(result); }
+    try { const result = await action(); if (!keepOpen) setActiveModal(null); await refresh(result, sections); }
     catch (err) {
       if (err.status === 401) navigate("/login", { replace: true });
       setModalError(err.message || "The request could not be completed.");
     } finally { setModalBusy(false); }
   };
 
-  const handleProfileSave = () => runModalAction(() => apiRequest("/api/super-admin/profile", { method: "PUT", body: forms.profile }));
-  const handlePasswordUpdate = () => runModalAction(async () => { await apiRequest("/api/super-admin/password", { method: "PUT", body: forms.password }); resetForm("password"); });
+  const handleProfileSave = () => runModalAction(() => apiRequest("/api/super-admin/profile", { method: "PUT", body: forms.profile }), false, ["current_user", "users", "transactions", "purchase_orders", "notifications", "audit_logs"]);
+  const handlePasswordUpdate = () => runModalAction(async () => { await apiRequest("/api/super-admin/password", { method: "PUT", body: forms.password }); resetForm("password"); }, false, ["audit_logs"]);
   const handleAddProduct = () => runModalAction(async () => {
     const body = toFormData(forms.product, ["is_seasonal", "is_visible", "is_featured"]);
     await apiRequest("/api/super-admin/products", { method: "POST", body, formData: true }); resetForm("product");
-  });
+  }, false, ["products", "categories", "suppliers", "notifications", "audit_logs"]);
   const handleAddCategory = () => runModalAction(async () => {
     await apiRequest("/api/super-admin/categories", { method: "POST", body: forms.category });
     resetForm("category");
-  });
+  }, false, ["categories", "audit_logs"]);
   const handleStockIn = () => runModalAction(async () => { const result = await apiRequest("/api/super-admin/stock-in", { method: "POST", body: forms.stock }); resetForm("stock"); return result; });
-  const handleAddUser = () => runModalAction(async () => { await apiRequest("/api/super-admin/users", { method: "POST", body: forms.user }); resetForm("user"); });
-  const handleAddSupplier = () => runModalAction(async () => { await apiRequest("/api/super-admin/suppliers", { method: "POST", body: forms.supplier }); resetForm("supplier"); });
-  const handleAddPurchaseOrder = () => runModalAction(async () => { await apiRequest("/api/super-admin/purchase-orders", { method: "POST", body: forms.purchaseOrder }); resetForm("purchaseOrder"); });
+  const handleAddUser = () => runModalAction(async () => { await apiRequest("/api/super-admin/users", { method: "POST", body: forms.user }); resetForm("user"); }, false, ["users", "audit_logs"]);
+  const handleAddSupplier = () => runModalAction(async () => { await apiRequest("/api/super-admin/suppliers", { method: "POST", body: forms.supplier }); resetForm("supplier"); }, false, ["suppliers", "audit_logs"]);
+  const handleAddPurchaseOrder = () => runModalAction(async () => { await apiRequest("/api/super-admin/purchase-orders", { method: "POST", body: forms.purchaseOrder }); resetForm("purchaseOrder"); }, false, ["purchase_orders", "audit_logs"]);
   const handleCompanySave = () => runModalAction(async () => {
     const body = toFormData(forms.company); await apiRequest("/api/super-admin/company-information", { method: "POST", body, formData: true });
     setForm("company", (form) => ({ ...form, logo: null }));
-  });
+  }, false, ["settings", "audit_logs"]);
 
   const openUserEditor = (user) => {
     setSelectedUser(user);
@@ -183,7 +196,7 @@ export default function useSuperAdmin() {
       method: "PUT",
       body: forms.editUser,
     })
-  );
+  , false, ["users", "transactions", "purchase_orders", "notifications", "audit_logs", "user_activity"]);
 
   const loadUserSessions = async (userId, page = 1) => {
     setSessionsLoading(true);
@@ -241,7 +254,7 @@ export default function useSuperAdmin() {
         { method: "DELETE" }
       );
       await loadUserSessions(selectedUser.user_id, userSessionPagination.page);
-      refresh();
+      await refresh(null, ["users", "user_activity", "audit_logs"]);
     } catch (err) {
       if (err.status === 401) navigate("/login", { replace: true });
       setModalError(err.message || "Unable to revoke the session.");
@@ -265,7 +278,7 @@ export default function useSuperAdmin() {
         method: "DELETE",
       });
       await loadUserSessions(selectedUser.user_id, userSessionPagination.page);
-      refresh();
+      await refresh(null, ["users", "user_activity", "audit_logs"]);
     } catch (err) {
       if (err.status === 401) navigate("/login", { replace: true });
       setModalError(err.message || "Unable to revoke sessions.");
@@ -289,13 +302,13 @@ export default function useSuperAdmin() {
     });
     setSelectedUser(null);
     resetForm("deleteUser");
-  });
+  }, false, ["users", "transactions", "purchase_orders", "notifications", "audit_logs", "user_activity"]);
 
   const handleUserSessionPageChange = (page) => {
     if (!selectedUser || sessionsLoading) return;
     loadUserSessions(selectedUser.user_id, page);
   };
-  const handleNotificationStatus = (id, status) => runModalAction(() => apiRequest(`/api/super-admin/notifications/${id}`, { method: "PUT", body: { status } }), true);
+  const handleNotificationStatus = (id, status) => runModalAction(() => apiRequest(`/api/super-admin/notifications/${id}`, { method: "PUT", body: { status } }), true, ["notifications", "audit_logs"]);
 
   const handleOpenNotification = (item) => {
     if (!item) return;
@@ -308,7 +321,7 @@ export default function useSuperAdmin() {
           body: { status: "ACKNOWLEDGED" },
         },
       )
-        .then(refresh)
+        .then((result) => refresh(result, ["notifications", "audit_logs"]))
         .catch(() => {});
     }
 
@@ -328,7 +341,7 @@ export default function useSuperAdmin() {
     setActiveMenu("Dashboard");
   };
 
-  const handleCreateBackup = () => runModalAction(() => apiRequest("/api/super-admin/backups", { method: "POST" }), true);
+  const handleCreateBackup = () => runModalAction(() => apiRequest("/api/super-admin/backups", { method: "POST" }), true, ["backups", "audit_logs"]);
   const handleRestoreBackup = (filename) => {
     if (!window.confirm(`Restore ${filename}? This replaces the current WalangBrownout data with the selected backup. A safety backup will be created first.`)) return;
     runModalAction(() => apiRequest(`/api/super-admin/backups/${encodeURIComponent(filename)}/restore`, { method: "POST", body: { confirmation: "RESTORE" } }));

@@ -267,7 +267,7 @@ export default function DataImportsPanel({
       }
 
       await loadHistory();
-      onDashboardRefresh?.(result);
+      onDashboardRefresh?.({ ...result, import: { ...result.import, import_type: result.import?.import_type || importType } });
     } catch (requestError) {
       setError(
         requestError.message ||

@@ -128,7 +128,7 @@ function Products({
       setEditing(null);
       setEditForm(emptyEditForm);
       setEditBusy(false);
-      onDashboardRefresh?.();
+      onDashboardRefresh?.(null, ["products", "categories", "suppliers", "batches", "purchase_orders", "notifications", "audit_logs"]);
     } catch (error) {
       setEditError(error.message || "Unable to update the product.");
       setEditBusy(false);

@@ -103,9 +103,9 @@ export default function ReturnWorkflowPanel({
   const canRefund =
     !previewMode && canRefundReturn(roleKey);
 
-  const load = async () => {
+  const load = async (initial = false) => {
     try {
-      setLoading(true);
+      if (initial) setLoading(true);
       setError("");
       const suffix = previewMode
         ? `?preview=1&preview_role=${encodeURIComponent(roleKey)}`
@@ -115,7 +115,7 @@ export default function ReturnWorkflowPanel({
       );
       setRows(data.returns || []);
     } catch (loadError) {
-      setRows([]);
+      if (initial) setRows([]);
       setError(loadError.message);
     } finally {
       setLoading(false);
@@ -123,7 +123,7 @@ export default function ReturnWorkflowPanel({
   };
 
   useEffect(() => {
-    load();
+    load(true);
   }, [previewMode, roleKey]);
 
   const visibleRows = useMemo(() => {

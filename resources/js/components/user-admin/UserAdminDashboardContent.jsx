@@ -53,7 +53,7 @@ export default function UserAdminDashboardContent({
     handleRevokeAll,
   } = controller;
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <DashboardLoadingSkeleton
         label="Loading User Admin..."

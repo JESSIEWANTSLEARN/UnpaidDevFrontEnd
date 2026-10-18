@@ -31,15 +31,24 @@ export default function useUserAdminDashboard({
     useState(null);
   const [sessions, setSessions] = useState([]);
 
-  const load = async () => {
+  const load = async (userId = null) => {
+    if (typeof userId !== "number") userId = null;
     setLoading(true);
     setError("");
 
     try {
       const result = await loadUserAdminDashboard(
         previewMode,
+        userId,
       );
-      setData(result);
+      setData((current) => {
+        if (!current || !result.partial_users) return result;
+        const incoming = result.users || [];
+        const ids = new Set(incoming.map((user) => Number(user.user_id)));
+        const users = [...current.users.filter((user) => !ids.has(Number(user.user_id))), ...incoming];
+        users.sort((a, b) => a.name.localeCompare(b.name));
+        return { ...current, ...result, users };
+      });
     } catch (requestError) {
       setError(
         requestError.message ||
@@ -54,7 +63,7 @@ export default function useUserAdminDashboard({
     load();
   }, [previewMode]);
 
-  const run = async (action, fallback) => {
+  const run = async (action, fallback, affectedId = null) => {
     if (previewMode || busy) return;
 
     setBusy(true);
@@ -64,7 +73,7 @@ export default function useUserAdminDashboard({
     try {
       const result = await action();
       setNotice(result?.message || fallback);
-      await load();
+      await load(affectedId ?? result?.user_id ?? null);
       return result;
     } catch (requestError) {
       setError(
@@ -142,6 +151,7 @@ export default function useUserAdminDashboard({
     run(
       () => updateManagedUser(userId, form),
       "Account updated.",
+      userId,
     );
 
   const handleRevoke = async (sessionId) => {
@@ -154,6 +164,7 @@ export default function useUserAdminDashboard({
           sessionId,
         ),
       "Session revoked.",
+      sessionsUser.user_id,
     );
 
     await refreshSessions();
@@ -176,6 +187,7 @@ export default function useUserAdminDashboard({
           sessionsUser.user_id,
         ),
       "Sessions revoked.",
+      sessionsUser.user_id,
     );
 
     await refreshSessions();
