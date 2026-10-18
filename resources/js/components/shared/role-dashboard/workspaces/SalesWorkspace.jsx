@@ -142,7 +142,7 @@ export default function SalesWorkspace({
     <Workspace
       title="Fulfillment Queue"
       description="Work through open orders by their next step, oldest order first. Existing order actions keep their role and payment rules."
-      scope="Uses the latest 150 loaded orders. Payment verification must follow your normal payment-checking process."
+      scope="Uses the latest 150 loaded orders. Sales Manager verifies eligible online payments; Sales Staff process and fulfill ready orders."
     >
       <div className="role-workspace-controls">
         <Choice
@@ -169,6 +169,7 @@ export default function SalesWorkspace({
       </div>
       <SalesOrdersTable
         orders={orders}
+        roleKey={roleKey}
         previewMode={previewMode}
         busy={busy}
         onStatus={onSalesOrderStatus}

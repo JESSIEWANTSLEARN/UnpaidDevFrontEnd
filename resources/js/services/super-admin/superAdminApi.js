@@ -1,13 +1,9 @@
-import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { backendUrl, csrfFetch } from "../../config/api.js";
 export async function apiRequest(url, { method = "GET", body = null, formData = false } = {}) {
   const headers = { Accept: "application/json" };
-  if (method !== "GET" && method !== "HEAD") {
-    const token = await loadCsrfToken();
-    if (token) headers["X-CSRF-TOKEN"] = token;
-  }
   if (body && !formData) headers["Content-Type"] = "application/json";
 
-  const response = await fetch(backendUrl(url), {
+  const response = await csrfFetch(url, {
     method,
     credentials: "include",
     headers,
@@ -25,25 +21,22 @@ export async function apiRequest(url, { method = "GET", body = null, formData = 
 }
 
 export async function logoutRequest() {
-  window.dispatchEvent(
-    new Event("wbo:logout-started"),
-  );
-  const token = await loadCsrfToken();
-  await fetch(backendUrl("/api/presence/offline"), {
+  await csrfFetch(backendUrl("/api/presence/offline"), {
     method: "POST",
     credentials: "include",
-    headers: { Accept: "application/json", "X-CSRF-TOKEN": token },
+    headers: { Accept: "application/json" },
   }).catch(() => null);
 
-  const response = await fetch(backendUrl("/logout"), {
+  const response = await csrfFetch(backendUrl("/logout"), {
     method: "POST",
     credentials: "include",
-    headers: { Accept: "application/json", "X-CSRF-TOKEN": token },
+    headers: { Accept: "application/json" },
   });
   if (!response.ok && response.status !== 302) {
     const result = await response.json().catch(() => ({}));
     throw new Error(result.message || "Logout failed.");
   }
+  window.dispatchEvent(new Event("wbo:logout-started"));
 }
 
 export function download(url) {

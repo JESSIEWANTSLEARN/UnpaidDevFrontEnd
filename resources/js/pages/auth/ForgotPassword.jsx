@@ -1,4 +1,4 @@
-import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { backendUrl, csrfFetch } from "../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../../css/auth/password-reset.css";
@@ -8,14 +8,12 @@ import "../../../css/auth/public-theme.css";
 const Logo = backendUrl("/storage/site/Logo.png");
 
 async function postJson(url, body) {
-  const token = await loadCsrfToken();
-  const response = await fetch(backendUrl(url), {
+  const response = await csrfFetch(url, {
     method: "POST",
     credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "X-CSRF-TOKEN": token,
     },
     body: JSON.stringify(body),
   });

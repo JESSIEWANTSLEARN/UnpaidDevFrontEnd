@@ -8,7 +8,7 @@ import {
 } from "./common/SalesDashboardPrimitives.jsx";
 import SalesOrdersTable from "./tables/SalesOrdersTable.jsx";
 import SalesSupportPanel from "./support/SalesSupportPanel.jsx";
-import SalesReturnsPanel from "./returns/SalesReturnsPanel.jsx";
+import ReturnWorkflowPanel from "../shared/returns/ReturnWorkflowPanel.jsx";
 import {
   SalesAvailabilityTable,
   SalesCustomersTable,
@@ -58,6 +58,7 @@ export default function SalesDashboardContent({
         >
           <SalesOrdersTable
             orders={openOrders}
+            roleKey={roleKey}
             previewMode={previewMode}
             busy={busy}
             onStatus={onOrderStatus}
@@ -75,6 +76,7 @@ export default function SalesDashboardContent({
       >
         <SalesOrdersTable
           orders={data.orders || []}
+          roleKey={roleKey}
           previewMode={previewMode}
           busy={busy}
           onStatus={onOrderStatus}
@@ -89,7 +91,7 @@ export default function SalesDashboardContent({
         title="Returns & Refunds"
         description="Review customer return requests, inspect returned items, decide inventory disposition, and complete refunds."
       >
-        <SalesReturnsPanel previewMode={previewMode} />
+        <ReturnWorkflowPanel roleKey={roleKey} previewMode={previewMode} />
       </SalesSection>
     );
   }

@@ -14,7 +14,7 @@ export const ROLE_DASHBOARDS = {
     accent: "#7c3aed",
     accentRgb: "124 58 237",
     subtitle:
-      "Coordinate purchasing, inventory, sales, and operational issues.",
+      "Coordinate purchasing, inventory, sales, and operational issues; validate product import files for Super Admin.",
     modules: [
       ROLE_WORKSPACES.Operations_Manager.title,
       "Inventory Health",
@@ -108,7 +108,7 @@ export const ROLE_DASHBOARDS = {
     accent: "#059669",
     accentRgb: "5 150 105",
     subtitle:
-      "Monitor sales, orders, customers, and product performance.",
+      "Oversee sales, verify payments, handle order exceptions and refunds, and review product performance.",
     modules: [
       ROLE_WORKSPACES.Sales_Manager.title,
       "Orders",
@@ -127,7 +127,7 @@ export const ROLE_DASHBOARDS = {
     accent: "#059669",
     accentRgb: "5 150 105",
     subtitle:
-      "Support customer orders and daily sales activity.",
+      "Process and fulfill ready orders, review return requests, and support customers.",
     modules: [
       ROLE_WORKSPACES.Sales_Staff.title,
       "Orders",

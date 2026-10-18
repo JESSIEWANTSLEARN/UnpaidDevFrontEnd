@@ -1,4 +1,4 @@
-import { backendUrl, loadCsrfToken } from "../../config/api.js";
+import { backendUrl, csrfFetch } from "../../config/api.js";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/shared/cinematic-customer.css";
@@ -185,13 +185,11 @@ function LandingPage() {
 
         if (!cancelled && !data?.authenticated) {
           void (async () => {
-            const token = await loadCsrfToken();
-            await fetch(backendUrl("/api/public/landing-page-visit"), {
+            await csrfFetch(backendUrl("/api/public/landing-page-visit"), {
               method: "POST",
               credentials: "include",
               headers: {
                 Accept: "application/json",
-                ...(token ? { "X-CSRF-TOKEN": token } : {}),
               },
             });
           })().catch(() => {
@@ -213,7 +211,7 @@ function LandingPage() {
 
     async function loadProducts() {
       try {
-        const response = await fetch(backendUrl("/api/store/products"), {
+        const response = await csrfFetch(backendUrl("/api/store/products"), {
           method: "GET",
           credentials: "include",
           headers: {
@@ -319,9 +317,8 @@ function LandingPage() {
       setNewsletterMessage("");
       setNewsletterError(false);
 
-      const token = await loadCsrfToken();
 
-      const response = await fetch(
+      const response = await csrfFetch(
         backendUrl("/api/public/newsletter/subscribe"),
         {
           method: "POST",
@@ -329,9 +326,6 @@ function LandingPage() {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            ...(token
-              ? { "X-CSRF-TOKEN": token }
-              : {}),
           },
           body: JSON.stringify({ email }),
         },

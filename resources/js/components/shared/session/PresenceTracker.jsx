@@ -58,6 +58,7 @@ export default function PresenceTracker() {
     const [policy, setPolicy] = useState(null);
     const [clock, setClock] = useState(Date.now());
     const [endingSession, setEndingSession] = useState(false);
+    const [logoutError, setLogoutError] = useState("");
 
     const lastHumanActivity = useRef(Date.now());
     const lastServerSync = useRef(0);
@@ -348,14 +349,19 @@ export default function PresenceTracker() {
         logoutStarted.current = true;
         setEndingSession(true);
 
-        await request("/logout", {
-            method: "POST",
-            body: JSON.stringify({
-                reason: "manual",
-            }),
-        }).catch(() => null);
-
-        window.location.href = "/login";
+        setLogoutError("");
+        try {
+            const { response } = await request("/logout", {
+                method: "POST",
+                body: JSON.stringify({ reason: "manual" }),
+            });
+            if (!response.ok && response.status !== 401) throw new Error("Logout failed. Please try again.");
+            window.location.href = "/login";
+        } catch (error) {
+            logoutStarted.current = false;
+            setEndingSession(false);
+            setLogoutError(error.message || "Logout failed. Please try again.");
+        }
     };
 
     if (!warningVisible || isPublicPage) {
@@ -395,6 +401,7 @@ export default function PresenceTracker() {
                     </p>
                 </div>
 
+                {logoutError && <p role="alert">{logoutError}</p>}
                 <div className="session-warning-actions">
                     <button
                         type="button"

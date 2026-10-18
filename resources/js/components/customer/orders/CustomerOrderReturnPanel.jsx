@@ -1,5 +1,5 @@
 ﻿import React, { useMemo, useState } from "react";
-import { backendUrl, loadCsrfToken } from "../../../config/api.js";
+import { backendUrl, csrfFetch } from "../../../config/api.js";
 import { money } from "../../../utils/customer/customerStoreUtils.js";
 import "../../../../css/customer/order-returns.css";
 
@@ -93,8 +93,7 @@ export default function CustomerOrderReturnPanel({
       setBusy(true);
       setError("");
 
-      const token = await loadCsrfToken();
-      const response = await fetch(
+      const response = await csrfFetch(
         backendUrl(
           `/api/user/orders/${order.order_id}/returns`,
         ),
@@ -104,7 +103,6 @@ export default function CustomerOrderReturnPanel({
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": token,
           },
           body: JSON.stringify({
             reason: reason.trim(),

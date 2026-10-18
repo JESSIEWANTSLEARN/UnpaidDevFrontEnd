@@ -1,0 +1,6 @@
+.wbo-workflow-search { display: grid; gap: 10px; padding: 14px; color: inherit; }
+.wbo-workflow-search label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0; }
+.wbo-workflow-search input, .wbo-workflow-search select { width: 100%; min-width: 0; box-sizing: border-box; padding: 10px 12px; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+.wbo-workflow-search select option { background: Canvas; color: CanvasText; }
+.wbo-workflow-search button { justify-self: start; padding: 7px 10px; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 7px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.wbo-workflow-search :is(input, select, button):focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }

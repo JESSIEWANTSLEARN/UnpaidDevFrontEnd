@@ -1,0 +1,43 @@
+/* Shared by customer, review, staff and Super Admin placeholders.
+   Move a highlight layer instead of repainting the block's background. */
+.wbo-skeleton-block,
+.dashboard-skeleton-block {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wbo-skeleton-block::after,
+.dashboard-skeleton-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--wbo-skeleton-sheen, rgb(255 255 255 / 0.75)),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: wbo-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+.customer-skeleton-screen[data-theme="dark"],
+.customer-shell[data-theme="dark"],
+.dashboard-loading[data-theme="dark"] {
+  --wbo-skeleton-sheen: rgb(255 255 255 / 0.16);
+}
+
+@keyframes wbo-skeleton-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wbo-skeleton-block::after,
+  .dashboard-skeleton-block::after {
+    animation: none;
+    display: none;
+  }
+}

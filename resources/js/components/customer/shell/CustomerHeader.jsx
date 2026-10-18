@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { backendUrl } from "../../../config/api.js";
 import { Icon } from "../CustomerUi.jsx";
 
 const Logo = backendUrl("/storage/site/Logo.png");
 
 export default function CustomerHeader({ ctx }) {
+  const headerRef = useRef(null);
+
+  // The preview banner, wrapped navigation and zoom can change header height.
+  // Keep sticky catalog filters below its actual height in every layout.
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    const shell = header?.closest(".customer-shell");
+    if (!shell) return;
+
+    const syncHeight = () => {
+      shell.style.setProperty("--customer-header-height", `${header.offsetHeight}px`);
+    };
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(header);
+
+    return () => {
+      observer.disconnect();
+      shell.style.removeProperty("--customer-header-height");
+    };
+  }, []);
+
   const {
     previewMode,
     mobileOpen,
@@ -69,7 +91,7 @@ export default function CustomerHeader({ ctx }) {
 
   return (
     <>
-      <header className="customer-header">
+      <header ref={headerRef} className="customer-header">
         {previewMode && (
           <div className="customer-admin-preview-bar">
             <div>

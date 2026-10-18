@@ -1,4 +1,7 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+import WorkflowSearchControls from "../../shared/WorkflowSearchControls.jsx";
+import { filterWorkflowRows } from "../../../utils/importFilters.mjs";
+import { canRefundReturn } from "../../../utils/salesActionPermissions.mjs";
+import React, { useEffect, useMemo, useState } from "react";
 import { csrfFetch } from "../../../config/api.js";
 import "../../../../css/sales/returns.css";
 
@@ -52,8 +55,12 @@ async function request(url, options = {}) {
 }
 
 function roleHelp(roleKey) {
-  if (SALES_ROLES.has(roleKey)) {
-    return "Sales reviews return requests and completes customer refunds after warehouse receiving and inventory inspection.";
+  if (roleKey === "Sales_Manager") {
+    return "Review return requests and authorize refunds after warehouse receiving and inventory inspection.";
+  }
+
+  if (roleKey === "Sales_Staff") {
+    return "Review customer return requests. Sales Manager completes refunds after inspection.";
   }
 
   if (roleKey === "Warehouse_Admin") {
@@ -76,6 +83,12 @@ export default function ReturnWorkflowPanel({
   previewMode = false,
 }) {
   const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const statuses = [...new Set(rows.map((row) => row.status).filter(Boolean))];
+  const searchControls = (
+    <WorkflowSearchControls search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} statuses={statuses} />
+  );
   const [busyId, setBusyId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -88,7 +101,7 @@ export default function ReturnWorkflowPanel({
   const canInspect =
     !previewMode && roleKey === "Inventory_Controller";
   const canRefund =
-    !previewMode && SALES_ROLES.has(roleKey);
+    !previewMode && canRefundReturn(roleKey);
 
   const load = async () => {
     try {
@@ -115,15 +128,15 @@ export default function ReturnWorkflowPanel({
 
   const visibleRows = useMemo(() => {
     if (!PURCHASING_ROLES.has(roleKey)) {
-      return rows;
+      return filterWorkflowRows(rows, search, statusFilter);
     }
 
-    return rows.filter(
+    return filterWorkflowRows(rows, search, statusFilter).filter(
       (row) =>
         row.inspection_disposition ===
         "RETURN_TO_SUPPLIER",
     );
-  }, [rows, roleKey]);
+  }, [rows, roleKey, search, statusFilter]);
 
   const updateForm = (id, patch) => {
     setForms((current) => ({
@@ -183,16 +196,10 @@ export default function ReturnWorkflowPanel({
     );
   }
 
-  if (!visibleRows.length) {
-    return (
-      <div className="sales-returns-empty">
-        {error || roleHelp(roleKey)}
-      </div>
-    );
-  }
-
   return (
     <div className="sales-returns">
+      {searchControls}
+      {!visibleRows.length && <p>No returns match your search and role scope.</p>}
       <div className="sales-returns-empty">
         {roleHelp(roleKey)}
       </div>

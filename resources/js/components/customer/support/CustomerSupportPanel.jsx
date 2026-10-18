@@ -1,5 +1,7 @@
+import WorkflowSearchControls from "../../shared/WorkflowSearchControls.jsx";
+import { filterWorkflowRows } from "../../../utils/importFilters.mjs";
 import React, { useEffect, useRef, useState } from "react";
-import { backendUrl, loadCsrfToken } from "../../../config/api.js";
+import { csrfFetch } from "../../../config/api.js";
 import { EmptyState } from "../CustomerUi.jsx";
 import SupportQuickReplies from "./SupportQuickReplies.jsx";
 import SupportContextCard from "./SupportContextCard.jsx";
@@ -14,6 +16,13 @@ export default function CustomerSupportPanel({
   onOpenOrder,
 }) {
   const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const statuses = [...new Set(rows.map((row) => row.status).filter(Boolean))];
+  const searchControls = (
+    <WorkflowSearchControls search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} statuses={statuses} />
+  );
+  const visibleRows = filterWorkflowRows(rows, search, statusFilter);
   const [conversation, setConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("Customer support");
@@ -63,13 +72,8 @@ export default function CustomerSupportPanel({
   };
 
   const api = async (url, options = {}) => {
-    const method = String(options.method || "GET").toUpperCase();
-    const token =
-      method !== "GET" && method !== "HEAD"
-        ? await loadCsrfToken()
-        : "";
 
-    const response = await fetch(backendUrl(url), {
+    const response = await csrfFetch(url, {
       credentials: "include",
       ...options,
       headers: {
@@ -77,7 +81,6 @@ export default function CustomerSupportPanel({
         ...(options.body
           ? { "Content-Type": "application/json" }
           : {}),
-        ...(token ? { "X-CSRF-TOKEN": token } : {}),
         ...(options.headers || {}),
       },
     });
@@ -455,6 +458,8 @@ export default function CustomerSupportPanel({
 
       <div className="wbo-support-layout">
         <aside className="wbo-support-list">
+          {searchControls}
+          {!visibleRows.length && <p>No conversations match your filters.</p>}
           <div className="wbo-support-list-head">
             <strong>Conversations</strong>
 
@@ -467,7 +472,7 @@ export default function CustomerSupportPanel({
             </button>
           </div>
 
-          {rows.map((item) => (
+          {visibleRows.map((item) => (
             <button
               type="button"
               key={item.conversation_id}

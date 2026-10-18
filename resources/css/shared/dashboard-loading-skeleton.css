@@ -1,3 +1,5 @@
+@import "./skeleton-animation.css";
+
 .dashboard-loading {
   --dashboard-skeleton-bg: #f4f7fb;
   --dashboard-skeleton-panel: #fff;
@@ -128,14 +130,7 @@
   width: 100%;
   height: 12px;
   border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    var(--dashboard-skeleton-block) 25%,
-    var(--dashboard-skeleton-highlight) 50%,
-    var(--dashboard-skeleton-block) 75%
-  );
-  background-size: 220% 100%;
-  animation: dashboard-skeleton-shimmer 1.35s ease-in-out infinite;
+  background: var(--dashboard-skeleton-block);
 }
 
 .dashboard-skeleton-block.is-brand {
@@ -185,12 +180,6 @@
   height: 10px;
 }
 
-@keyframes dashboard-skeleton-shimmer {
-  to {
-    background-position: -220% 0;
-  }
-}
-
 @media (max-width: 850px) {
   .dashboard-skeleton-layout {
     grid-template-columns: 1fr;
@@ -232,11 +221,5 @@
   .dashboard-skeleton-table-head .is-cell:nth-child(n + 4),
   .dashboard-skeleton-table-row .is-cell:nth-child(n + 4) {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dashboard-skeleton-block {
-    animation: none;
   }
 }

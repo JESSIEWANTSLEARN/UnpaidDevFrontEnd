@@ -1,19 +1,15 @@
-import { backendUrl, loadCsrfToken } from "../../../config/api.js";
+import { csrfFetch } from "../../../config/api.js";
 import React, { useEffect, useMemo, useState } from "react";
 import "../../../../css/super-admin/product-reviews.css";
 async function api(url, options = {}) {
     const method = String(options.method || "GET").toUpperCase();
-    const token =
-        method !== "GET" && method !== "HEAD"
-            ? await loadCsrfToken()
-            : "";
-    const r = await fetch(backendUrl(url), {
+    const r = await csrfFetch(url, {
         method,
         credentials: "include",
         headers: {
             Accept: "application/json",
             ...(method !== "GET"
-                ? { "Content-Type": "application/json", "X-CSRF-TOKEN": token }
+                ? { "Content-Type": "application/json" }
                 : {}),
         },
         body:

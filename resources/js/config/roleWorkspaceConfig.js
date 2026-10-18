@@ -40,7 +40,7 @@ export const ROLE_WORKSPACES = {
     legacy: "Sales Tasks",
     title: "Fulfillment Queue",
     description:
-      "Work through payment checks, ready-to-process orders, and fulfillment.",
+      "Process paid or Cash on Delivery orders and complete fulfillment. Escalate payment checks and exceptions to Sales Manager.",
   },
   User_Admin: {
     legacy: "User Overview",
