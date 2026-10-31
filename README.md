@@ -1,6 +1,6 @@
 # WalangBrownout Frontend
-Link Website: https://unpaiddevfrontend.onrender.com/ 
-
+Link: Website: https://unpaiddevfrontend.onrender.com/ 
+Link: Old Design Concept https://unpaiddev.onrender.com/
 
 React and Vite frontend for the WalangBrownout inventory, purchasing, warehouse, sales, user-administration, and customer-commerce system.
 
